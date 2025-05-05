@@ -1,8 +1,8 @@
 # Node Modules
-api/node_modules
+/api/node_modules
 
 #env
-api/.env
+/api/.env
 
 # Database
 
