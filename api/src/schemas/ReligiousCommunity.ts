@@ -1,6 +1,31 @@
 import type mongoose from "mongoose";
 import { model, Schema } from "mongoose";
 
+enum CommunityType {
+  MATRIZ_AFRICANA = "Matriz Africana",
+  COMUNIDADE_TERREIRO = "Comunidade de Terreiro",
+}
+
+enum ReligiousSpaceNation {
+  ANGOLA = "Angola",
+  EKITI_EFONO = "Ekiti Efon",
+  JEJE = "Jeje",
+  KETU = "Ketu",
+  NAGO = "Nagô",
+  QUIMBANDA = "Quimbanda",
+  TAMBOR_DE_MINA = "Tambor de Mina",
+  UMBANDA = "Umbanda",
+  OUTROS = "Outros",
+}
+
+enum ReligiousSpacePraticalLanguages {
+  YORUBA = "Yoruba",
+  QUICONGO = "Quicongo",
+  UMBUNDO = "Umbundo",
+  EWE_FONO = "Ewe Fon",
+  OUTROS = "Outros",
+}
+
 const CommunityAddressSchema = new Schema({
   fullAddress: { type: String, required: true },
   street: { type: String, required: true },
@@ -17,17 +42,25 @@ const GeoLocationSchema = new Schema({
 });
 
 const ReligiousCommunitySchema = new Schema({
-  authorization: { type: Number, required: true },
+  authorization: { type: Boolean, required: true },
   community_google_api_localization: {
     type: GeoLocationSchema,
     required: true,
   },
   community_address: { type: CommunityAddressSchema, required: true },
-  community_type: { type: String, required: true },
+  community_type: { type: String, required: true, enum: CommunityType },
   religious_space_year_foundation: { type: Number, required: true },
   religious_space_leader_foundation: { type: String, required: true },
-  religious_space_nation: { type: String, required: true },
-  religious_space_pratical_languages: { type: String, required: true },
+  religious_space_nation: {
+    type: String,
+    required: true,
+    enum: ReligiousSpaceNation,
+  },
+  religious_space_pratical_languages: {
+    type: String,
+    required: true,
+    enum: ReligiousSpacePraticalLanguages,
+  },
   religious_space_name: { type: String, required: true },
   religious_space_leader_name: { type: String, required: true },
   religious_space_position_name: { type: String, required: true },
