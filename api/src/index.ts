@@ -1,12 +1,10 @@
+import "@/api/configs/dotenv";
+import mongoose from "mongoose";
 import express, { Router } from "express";
-import dotenv from "dotenv";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import handleResponse from "@/api/middlewares/handleResponse";
-import { HttpStatusCode } from "./enum/HttpStatusCode.enum";
-
-dotenv.config();
-
+import { HttpStatusCode } from "@/api/enum/HttpStatusCode.enum";
 const health = Router();
 
 health.get("/health", (req, res) => {
@@ -23,7 +21,11 @@ api
   .use(health);
 
 const API_PORT = process.env.API_PORT || 3001;
+const MONGO_URL = process.env.MONGO_URL as string;
 
-api.listen(API_PORT, () => {
-  console.log(`[✔] API listening on port ${API_PORT}`);
+mongoose.connect(MONGO_URL).then(() => {
+  console.log("[✔] MongoDB connected");
+  api.listen(API_PORT, async () => {
+    console.log(`[✔] API listening on port ${API_PORT}`);
+  });
 });

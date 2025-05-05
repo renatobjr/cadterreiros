@@ -1,0 +1,31 @@
+version: "3"
+services: 
+  mongo:
+    image: mongo:latest
+    container_name: cadterreiros
+    ports:
+      - "27017:27017"
+    volumes:
+      - "./api/src/mongo:/data/db"
+    networks:
+      - cadterreiros-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: cadterreiros
+  mongo-test:
+    image: mongo:latest
+    container_name: cadterreiros-test
+    ports:
+      - "27018:27017"
+    volumes:
+      - "/api/src/mongo-test:/data/db"
+    networks:
+      - cadterreiros-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: cadterreiros
+networks:
+  cadterreiros-network:
+    driver: bridge
