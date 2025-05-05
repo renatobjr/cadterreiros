@@ -1,6 +1,9 @@
 # Node Modules
 api/node_modules
 
+#env
+api/.env
+
 # Database
 
 # Migrations
