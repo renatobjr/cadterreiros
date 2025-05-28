@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug API (Nodemon + TS)",
+      "runtimeExecutable": "nodemon",
+      "program": "${workspaceFolder}/api/src/index.ts",
+      "restart": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**", "node_modules/**"],
+      "env": {
+        "API_PORT": "3000",
+        "GOOGLE_MAPS_API": "AIzaSyCww53qH4bTw9z2le42RZu0QFam20AiuyU",
+        "MONGO_URL": "mongodb://localhost:27017",
+        "MONGO_INITDB_ROOT_USERNAME": "root",
+        "MONGO_INITDB_ROOT_PASSWORD": "password",
+        "MONGO_INITDB_DATABASE": "cadterreiros",
+        "NODE_ENV": "development"
+      },
+      "runtimeArgs": [],
+      "cwd": "${workspaceFolder}/api",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/api/dist/**/*.js"]
+    }
+  ]
+}
