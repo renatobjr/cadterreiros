@@ -1,87 +1,129 @@
 import type mongoose from "mongoose";
 import { model, Schema } from "mongoose";
+import dayjs from "dayjs";
 
 enum CommunityType {
-  MATRIZ_AFRICANA = "Matriz Africana",
-  COMUNIDADE_TERREIRO = "Comunidade de Terreiro",
+  MATRIZ_AFRICANA = "matriz africana",
+  COMUNIDADE_TERREIRO = "comunidade de terreiro",
 }
 
 enum ReligiousSpaceNation {
-  ANGOLA = "Angola",
-  EKITI_EFONO = "Ekiti Efon",
-  JEJE = "Jeje",
-  KETU = "Ketu",
-  NAGO = "Nagô",
-  QUIMBANDA = "Quimbanda",
-  TAMBOR_DE_MINA = "Tambor de Mina",
-  UMBANDA = "Umbanda",
-  OUTROS = "Outros",
+  ANGOLA = "angola",
+  EKITI_EFONO = "ekiti efon",
+  JEJE = "jeje",
+  KETU = "ketu",
+  nagô = "nagô",
+  QUIMBANDA = "quimbanda",
+  TAMBOR_DE_MINA = "tambor de mina",
+  UMBANDA = "umbanda",
+  OUTROS = "outros",
 }
 
 enum ReligiousSpacePraticalLanguages {
-  YORUBA = "Yoruba",
-  QUICONGO = "Quicongo",
-  UMBUNDO = "Umbundo",
-  EWE_FONO = "Ewe Fon",
-  OUTROS = "Outros",
+  YORUBA = "yoruba",
+  QUICONGO = "quicongo",
+  UMBUNDO = "umbundo",
+  EWE_FONO = "ewe fon",
+  OUTROS = "outros",
 }
 
-const CommunityAddressSchema = new Schema({
-  fullAddress: { type: String, required: true },
-  street: { type: String, required: true },
-  number: { type: String, required: true },
-  neighborhood: { type: String, required: true },
-  city: { type: String, required: true },
-  state: { type: String, required: true },
-  zipcode: { type: String, required: true },
-});
+export interface ICommunityAddress {
+  fullAddress: string;
+  street: string;
+  number: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+  zipcode: string;
+}
 
-const GeoLocationSchema = new Schema({
-  lat: { type: Number, required: true },
-  long: { type: Number, required: true },
-});
+export interface IGeoLocation {
+  lat: number;
+  long: number;
+}
 
-const ReligiousCommunitySchema = new Schema({
-  authorization: { type: Boolean, required: true },
-  community_google_api_localization: {
-    type: GeoLocationSchema,
-    required: true,
-  },
-  community_address: { type: CommunityAddressSchema, required: true },
-  community_type: { type: String, required: true, enum: CommunityType },
-  religious_space_year_foundation: { type: Number, required: true },
-  religious_space_leader_foundation: { type: String, required: true },
-  religious_space_nation: {
-    type: String,
-    required: true,
-    enum: ReligiousSpaceNation,
-  },
-  religious_space_pratical_languages: {
-    type: String,
-    required: true,
-    enum: ReligiousSpacePraticalLanguages,
-  },
-  religious_space_name: { type: String, required: true },
-  religious_space_leader_name: { type: String, required: true },
-  religious_space_position_name: { type: String, required: true },
-  religious_space_started_by: { type: String, required: true },
-  religious_space_name_date_started_by: { type: Date, required: true },
-  leader_ethnicity: { type: String, required: true },
-  leader_sex_orientation: { type: String, required: true },
-  leader_educational_level: { type: String, required: true },
-  religious_space_main_picture: { type: String, required: true },
-});
+export interface IContacts {
+  phone: string | number | undefined;
+  mobile: string | number | undefined;
+  email: string | undefined;
+}
 
-ReligiousCommunitySchema.path("religious_space_started_by").set(
+export interface IReligiousCommunity {
+  authorization: number;
+  community_google_api_localization: IGeoLocation;
+  community_address: ICommunityAddress;
+  community_type: string;
+  religious_space_year_foundation: number;
+  religious_space_leader_foundation: string;
+  religious_space_nation: string;
+  religious_space_pratical_languages: string;
+  religious_space_name: string;
+  religious_space_leader_name: string;
+  religious_space_position_name: string;
+  religious_space_started_by: string;
+  religious_space_name_date_started_by: Date | string;
+  leader_contacts: IContacts;
+  leader_ethnicity: string;
+  leader_sex_orientation: string;
+  leader_educational_level: string;
+  religious_space_main_picture: string;
+  createdAt: Date | string;
+}
+
+const ReligiousCommunitySchema = new Schema(
+  {
+    authorization: { type: Boolean, required: true },
+    community_google_api_localization: {
+      type: Object,
+      required: true,
+    },
+    community_address: { type: Object, required: true },
+    community_type: { type: String, required: true, enum: CommunityType },
+    religious_space_year_foundation: { type: Number, required: true },
+    religious_space_leader_foundation: { type: String, required: true },
+    religious_space_nation: {
+      type: String,
+      required: true,
+      enum: ReligiousSpaceNation,
+    },
+    religious_space_pratical_languages: {
+      type: String,
+      required: true,
+      enum: ReligiousSpacePraticalLanguages,
+    },
+    religious_space_name: { type: String, required: true },
+    religious_space_leader_name: { type: String, required: true },
+    religious_space_position_name: { type: String, required: true },
+    religious_space_started_by: { type: String, required: true },
+    religious_space_name_date_started_by: { type: Date, required: true },
+    leader_contacts: { type: Object, required: false },
+    leader_ethnicity: { type: String, required: true },
+    leader_sex_orientation: { type: String, required: true },
+    leader_educational_level: { type: String, required: true },
+    religious_space_main_picture: { type: String, required: true },
+  },
+  { timestamps: true }
+);
+
+ReligiousCommunitySchema.path("religious_space_name_date_started_by").set(
   (value: string | Date) => {
     if (typeof value === "string") {
-      return new Date(value);
+      return dayjs(value).toDate();
     }
     return value;
   }
 );
 
-interface IReligiousCommunityModel extends mongoose.Document {}
+ReligiousCommunitySchema.path("createdAt").set((value: string | Date) => {
+  if (typeof value === "string") {
+    return dayjs(value).toDate();
+  }
+  return value;
+});
+
+interface IReligiousCommunityModel
+  extends IReligiousCommunity,
+    mongoose.Document {}
 
 export const ReligiousCommunity = model<IReligiousCommunityModel>(
   "ReligiousCommunity",
