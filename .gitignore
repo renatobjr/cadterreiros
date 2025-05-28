@@ -8,6 +8,3 @@
 /api/src/mongo
 /api/src/mongo-test
 /api/src/db/data/
-
-# Confs
-/.vscode/
