@@ -19,7 +19,7 @@ services:
     ports:
       - "27018:27017"
     volumes:
-      - "/api/src/mongo-test:/data/db"
+      - "./api/src/mongo-test:/data/db"
     networks:
       - cadterreiros-network
     environment:
