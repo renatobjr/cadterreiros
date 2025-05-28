@@ -9,4 +9,5 @@
 /api/src/mongo-test
 /api/src/db/data/
 
-# Migrations
+# Confs
+/.vscode/
