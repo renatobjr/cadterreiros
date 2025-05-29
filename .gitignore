@@ -5,6 +5,6 @@
 /api/.env
 
 # Database
-/api/src/mongo
-/api/src/mongo-test
+/api/src/db/mongo
+/api/src/db/mongo-test
 /api/src/db/data/
