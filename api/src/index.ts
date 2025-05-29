@@ -4,13 +4,10 @@ import express, { Router } from "express";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import handleResponse from "@/api/middlewares/handleResponse";
-import { HttpStatusCode } from "@/api/enum/HttpStatusCode.enum";
 import religiousCommunitySeed from "@/api/db/religiousCommunity.seed";
-const health = Router();
-
-health.get("/health", (req, res) => {
-  return res.success(HttpStatusCode.OK, "OK");
-});
+import health from "@/api/routes/health";
+import ReligiousCommunityRoute from "@/api/routes/religiousCommunityRoutes";
+import "reflect-metadata";
 
 const api = express();
 api
@@ -19,9 +16,10 @@ api
   .use(morgan("dev"))
   .use(bodyParser.json())
   .use(handleResponse)
-  .use(health);
+  .use(health)
+  .use(ReligiousCommunityRoute);
 
-const API_PORT = process.env.API_PORT || 3001;
+const API_PORT = process.env.API_PORT || 3000;
 const MONGO_URL = process.env.MONGO_URL as string;
 
 mongoose

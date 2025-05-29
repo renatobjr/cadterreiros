@@ -1,11 +1,6 @@
 declare namespace Express {
-  type ErrorInfo = {
-    code?: string;
-    details: string;
-  };
-
+  import { ApiResponseType } from "../responsesTypes";
   interface Response {
-    success: (HttpStatusCode: number, data: T) => void;
-    error: (HttpStatusCode: number, error: ErrorInfo) => void;
+    apiResponse: ApiResponseType;
   }
 }
