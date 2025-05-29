@@ -6,6 +6,8 @@
     "paths": {
       "@/api/*": ["src/*"]
     },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
