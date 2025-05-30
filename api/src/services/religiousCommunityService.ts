@@ -2,10 +2,10 @@ import {
   IReligiousCommunity,
   ReligiousCommunity,
 } from "@/api/schemas/ReligiousCommunity";
-import { Response } from "../@types/responsesTypes";
+import { ApiResponseType } from "../@types/responsesTypes";
 
 export const religiousCommunityService = {
-  list: async (): Promise<Response<IReligiousCommunity[]>> => {
+  list: async (): Promise<ApiResponseType<IReligiousCommunity[]>> => {
     try {
       const religiousCommunities = await ReligiousCommunity.find();
 

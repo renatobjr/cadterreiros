@@ -1,6 +1,6 @@
 declare namespace Express {
-  import { ApiResponseType } from "../responsesTypes";
+  import { ResponseType } from "../responsesTypes";
   interface Response {
-    apiResponse: ApiResponseType;
+    apiResponse: ResponseType;
   }
 }

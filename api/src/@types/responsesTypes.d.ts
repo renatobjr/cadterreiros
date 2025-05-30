@@ -1,12 +1,12 @@
 import { HttpStatusCode } from "../enum/HttpStatusCode.enum";
 
-export type ApiResponseType<T> = (
+export type ResponseType<T> = (
   httpStatus: HttpStatusCode,
   response?: T,
   error?: T
 ) => void;
 
-export interface Response<T> {
+export interface ApiResponseType<T> {
   data?: T;
   error?: T;
   status: boolean;
