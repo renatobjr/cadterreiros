@@ -1,5 +1,6 @@
 # Node Modules
 /api/node_modules
+/web/node_modules
 
 #env
 /api/.env
