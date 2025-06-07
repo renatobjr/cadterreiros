@@ -4,10 +4,10 @@ import express, { Router } from "express";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import handleResponse from "@/api/middlewares/handleResponse";
-import religiousCommunitySeed from "@/api/db/religiousCommunity.seed";
 import health from "@/api/routes/health";
-import ReligiousCommunityRoute from "@/api/routes/religiousCommunityRoutes";
+import ReligiousCommunityRoute from "@/api/routes/religiousCommunity.routes";
 import "reflect-metadata";
+import initialDataSeed from "./db/initialData.seed";
 
 const api = express();
 api
@@ -35,6 +35,6 @@ mongoose
     console.log("[✔] MongoDB connected");
     api.listen(API_PORT, async () => {
       console.log(`[✔] API listening on port ${API_PORT}`);
-      await religiousCommunitySeed();
+      await initialDataSeed();
     });
   });

@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.1",
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",

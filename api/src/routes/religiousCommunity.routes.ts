@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { religiousCommunityController } from "@/api/controllers/ReligiousCommunityControllers";
+import { religiousCommunityController } from "@/api/controllers/religiousCommunity.controller";
 
 const religiousCommunityRoutes = Router();
 

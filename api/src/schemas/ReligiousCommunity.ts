@@ -1,5 +1,5 @@
 import type mongoose from "mongoose";
-import { model, Schema } from "mongoose";
+import { model, ObjectId, Schema } from "mongoose";
 import dayjs from "dayjs";
 
 enum CommunityType {
@@ -48,6 +48,17 @@ export interface IContacts {
   email: string | undefined;
 }
 
+export enum EReligiousSpaceStatus {
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+}
+
+export enum ECensusStep {
+  REVISION = "revision",
+  DISAPPROVED = "disapproved",
+  APPROVED = "approved",
+}
+
 export interface IReligiousCommunity {
   authorization: number;
   community_google_api_localization: IGeoLocation;
@@ -67,6 +78,9 @@ export interface IReligiousCommunity {
   leader_sex_orientation: string;
   leader_educational_level: string;
   religious_space_main_picture: string;
+  religious_space_status: EReligiousSpaceStatus;
+  censusStep: ECensusStep;
+  censusTaker: ObjectId;
   createdAt: Date | string;
 }
 
@@ -101,6 +115,17 @@ const ReligiousCommunitySchema = new Schema(
     leader_sex_orientation: { type: String, required: true },
     leader_educational_level: { type: String, required: true },
     religious_space_main_picture: { type: String, required: true },
+    religious_space_status: {
+      type: String,
+      required: true,
+      enum: EReligiousSpaceStatus,
+    },
+    censusStep: {
+      type: String,
+      required: true,
+      enum: ECensusStep,
+    },
+    censusTaker: { type: Schema.Types.ObjectId, required: true },
   },
   { timestamps: true }
 );

@@ -1,6 +1,6 @@
 import type { Handler } from "express";
 
-const handleResponse: Handler = (req, res, next) => {
+const HandleResponse: Handler = (req, res, next) => {
   res.apiResponse = <T>(httpStatus: number, response: T) => {
     res.status(httpStatus).send({
       response: response,
@@ -12,4 +12,4 @@ const handleResponse: Handler = (req, res, next) => {
   next();
 };
 
-export default handleResponse;
+export default HandleResponse;
