@@ -1,5 +1,5 @@
 import bcryptjs from "bcryptjs";
-import { getAddressFromLatLon } from "../configs/geocoder";
+import { getAddressFromLatLon } from "@/api/configs/geocoder";
 import {
   ECensusStep,
   EReligiousSpaceStatus,
@@ -9,8 +9,8 @@ import {
   ReligiousCommunityInitialData,
   UserInitialData,
 } from "./data/initialData";
-import { User } from "../schemas/User";
-import { UserEmailToInsert } from "./userEmailToInsert";
+import { User } from "@/api/schemas/User";
+import { UserEmailToInsert } from "./data/userEmailToInsert";
 import { ObjectId } from "mongoose";
 
 const initialDataSeed = async () => {
