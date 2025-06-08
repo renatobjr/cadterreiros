@@ -1,9 +1,9 @@
 module.exports = {
   apps: [
     {
-      name: "cadterreiros_api",
+      name: "cadterreiros_api_stg",
       script: "npm",
-      args: "run start",
+      args: "run start:stg",
       watch: true,
       env: {
         NODE_ENV: "production"
