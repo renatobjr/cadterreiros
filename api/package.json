@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "tsc -p tsconfig.json --outDir dist/",
-    "start:dev": "nodemon"
+    "build": "tsc -p tsconfig.json --module ESNext --target ES2020 --moduleResolution node --outDir dist/",
+    "start:dev": "nodemon",
+    "start:prod": "nodemon dist/index.js"
   },
   "nodemonConfig": {
     "watch": [

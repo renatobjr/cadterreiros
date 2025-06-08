@@ -8,4 +8,6 @@
 # Database
 /api/src/db/mongo
 /api/src/db/mongo-test
-/api/src/db/data/
+
+# Dist
+/api/dist
