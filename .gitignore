@@ -9,5 +9,9 @@
 /api/src/db/mongo
 /api/src/db/mongo-test
 
+
+# IMG
+/api/uploads
+
 # Dist
 /api/dist

@@ -12,6 +12,9 @@ import {
 import { User } from "@/api/schemas/User";
 import { UserEmailToInsert } from "./data/userEmailToInsert";
 import { ObjectId } from "mongoose";
+import fs from "fs";
+import path from "path";
+import { randomUUID } from "crypto";
 
 const initialDataSeed = async () => {
   const hasUserData = await User.countDocuments();
@@ -35,14 +38,12 @@ const initialDataSeed = async () => {
       const fetchIdFromEmail = await User.findOne({
         email: UserEmailToInsert[index].email,
       }).select("_id");
-
       try {
         if (community.community_google_api_localization) {
           const googleAddressFromLatLon = await getAddressFromLatLon(
             community.community_google_api_localization.lat,
             community.community_google_api_localization.long
           );
-
           if (googleAddressFromLatLon) {
             community.community_address = {
               fullAddress: googleAddressFromLatLon.fullAddress,
@@ -55,10 +56,34 @@ const initialDataSeed = async () => {
             };
           }
         }
-
         community.religious_space_status = EReligiousSpaceStatus.ACTIVE;
         community.censusStep = ECensusStep.APPROVED;
         community.censusTaker = fetchIdFromEmail?._id as ObjectId;
+
+        const mappedFilesPath = path.join(
+          __dirname,
+          "mapped_files",
+          community?.religious_space_main_picture as string
+        );
+
+        const destinationPath = path.join(
+          __dirname,
+          "../../uploads/religiousCommunities"
+        );
+
+        let filename = undefined;
+
+        if (fs.existsSync(mappedFilesPath)) {
+          const extension = path.extname(mappedFilesPath);
+          filename = `${randomUUID()}${extension}`;
+
+          fs.copyFileSync(
+            mappedFilesPath,
+            path.join(destinationPath, filename)
+          );
+        }
+
+        community.religious_space_main_picture = filename;
 
         await ReligiousCommunity.create(community);
       } catch (error) {

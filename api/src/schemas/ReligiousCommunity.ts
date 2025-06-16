@@ -12,7 +12,7 @@ enum ReligiousSpaceNation {
   EKITI_EFONO = "ekiti efon",
   JEJE = "jeje",
   KETU = "ketu",
-  nagô = "nagô",
+  NAGO = "nagô",
   QUIMBANDA = "quimbanda",
   TAMBOR_DE_MINA = "tambor de mina",
   UMBANDA = "umbanda",
@@ -43,9 +43,9 @@ export interface IGeoLocation {
 }
 
 export interface IContacts {
-  phone: string | number | undefined;
-  mobile: string | number | undefined;
-  email: string | undefined;
+  phone?: string | number | undefined;
+  mobile?: string | number | undefined;
+  email?: string | undefined;
 }
 
 export enum EReligiousSpaceStatus {
@@ -79,6 +79,7 @@ export interface IReligiousCommunity {
   leader_educational_level: string;
   religious_space_main_picture: string;
   religious_space_status: EReligiousSpaceStatus;
+  bio?: string | undefined;
   censusStep: ECensusStep;
   censusTaker: ObjectId;
   createdAt: Date | string;
@@ -114,12 +115,13 @@ const ReligiousCommunitySchema = new Schema(
     leader_ethnicity: { type: String, required: true },
     leader_sex_orientation: { type: String, required: true },
     leader_educational_level: { type: String, required: true },
-    religious_space_main_picture: { type: String, required: true },
+    religious_space_main_picture: { type: String, required: false },
     religious_space_status: {
       type: String,
       required: true,
       enum: EReligiousSpaceStatus,
     },
+    bio: { type: String, required: false },
     censusStep: {
       type: String,
       required: true,

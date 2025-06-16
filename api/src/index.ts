@@ -1,23 +1,47 @@
-import "@/api/configs/dotenv";
-import mongoose from "mongoose";
-import express, { Router } from "express";
-import morgan from "morgan";
-import bodyParser from "body-parser";
-import handleResponse from "@/api/middlewares/handleResponse";
-import health from "@/api/routes/health";
-import ReligiousCommunityRoute from "@/api/routes/religiousCommunity.routes";
 import "reflect-metadata";
+import "@/api/configs/dotenv";
+import bodyParser from "body-parser";
+import cors from "cors";
+import express from "express";
+import handleResponse from "@/api/middlewares/handleResponse";
+import health from "@/api/routes/health.routes";
 import initialDataSeed from "./db/initialData.seed";
+import mongoose from "mongoose";
+import morgan from "morgan";
+import religiousCommunityRoutes from "@/api/routes/religiousCommunity.routes";
+import multer from "multer";
+import path from "path";
 
 const api = express();
+
 api
+  .use(cors())
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
   .use(morgan("dev"))
-  .use(bodyParser.json())
+  .use(
+    bodyParser.json({
+      limit: "50mb",
+    })
+  )
+  .use(
+    bodyParser.urlencoded({
+      limit: "50mb",
+      extended: true,
+    })
+  )
+  .use(
+    multer({
+      dest: path.join(__dirname, "../uploads/religiousCommunities"),
+      limits: {
+        fieldSize: 1024 * 100,
+      },
+    }).any()
+  )
+  .use(express.static(path.join(__dirname, "../uploads")))
   .use(handleResponse)
   .use(health)
-  .use(ReligiousCommunityRoute);
+  .use(religiousCommunityRoutes);
 
 const API_PORT = process.env.API_PORT || 3000;
 const MONGO_URL = process.env.MONGO_URL as string;
