@@ -33,7 +33,7 @@ const initialDataSeed = async () => {
     }
   }
 
-  if (hasReligiousData !== 0) {
+  if (hasReligiousData === 0) {
     for (const [index, community] of ReligiousCommunityInitialData.entries()) {
       const fetchIdFromEmail = await User.findOne({
         email: UserEmailToInsert[index].email,
