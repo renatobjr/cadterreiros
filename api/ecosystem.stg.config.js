@@ -3,8 +3,8 @@ module.exports = {
     {
       name: "cadterreiros_api_stg",
       script: "npm",
-      args: "run start:stg",
-      watch: true,
+      args: "run start:stg:pm2",
+      watch: false,
     }
   ]
 };
