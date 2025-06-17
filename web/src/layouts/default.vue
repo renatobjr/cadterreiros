@@ -1,11 +1,9 @@
 <template>
-  <v-main>
-    <router-view />
-  </v-main>
-
-  <AppFooter />
+  <v-app>
+    <cad-nav />
+    <v-main>
+      <slot />
+    </v-main>
+    <cad-footer />
+  </v-app>
 </template>
-
-<script setup>
-  //
-</script>

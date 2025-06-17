@@ -8,8 +8,19 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AppFooter: typeof import('./src/components/AppFooter.vue')['default']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    CadChip: typeof import('./src/components/common/CadChip.vue')['default']
+    CadCommunity: typeof import('./src/components/common/CadCommunity.vue')['default']
+    CadEmphasis: typeof import('./src/components/common/CadEmphasis.vue')['default']
+    CadFooter: typeof import('./src/components/common/CadFooter.vue')['default']
+    CadGlobalLoader: typeof import('./src/components/common/CadGlobalLoader.vue')['default']
+    CadGoogleMaps: typeof import('./src/components/CadGoogleMaps.vue')['default']
+    CadGridFAQ: typeof import('./src/components/CadGridFAQ.vue')['default']
+    CadHero: typeof import('./src/components/CadHero.vue')['default']
+    CadMapNumbers: typeof import('./src/components/CadMapNumbers.vue')['default']
+    CadNav: typeof import('./src/components/common/CadNav.vue')['default']
+    CadShare: typeof import('./src/components/common/CadShare.vue')['default']
+    CadShowcase: typeof import('./src/components/CadShowcase.vue')['default']
+    CadUnderDevel: typeof import('./src/components/common/CadUnderDevel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

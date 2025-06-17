@@ -4,6 +4,7 @@
 
 #env
 /api/.env
+/web/.env
 
 # Database
 /api/src/db/mongo

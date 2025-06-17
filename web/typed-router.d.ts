@@ -19,5 +19,13 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
+    '/aboutProject': RouteRecordInfo<'/aboutProject', '/aboutProject', Record<never, never>, Record<never, never>>,
+    '/community': RouteRecordInfo<'/community', '/community', Record<never, never>, Record<never, never>>,
+    '/communityRegister': RouteRecordInfo<'/communityRegister', '/communityRegister', Record<never, never>, Record<never, never>>,
+    '/gridFAQ/aboutCCIAO': RouteRecordInfo<'/gridFAQ/aboutCCIAO', '/gridFAQ/aboutCCIAO', Record<never, never>, Record<never, never>>,
+    '/gridFAQ/gridFAQLanguages': RouteRecordInfo<'/gridFAQ/gridFAQLanguages', '/gridFAQ/gridFAQLanguages', Record<never, never>, Record<never, never>>,
+    '/gridFAQ/gridFAQNations': RouteRecordInfo<'/gridFAQ/gridFAQNations', '/gridFAQ/gridFAQNations', Record<never, never>, Record<never, never>>,
+    '/gridFAQ/gridFAQTraditionalCommunities': RouteRecordInfo<'/gridFAQ/gridFAQTraditionalCommunities', '/gridFAQ/gridFAQTraditionalCommunities', Record<never, never>, Record<never, never>>,
+    '/search': RouteRecordInfo<'/search', '/search', Record<never, never>, Record<never, never>>,
   }
 }

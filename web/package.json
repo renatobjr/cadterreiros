@@ -12,7 +12,10 @@
   "dependencies": {
     "@fontsource/roboto": "5.2.5",
     "@mdi/font": "7.4.47",
+    "axios": "^1.9.0",
+    "dayjs": "^1.11.13",
     "vue": "^3.5.13",
+    "vue3-google-map": "^0.22.0",
     "vuetify": "^3.8.1"
   },
   "devDependencies": {
