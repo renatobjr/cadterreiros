@@ -12,7 +12,7 @@ export const usersController = {
     }
 
     res.apiResponse<IUser[]>(HttpStatusCode.OK, {
-      data: response.data,
+      data: response.results,
       status: response.status,
     });
   },

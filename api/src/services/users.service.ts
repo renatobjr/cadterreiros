@@ -7,12 +7,12 @@ export const usersService = {
       const users = await User.find();
 
       return {
-        data: users,
+        results: users,
         status: true,
       };
     } catch (error: any) {
       return {
-        data: error,
+        results: error,
         status: true,
       };
     }
