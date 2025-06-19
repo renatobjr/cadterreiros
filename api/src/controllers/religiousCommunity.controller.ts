@@ -9,18 +9,23 @@ import { ReligiousCommunitiesGetByIdDTO } from "../dtos/religiousCommunitiesDTOS
 
 export const religiousCommunityController = {
   list: async (req: Request, res: Response): Promise<void> => {
-    const response = await religiousCommunityService.list();
+    try {
+      const queryParams: any = req.query;
+      const response = await religiousCommunityService.list(queryParams);
 
-    if (!response.status) {
-      res.apiResponse(HttpStatusCode.BAD_REQUEST, response.error);
+      res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
+        results: plainToInstance(
+          ReligiousCommunitiesListDTO,
+          response.results,
+          {
+            excludeExtraneousValues: true,
+          }
+        ),
+        status: response.status,
+      });
+    } catch (error) {
+      res.apiResponse(HttpStatusCode.BAD_REQUEST, error);
     }
-
-    res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
-      results: plainToInstance(ReligiousCommunitiesListDTO, response.results, {
-        excludeExtraneousValues: true,
-      }),
-      status: response.status,
-    });
   },
   getRamdom: async (req: Request, res: Response): Promise<void> => {
     const response = await religiousCommunityService.getRamdom();

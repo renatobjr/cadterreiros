@@ -60,5 +60,16 @@ const goToCommunity = (slug, id) => {
         </v-card>
       </v-col>
     </v-row>
+    <div class="d-flex justify-center mt-12">
+      <v-btn
+        class="bg-persimmon text-white"
+        rounded="lg"
+        size="large"
+        text="Buscar outros Terreiros"
+        variant="outlined"
+        prepend-icon="mdi-magnify"
+        @click="router.push({ name: baseRoute.search })"
+      />
+    </div>
   </v-container>
 </template>

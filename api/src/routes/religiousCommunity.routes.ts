@@ -3,7 +3,7 @@ import { religiousCommunityController } from "@/api/controllers/religiousCommuni
 
 const religiousCommunityRoutes = Router();
 
-religiousCommunityRoutes.get("/", religiousCommunityController.list);
+religiousCommunityRoutes.get("/list", religiousCommunityController.list);
 religiousCommunityRoutes.get("/ramdom", religiousCommunityController.getRamdom);
 religiousCommunityRoutes.get(
   "/maping",
