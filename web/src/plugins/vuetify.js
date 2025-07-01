@@ -8,7 +8,7 @@ const CadterreirosTheme = {
   colors: {
     background: 'f5f5f5',
     //basics
-    red: 'E11E17',
+    red: '#E11E17',
     firebrick: '#BD1722',
     sealbronw: '#4A280B',
     persimmon: '#E85C0D',

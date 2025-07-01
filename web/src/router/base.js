@@ -10,15 +10,15 @@ export const baseRoute = {
   aboutCCIAO: 'AboutCCIAO',
 }
 
-const Index = () => import('@/pages/index.vue')
-const AboutProject = () => import('@/pages/aboutProject.vue')
-const GridFAQTraditionalCommunities = () => import('@/pages/gridFAQ/gridFAQTraditionalCommunities.vue')
-const GridFAQLanguages = () => import('@/pages/gridFAQ/gridFAQLanguages.vue')
-const GridFAQNations = () => import('@/pages/gridFAQ/gridFAQNations.vue')
-const Community = () => import('@/pages/community.vue')
-const Search = () => import('@/pages/search.vue')
-const CommunityRegister = () => import('@/pages/communityRegister.vue')
-const AboutCCIAO = () => import('@/pages/gridFAQ/aboutCCIAO.vue')
+const Index = () => import('@/pages/Index.vue')
+const AboutProject = () => import('@/pages/AboutProject.vue')
+const GridFAQTraditionalCommunities = () => import('@/pages/gridFAQ/GridFAQTraditionalCommunities.vue')
+const GridFAQLanguages = () => import('@/pages/gridFAQ/GridFAQLanguages.vue')
+const GridFAQNations = () => import('@/pages/gridFAQ/GridFAQNations.vue')
+const Community = () => import('@/pages/Community.vue')
+const Search = () => import('@/pages/Search.vue')
+const CommunityRegister = () => import('@/pages/CommunityRegister.vue')
+const AboutCCIAO = () => import('@/pages/gridFAQ/AboutCCIAO.vue')
 
 export default [
   {

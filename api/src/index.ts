@@ -8,6 +8,7 @@ import health from "@/api/routes/health.routes";
 import initialDataSeed from "./db/initialData.seed";
 import mongoose from "mongoose";
 import morgan from "morgan";
+import authRoutes from "@/api/routes/auth.routes";
 import religiousCommunityRoutes from "@/api/routes/religiousCommunity.routes";
 import multer from "multer";
 import path from "path";
@@ -40,6 +41,7 @@ api
   )
   .use(express.static(path.join(__dirname, "../uploads")))
   .use(handleResponse)
+  .use(authRoutes)
   .use(health)
   .use(religiousCommunityRoutes);
 

@@ -4,6 +4,10 @@ import { baseRoute } from "@/router/base";
 
 const links = [
   {
+    title: "Inicio",
+    router: baseRoute.index,
+  },
+  {
     title: "Buscar um Terreiro",
     router: baseRoute.search,
   },
@@ -19,7 +23,7 @@ const links = [
 </script>
 
 <template>
-  <v-app-bar class="elevation-2" height="82">
+  <v-app-bar elevation="1" height="82">
     <v-container
       class="mx-auto d-flex align-center justify-space-between"
       max-width="100%"

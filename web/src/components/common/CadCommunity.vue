@@ -25,7 +25,7 @@ const fileUrl = (filename) => {
     <v-card
       class="d-flex flex-column h-100 pa-4 rounded-lg"
       color="grey-lighten-5"
-      elevation="2"
+      elevation="0"
     >
       <div class="d-flex flex-column justify-space-between">
         <v-card-title class="text-h6 mb-2">

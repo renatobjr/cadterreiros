@@ -24,7 +24,7 @@ export const religiousCommunityService = {
 
       if (options.search) {
         const searchValue = options.search.trim();
-        const isYear = /^\d{4}$/.test(searchValue); // busca por ano de 4 dígitos
+        const isYear = /^\d{4}$/.test(searchValue);
 
         const orConditions: SearchCondition[] = [
           { religious_space_name: { $regex: searchValue, $options: "i" } },

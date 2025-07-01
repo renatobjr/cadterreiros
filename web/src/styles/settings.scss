@@ -19,7 +19,14 @@ $typoOptions: text-h1, text-sm-h1, text-md-h1, text-lg-h1, text-h2, text-sm-h2,
   }
 
   .cad-container {
-    margin-top: 10vh;
-    margin-bottom: 10vh;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+  }
+
+  .map {
+    width: 100%;
+    height: 600px;
+    border-radius: 12px;
+    overflow: hidden;
   }
 }

@@ -7,7 +7,7 @@ export type ResponseType<T> = (
 ) => void;
 
 export interface ApiResponseType<T> {
-  results?: T;
+  data?: T;
   error?: T;
   status: boolean;
 }

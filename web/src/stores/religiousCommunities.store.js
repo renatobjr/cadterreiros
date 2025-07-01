@@ -9,6 +9,43 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
   let ramdomReligiousCommunityList = ref([]);
   let dataFromMapping = ref([]);
 
+  let religiousCommunity = ref({
+    id: undefined,
+    // authorization: true,
+    // communityGoogleApiLocalization: {
+    //   lat: -7.11532,
+    //   long: -34.861
+    // },
+    // communityAddress: {
+    //   fullAddress: undefined,
+    //   street: undefined,
+    //   number: undefined,
+    //   neighborhood: undefined,
+    //   city: undefined,
+    //   state: undefined,
+    //   zipcode: undefined,
+    // },
+    // communityType: undefined,
+    // religiousSpaceYearFoundation: undefined,
+    // religiousSpaceLeaderFoundation: undefined,
+    // religiousSpaceNation: undefined,
+    // religiousSpacePraticalLanguages: undefined,
+    // religiousSpaceName: undefined,
+    // religiousSpaceLeaderName: undefined,
+    // religiousSpacePositionName: undefined,
+    // religiousSpaceStartedBy: undefined,
+    // religiousSpaceNameDateStartedBy: undefined,
+    leaderContacts: {
+      phone: undefined,
+      mobile: undefined,
+      email: undefined
+    },
+    leaderEthnicity: undefined,
+    leaderSexOrientation: undefined,
+    leaderEducationalLevel: undefined,
+    religiousSpaceMainPicture: undefined,
+  });
+
   async function list(options) {
     communityList.value = await religiousCommunityService.list(options);
   }
@@ -28,6 +65,8 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
         if (sortBy.length) {
           const sortKey = sortBy[0].key;
           const sortOrder = sortBy[0].order;
+
+          console.log(sortKey, sortOrder);
 
           communityList.value.sort((a, b) => {
             const aValue = a[sortKey];
@@ -63,7 +102,19 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
     community.value = await religiousCommunityService.getCommunityById(id);
   }
 
-  return { community, communityList, totalReligiousCommunities, ramdomReligiousCommunityList, dataFromMapping, list, fetchData, getRamdom, getDataFromMaping, getCommunityId };
+  return {
+    community,
+    communityList,
+    totalReligiousCommunities,
+    ramdomReligiousCommunityList,
+    dataFromMapping,
+    religiousCommunity,
+    list,
+    fetchData,
+    getRamdom,
+    getDataFromMaping,
+    getCommunityId
+  };
 })
 
 if (import.meta.hot) {

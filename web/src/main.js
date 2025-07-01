@@ -17,6 +17,9 @@ import CadShowcase from './components/CadShowcase.vue'
 import CadMapNumbers from './components/CadMapNumbers.vue'
 
 import { createApp } from 'vue'
+import { createVuetify } from 'vuetify'
+
+import { pt } from 'vuetify/locale'
 
 const app = createApp(App)
 
@@ -34,6 +37,18 @@ app.component('CadHero', CadHero)
 app.component('CadShowcase', CadShowcase)
 app.component('CadMapNumbers', CadMapNumbers)
 
+const vuetify = createVuetify({
+  locale: {
+    locale: 'pt',
+    fallback: 'en',
+    messages: {
+      pt,
+    },
+  },
+})
+
+
+app.use(vuetify)
 
 registerPlugins(app)
 
