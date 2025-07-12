@@ -93,6 +93,7 @@ const initialDataSeed = async () => {
       }
     }
   }
+  console.log("[✔] Initial Data has been seeded.");
 };
 
 export default initialDataSeed;
