@@ -5,7 +5,7 @@ import {
   IContacts,
   IGeoLocation,
 } from "@/api/schemas/ReligiousCommunity";
-import { Expose, Transform, Type } from "class-transformer";
+import { Expose, Transform } from "class-transformer";
 import { ObjectId } from "mongodb";
 
 export class ReligiousCommunitiesGetByAllPropsDTO {
@@ -26,7 +26,8 @@ export class ReligiousCommunitiesGetByAllPropsDTO {
   communityType!: string;
 
   @Expose()
-  religiousSpaceYearFoundation!: number;
+  @Transform((value) => value.obj.religiousSpaceYearFoundation.toString())
+  religiousSpaceYearFoundation!: string;
 
   @Expose()
   religiousSpaceLeaderFoundation!: string;
