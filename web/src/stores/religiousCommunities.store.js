@@ -10,39 +10,40 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
   let dataFromMapping = ref([]);
 
   let religiousCommunity = ref({
-    id: undefined,
-    // authorization: true,
-    // communityGoogleApiLocalization: {
-    //   lat: -7.11532,
-    //   long: -34.861
-    // },
-    // communityAddress: {
-    //   fullAddress: undefined,
-    //   street: undefined,
-    //   number: undefined,
-    //   neighborhood: undefined,
-    //   city: undefined,
-    //   state: undefined,
-    //   zipcode: undefined,
-    // },
-    // communityType: undefined,
-    // religiousSpaceYearFoundation: undefined,
-    // religiousSpaceLeaderFoundation: undefined,
-    // religiousSpaceNation: undefined,
-    // religiousSpacePraticalLanguages: undefined,
-    // religiousSpaceName: undefined,
-    // religiousSpaceLeaderName: undefined,
-    // religiousSpacePositionName: undefined,
-    // religiousSpaceStartedBy: undefined,
-    // religiousSpaceNameDateStartedBy: undefined,
+    authorization: undefined,
+    communityGoogleApiLocalization: {
+      lat: 0,
+      long: 0,
+    },
+    communityAddress: {
+      fullAddress: undefined,
+      street: undefined,
+      number: undefined,
+      neighborhood: undefined,
+      city: undefined,
+      state: undefined,
+      zipcode: undefined,
+    },
+    communityType: undefined,
+    religiousSpaceYearFoundation: 0,
+    religiousSpaceLeaderFoundation: undefined,
+    religiousSpaceNation: undefined,
+    religiousSpacePraticalLanguages: undefined,
+    religiousSpaceName: undefined,
+    religiousSpaceLeaderName: undefined,
+    religiousSpacePositionName: undefined,
+    religiousSpaceStartedBy: undefined,
+    religiousSpaceNameDateStartedBy: undefined,
     leaderContacts: {
       phone: undefined,
       mobile: undefined,
-      email: undefined
+      email: undefined,
     },
     leaderEthnicity: undefined,
-    leaderSexOrientation: undefined,
+    leaderGender: undefined,
     leaderEducationalLevel: undefined,
+    leaderSocialProgram: undefined,
+    leaderSufferedRacism: false,
     religiousSpaceMainPicture: undefined,
   });
 
@@ -88,8 +89,8 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
     }
   }
 
-  async function getRamdom() {
-    ramdomReligiousCommunityList.value = await religiousCommunityService.getRamdom();
+  async function getRandom() {
+    ramdomReligiousCommunityList.value = await religiousCommunityService.getRandom();
   }
 
   async function getDataFromMaping() {
@@ -109,7 +110,7 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
     religiousCommunity,
     list,
     fetchData,
-    getRamdom,
+    getRandom,
     getDataFromMaping,
     getCommunityId
   };

@@ -10,6 +10,110 @@ import { ReligiousCommunitiesGetByUserIdDTO } from "../dtos/religiousCommunities
 import { ReligiousCommunitiesGetByAllPropsDTO } from "../dtos/religiousCommunitiesDTOS/religiousCommunitiesGetAllProps.DTO";
 
 export const religiousCommunityController = {
+  list: async (req: Request, res: Response): Promise<void> => {
+    const queryParams: any = req.query;
+    const response = await religiousCommunityService.list(queryParams);
+
+    res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
+      error: response?.error,
+      data: plainToInstance(ReligiousCommunitiesListDTO, response.data, {
+        excludeExtraneousValues: true,
+      }),
+      status: response.status,
+    });
+  },
+
+  getRandom: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getRandom();
+    if (!response.status) {
+      res.apiResponse(HttpStatusCode.BAD_REQUEST, response.error);
+    }
+    res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
+      error: response?.error,
+      data: plainToInstance(ReligiousCommunitiesGetRamdomDTO, response.data, {
+        excludeExtraneousValues: true,
+      }),
+      status: response.status,
+    });
+  },
+
+  getDataFromMaping: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getDataFromMaping();
+    if (!response.status) {
+      res.apiResponse(HttpStatusCode.BAD_REQUEST, response.error);
+    }
+    res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
+      error: response?.error,
+      results: response.data,
+      status: response.status,
+    });
+  },
+
+  getPublicCommunityById: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const { id } = req.params;
+    const response = await religiousCommunityService.getCommunityById(id);
+
+    res.apiResponse<IReligiousCommunity>(HttpStatusCode.OK, {
+      error: response?.error,
+      data: plainToInstance(ReligiousCommunitiesGetByIdDTO, response.data, {
+        excludeExtraneousValues: true,
+      }),
+      status: response.status,
+    });
+  },
+
+  getCountReligiousCommunitiesByUserId: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response =
+      await religiousCommunityService.countReligiousCommunitiesByUserId(
+        req.user.id
+      );
+    return res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response,
+      status: response.status,
+    });
+  },
+
+  getCommunityById: async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const response = await religiousCommunityService.getCommunityById(id);
+
+    res.apiResponse<IReligiousCommunity>(HttpStatusCode.OK, {
+      error: response?.error,
+      data: plainToInstance(
+        ReligiousCommunitiesGetByAllPropsDTO,
+        response.data,
+        {
+          excludeExtraneousValues: true,
+        }
+      ),
+      status: response.status,
+    });
+  },
+
+  getReligiousCommunitiesByUserId: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response =
+      await religiousCommunityService.getReligiousCommunitiesByUserId(
+        req.user.id
+      );
+    return res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: plainToInstance(ReligiousCommunitiesGetByUserIdDTO, response.data, {
+        excludeExtraneousValues: true,
+      }),
+      status: response.status,
+    });
+  },
+
   createReligiousCommunity: async (
     req: Request,
     res: Response
@@ -44,93 +148,6 @@ export const religiousCommunityController = {
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
       data: response.data,
-      status: response.status,
-    });
-  },
-
-  list: async (req: Request, res: Response): Promise<void> => {
-    try {
-      const queryParams: any = req.query;
-      const response = await religiousCommunityService.list(queryParams);
-      res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
-        error: response?.error,
-        data: plainToInstance(ReligiousCommunitiesListDTO, response.data, {
-          excludeExtraneousValues: true,
-        }),
-        status: response.status,
-      });
-    } catch (error) {
-      res.apiResponse(HttpStatusCode.BAD_REQUEST, error);
-    }
-  },
-  getRamdom: async (req: Request, res: Response): Promise<void> => {
-    const response = await religiousCommunityService.getRamdom();
-    if (!response.status) {
-      res.apiResponse(HttpStatusCode.BAD_REQUEST, response.error);
-    }
-    res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
-      error: response?.error,
-      data: plainToInstance(ReligiousCommunitiesGetRamdomDTO, response.data, {
-        excludeExtraneousValues: true,
-      }),
-      status: response.status,
-    });
-  },
-  getDataFromMaping: async (req: Request, res: Response): Promise<void> => {
-    const response = await religiousCommunityService.getDataFromMaping();
-    if (!response.status) {
-      res.apiResponse(HttpStatusCode.BAD_REQUEST, response.error);
-    }
-    res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
-      error: response?.error,
-      results: response.data,
-      status: response.status,
-    });
-  },
-  getCommunityById: async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
-    const response = await religiousCommunityService.getCommunityById(id);
-
-    res.apiResponse<IReligiousCommunity>(HttpStatusCode.OK, {
-      error: response?.error,
-      data: plainToInstance(
-        ReligiousCommunitiesGetByAllPropsDTO,
-        response.data,
-        {
-          excludeExtraneousValues: true,
-        }
-      ),
-      status: response.status,
-    });
-  },
-  getCountReligiousCommunitiesByUserId: async (
-    req: Request,
-    res: Response
-  ): Promise<void> => {
-    const response =
-      await religiousCommunityService.countReligiousCommunitiesByUserId(
-        req.user.id
-      );
-    return res.apiResponse(HttpStatusCode.OK, {
-      error: response?.error,
-      data: response,
-      status: response.status,
-    });
-  },
-
-  getReligiousCommunitiesByUserId: async (
-    req: Request,
-    res: Response
-  ): Promise<void> => {
-    const response =
-      await religiousCommunityService.getReligiousCommunitiesByUserId(
-        req.user.id
-      );
-    return res.apiResponse(HttpStatusCode.OK, {
-      error: response?.error,
-      data: plainToInstance(ReligiousCommunitiesGetByUserIdDTO, response.data, {
-        excludeExtraneousValues: true,
-      }),
       status: response.status,
     });
   },

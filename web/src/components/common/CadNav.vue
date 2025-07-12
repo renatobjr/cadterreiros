@@ -11,14 +11,6 @@ const links = [
     title: "Buscar um Terreiro",
     router: baseRoute.search,
   },
-  {
-    title: "Cadastrar um terreiro",
-    router: baseRoute.communityRegister,
-  },
-  {
-    title: "Sobre a CCIAO",
-    router: baseRoute.aboutCCIAO,
-  },
 ];
 </script>
 
@@ -45,19 +37,13 @@ const links = [
           @click="$router.push({ name: link.router })"
           variant="text"
         ></v-btn>
-      </div>
-
-      <!-- <v-space></v-space>
-
-      <div id="login_btn">
         <v-btn
-          class="text-none"
-          color="red"
-          rounded="lg"
-          text="Login"
-          size="large"
-        />
-      </div> -->
+          class="justify-center"
+          key="login"
+          text="login"
+          variant="tonal"
+        ></v-btn>
+      </div>
     </v-container>
   </v-app-bar>
 </template>

@@ -1,38 +1,37 @@
 import api from "@/configs/api.config";
 
-const religiousCommunitiesURL = "religiousCommunities";
+const religiousCommunitiesURL = "religious-communities";
 
 export const religiousCommunityService = {
   list: async (options) => {
-    const response = await api.get(`${religiousCommunitiesURL}/list`, {
-      params: {
-        search: options
-      },
+    const response = await api.get(`${religiousCommunitiesURL}/public/list`, {
+      search: options,
     });
     if (response.status) {
-      return response.results;
+      return response.data;
     }
     return [];
   },
-  getRamdom: async () => {
-    const response = await api.get(`${religiousCommunitiesURL}/ramdom`);
+  getRandom: async () => {
+    const response = await api.get(`${religiousCommunitiesURL}/public/random`);
     if (response.status) {
-      return response.results;
+      return response.data;
     }
+
     return [];
   },
   getDataFromMaping: async () => {
-    const response = await api.get(`${religiousCommunitiesURL}/maping`);
+    const response = await api.get(`${religiousCommunitiesURL}/public/maping`);
 
     if (response.status) {
-      return response.results;
+      return response.data;
     }
     return [];
   },
   getCommunityById: async (id) => {
-    const response = await api.get(`${religiousCommunitiesURL}/${id}`);
+    const response = await api.get(`${religiousCommunitiesURL}/public/${id}`);
     if (response.status) {
-      return response.results;
+      return response.data;
     }
     return "";
   },

@@ -5,7 +5,7 @@ const religiousCommunitiesStore = useReligiousCommunitiesStore();
 
 onMounted(async () => {
   window.scrollTo(0, 0);
-  await religiousCommunitiesStore.getRamdom();
+  await religiousCommunitiesStore.getRandom();
   await religiousCommunitiesStore.getDataFromMaping();
 });
 </script>

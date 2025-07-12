@@ -82,27 +82,27 @@ export const religiousCommunityService = {
         const isYear = /^\d{4}$/.test(searchValue);
 
         const orConditions: SearchCondition[] = [
-          { religious_space_name: { $regex: searchValue, $options: "i" } },
+          { religiousSpaceName: { $regex: searchValue, $options: "i" } },
           {
-            "community_address.neighborhood": {
+            "communityAddress.neighborhood": {
               $regex: searchValue,
               $options: "i",
             },
           },
           {
-            "community_address.city": {
+            "communityAddress.city": {
               $regex: searchValue,
               $options: "i",
             },
           },
           {
-            religious_space_nation: {
+            religiousSpaceNation: {
               $regex: searchValue,
               $options: "i",
             },
           },
           {
-            community_type: {
+            communityType: {
               $regex: searchValue,
               $options: "i",
             },
@@ -111,7 +111,7 @@ export const religiousCommunityService = {
 
         if (isYear) {
           orConditions.push({
-            religious_space_year_foundation: parseInt(searchValue, 10),
+            religiousSpaceYearFoundation: parseInt(searchValue, 10),
           });
         }
 
@@ -119,6 +119,7 @@ export const religiousCommunityService = {
       }
 
       const religiousCommunities = await ReligiousCommunity.find(searchTerm);
+      console.log(searchTerm);
 
       return {
         data: religiousCommunities,
@@ -131,7 +132,7 @@ export const religiousCommunityService = {
       };
     }
   },
-  getRamdom: async (): Promise<ApiResponseType<IReligiousCommunity[]>> => {
+  getRandom: async (): Promise<ApiResponseType<IReligiousCommunity[]>> => {
     try {
       const getRamdomCommunities = await ReligiousCommunity.aggregate([
         { $sample: { size: 9 } },
@@ -142,6 +143,7 @@ export const religiousCommunityService = {
         status: true,
       };
     } catch (error: any) {
+      console.log(error);
       return {
         error: error,
         status: false,
@@ -162,7 +164,7 @@ export const religiousCommunityService = {
       const totalCities = await ReligiousCommunity.aggregate([
         {
           $group: {
-            _id: "$community_address.city",
+            _id: "$communityAddress.city",
           },
         },
         {
@@ -173,7 +175,7 @@ export const religiousCommunityService = {
       const totalNeighborhoods = await ReligiousCommunity.aggregate([
         {
           $group: {
-            _id: "$community_address.neighborhood",
+            _id: "$communityAddress.neighborhood",
           },
         },
         {

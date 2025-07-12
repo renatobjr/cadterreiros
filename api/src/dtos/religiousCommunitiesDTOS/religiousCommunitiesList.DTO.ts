@@ -6,9 +6,7 @@ export class ReligiousCommunitiesListDTO {
   id!: string;
 
   @Expose()
-  @Transform((value) =>
-    slugify(value.obj.religious_space_name, { lower: true })
-  )
+  @Transform((value) => slugify(value.obj.religiousSpaceName, { lower: true }))
   slugify!: string;
 
   @Expose()
