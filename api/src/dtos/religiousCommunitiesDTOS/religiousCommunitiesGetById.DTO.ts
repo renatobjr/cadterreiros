@@ -12,9 +12,9 @@ class LeaderContactDTO {
 }
 
 export class ReligiousCommunitiesGetByIdDTO {
-  @Expose({ name: "religious_space_name" })
+  @Expose()
   @Transform((value) => {
-    return value.obj.religious_space_name
+    return value.obj.religiousSpaceName
       .toLowerCase()
       .split(" ")
       .map((s: string) => s.charAt(0).toUpperCase() + s.substring(1))
@@ -23,27 +23,27 @@ export class ReligiousCommunitiesGetByIdDTO {
   religiousSpaceName!: string;
 
   @Expose()
-  @Transform((value) => value.obj.community_google_api_localization.lat)
+  @Transform((value) => value.obj.communityGoogleApiLocalization.lat)
   lat!: number;
 
   @Expose()
-  @Transform((value) => value.obj.community_google_api_localization.long)
+  @Transform((value) => value.obj.communityGoogleApiLocalization.long)
   long!: number;
 
-  @Expose({ name: "religious_space_year_foundation" })
+  @Expose()
   religiousSpaceYearFoundation!: number;
 
-  @Expose({ name: "community_type" })
+  @Expose()
   communityType!: number;
 
-  @Expose({ name: "religious_space_nation" })
+  @Expose()
   religiousSpaceNation!: string;
 
-  @Expose({ name: "leader_contacts" })
+  @Expose({ name: "leaderContacts" })
   @Type(() => LeaderContactDTO)
   leaderContacts!: LeaderContactDTO;
 
-  @Expose({ name: "religious_space_main_picture" })
+  @Expose()
   religiousSpaceMainPicture!: string;
 
   @Expose()

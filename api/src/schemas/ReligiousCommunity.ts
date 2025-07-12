@@ -1,5 +1,5 @@
 import type mongoose from "mongoose";
-import { model, ObjectId, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 import dayjs from "dayjs";
 
 enum CommunityType {
@@ -54,85 +54,91 @@ export enum EReligiousSpaceStatus {
 }
 
 export enum ECensusStep {
-  REVISION = "revision",
-  DISAPPROVED = "disapproved",
   APPROVED = "approved",
+  PENDING = "pending",
+  REJECTED = "rejected",
 }
 
 export interface IReligiousCommunity {
   authorization: number;
-  community_google_api_localization: IGeoLocation;
-  community_address: ICommunityAddress;
-  community_type: string;
-  religious_space_year_foundation: number;
-  religious_space_leader_foundation: string;
-  religious_space_nation: string;
-  religious_space_pratical_languages: string;
-  religious_space_name: string;
-  religious_space_leader_name: string;
-  religious_space_position_name: string;
-  religious_space_started_by: string;
-  religious_space_name_date_started_by: Date | string;
-  leader_contacts: IContacts;
-  leader_ethnicity: string;
-  leader_sex_orientation: string;
-  leader_educational_level: string;
-  religious_space_main_picture: string;
-  religious_space_status: EReligiousSpaceStatus;
+  communityGoogleApiLocalization: IGeoLocation;
+  communityAddress: ICommunityAddress;
+  communityType: string;
+  religiousSpaceYearFoundation: number;
+  religiousSpaceLeaderFoundation: string;
+  religiousSpaceNation: string;
+  religiousSpacePraticalLanguages: string;
+  religiousSpaceName: string;
+  religiousSpaceLeaderName: string;
+  religiousSpacePositionName: string;
+  religiousSpaceStartedBy: string;
+  religiousSpaceNameDateStartedBy: Date | string;
+  leaderContacts: IContacts;
+  leaderEthnicity: string;
+  leaderGender: string;
+  leaderEducationalLevel: string;
+  leaderSocialProgram: Object | null;
+  leaderSufferedRacism: boolean;
+  religiousSpaceMainPicture: string;
+  religiousSpaceStatus: EReligiousSpaceStatus;
   bio?: string | undefined;
   censusStep: ECensusStep;
-  censusTaker: ObjectId;
+  censusTaker: Types.ObjectId;
   createdAt: Date | string;
 }
 
 const ReligiousCommunitySchema = new Schema(
   {
     authorization: { type: Boolean, required: true },
-    community_google_api_localization: {
+    communityGoogleApiLocalization: {
       type: Object,
       required: true,
     },
-    community_address: { type: Object, required: true },
-    community_type: { type: String, required: true, enum: CommunityType },
-    religious_space_year_foundation: { type: Number, required: true },
-    religious_space_leader_foundation: { type: String, required: true },
-    religious_space_nation: {
+    communityAddress: { type: Object, required: true },
+    communityType: { type: String, required: true, enum: CommunityType },
+    religiousSpaceYearFoundation: { type: Number, required: true },
+    religiousSpaceLeaderFoundation: { type: String, required: true },
+    religiousSpaceNation: {
       type: String,
       required: true,
       enum: ReligiousSpaceNation,
     },
-    religious_space_pratical_languages: {
+    religiousSpacePraticalLanguages: {
       type: String,
       required: true,
       enum: ReligiousSpacePraticalLanguages,
     },
-    religious_space_name: { type: String, required: true },
-    religious_space_leader_name: { type: String, required: true },
-    religious_space_position_name: { type: String, required: true },
-    religious_space_started_by: { type: String, required: true },
-    religious_space_name_date_started_by: { type: Date, required: true },
-    leader_contacts: { type: Object, required: false },
-    leader_ethnicity: { type: String, required: true },
-    leader_sex_orientation: { type: String, required: true },
-    leader_educational_level: { type: String, required: true },
-    religious_space_main_picture: { type: String, required: false },
-    religious_space_status: {
+    religiousSpaceName: { type: String, required: true },
+    religiousSpaceLeaderName: { type: String, required: true },
+    religiousSpacePositionName: { type: String, required: true },
+    religiousSpaceStartedBy: { type: String, required: true },
+    religiousSpaceNameDateStartedBy: { type: Date, required: true },
+    leaderContacts: { type: Object, required: false },
+    leaderEthnicity: { type: String, required: true },
+    leaderGender: { type: String, required: true },
+    leaderEducationalLevel: { type: String, required: true },
+    leaderSocialProgram: { type: Object, required: false },
+    leaderSufferedRacism: { type: Boolean, required: true },
+    religiousSpaceMainPicture: { type: String, required: false },
+    religiousSpaceStatus: {
       type: String,
       required: true,
       enum: EReligiousSpaceStatus,
+      default: EReligiousSpaceStatus.ACTIVE,
     },
     bio: { type: String, required: false },
     censusStep: {
       type: String,
       required: true,
       enum: ECensusStep,
+      default: ECensusStep.PENDING,
     },
     censusTaker: { type: Schema.Types.ObjectId, required: true },
   },
   { timestamps: true }
 );
 
-ReligiousCommunitySchema.path("religious_space_name_date_started_by").set(
+ReligiousCommunitySchema.path("religiousSpaceNameDateStartedBy").set(
   (value: string | Date) => {
     if (typeof value === "string") {
       return dayjs(value).toDate();

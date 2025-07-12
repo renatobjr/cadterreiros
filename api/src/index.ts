@@ -4,19 +4,31 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
 import handleResponse from "@/api/middlewares/handleResponse";
-import health from "@/api/routes/health.routes";
 import initialDataSeed from "./db/initialData.seed";
 import mongoose from "mongoose";
 import morgan from "morgan";
-import authRoutes from "@/api/routes/auth.routes";
-import religiousCommunityRoutes from "@/api/routes/religiousCommunity.routes";
 import multer from "multer";
 import path from "path";
+
+import health from "@/api/routes/health.routes";
+import religiousCommunityRoutes from "@/api/routes/religiousCommunity.routes";
+import authPublicRoutes from "@/api/routes/auth.routes";
 
 const api = express();
 
 api
-  .use(cors())
+  .use(
+    cors({
+      allowedHeaders: [
+        "Origin",
+        "X-Requested-With",
+        "Content-Type",
+        "Accept",
+        "X-Access-Token",
+        "Authorization",
+      ],
+    })
+  )
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
   .use(morgan("dev"))
@@ -34,15 +46,12 @@ api
   .use(
     multer({
       dest: path.join(__dirname, "../uploads/religiousCommunities"),
-      limits: {
-        fieldSize: 1024 * 100,
-      },
     }).any()
   )
   .use(express.static(path.join(__dirname, "../uploads")))
   .use(handleResponse)
-  .use(authRoutes)
   .use(health)
+  .use(authPublicRoutes)
   .use(religiousCommunityRoutes);
 
 const API_PORT = process.env.API_PORT || 3000;

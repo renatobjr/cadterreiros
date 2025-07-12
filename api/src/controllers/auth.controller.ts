@@ -26,12 +26,17 @@ const login: Handler = async (req: Request, res: Response) => {
 
 const validateToken: Handler = async (req: Request, res: Response) => {
   try {
-    const token = req.headers?.authorization?.split(" ")[1] || "";
+    const reqToken =
+      (req.headers["x-access-token"] as string) || req.headers.authorization;
+
+    const token = reqToken?.split(" ")[1] || "";
 
     const response = await authService.validateToken(token);
     res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
-      data: response.data,
+      data: plainToInstance(AuthLoginDTO, response.data, {
+        excludeExtraneousValues: true,
+      }),
       status: response.status,
     });
   } catch (error) {

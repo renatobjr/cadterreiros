@@ -11,7 +11,7 @@ import {
 } from "./data/initialData";
 import { User } from "@/api/schemas/User";
 import { UserEmailToInsert } from "./data/userEmailToInsert";
-import { ObjectId } from "mongoose";
+import { ObjectId, Types } from "mongoose";
 import fs from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
@@ -39,13 +39,13 @@ const initialDataSeed = async () => {
         email: UserEmailToInsert[index].email,
       }).select("_id");
       try {
-        if (community.community_google_api_localization) {
+        if (community.communityGoogleApiLocalization) {
           const googleAddressFromLatLon = await getAddressFromLatLon(
-            community.community_google_api_localization.lat,
-            community.community_google_api_localization.long
+            community.communityGoogleApiLocalization.lat,
+            community.communityGoogleApiLocalization.long
           );
           if (googleAddressFromLatLon) {
-            community.community_address = {
+            community.communityAddress = {
               fullAddress: googleAddressFromLatLon.fullAddress,
               street: googleAddressFromLatLon.street,
               number: googleAddressFromLatLon.number,
@@ -56,14 +56,14 @@ const initialDataSeed = async () => {
             };
           }
         }
-        community.religious_space_status = EReligiousSpaceStatus.ACTIVE;
+        community.religiousSpaceStatus = EReligiousSpaceStatus.ACTIVE;
         community.censusStep = ECensusStep.APPROVED;
-        community.censusTaker = fetchIdFromEmail?._id as ObjectId;
+        community.censusTaker = fetchIdFromEmail?._id as Types.ObjectId;
 
         const mappedFilesPath = path.join(
           __dirname,
           "mapped_files",
-          community?.religious_space_main_picture as string
+          community?.religiousSpaceMainPicture as string
         );
 
         const destinationPath = path.join(
@@ -83,7 +83,7 @@ const initialDataSeed = async () => {
           );
         }
 
-        community.religious_space_main_picture = filename;
+        community.religiousSpaceMainPicture = filename;
 
         await ReligiousCommunity.create(community);
       } catch (error) {

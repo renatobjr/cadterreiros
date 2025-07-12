@@ -66,8 +66,6 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
           const sortKey = sortBy[0].key;
           const sortOrder = sortBy[0].order;
 
-          console.log(sortKey, sortOrder);
-
           communityList.value.sort((a, b) => {
             const aValue = a[sortKey];
             const bValue = b[sortKey];

@@ -1,14 +1,11 @@
 import { Router } from "express";
-import authController from "../controllers/auth.controller";
-
-const authRoutes = Router();
-
-authRoutes.post("/login", authController.login);
-authRoutes.post("/validate-token", authController.validateToken);
+import authController from "@/api/controllers/auth.controller";
 
 const router = Router();
-let BASE_URL = process.env.NODE_BASE_URL || "/api/v1";
+const basePath = process.env.NODE_BASE_URL || "/api/v1";
+const path = `${basePath}/auth`;
 
-router.use(`${BASE_URL}/auth`, authRoutes);
+router.post(`${path}/login`, authController.login);
+router.post(`${path}/validate-token`, authController.validateToken);
 
 export default router;

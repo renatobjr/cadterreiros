@@ -4,19 +4,29 @@ import tokenUtils from "../utils/token.utils";
 
 const isAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.headers.authorization) {
-      res.apiResponse<Error>(HttpStatusCode.UNAUTHORIZED, {
-        message: "Unauthorized",
-      });
+    const authToken =
+      (req.headers["x-access-token"] as string) || req.headers.authorization;
+    if (!authToken || !authToken.startsWith("Bearer ")) {
+      return res.apiResponse(HttpStatusCode.UNAUTHORIZED, "Unauthorized");
     }
 
-    let token = req.headers?.authorization?.split(" ")[1];
-
-    if (token) {
-      let decodedToken = tokenUtils.verify(token);
-      console.log(decodedToken);
+    const token = authToken.split(" ")[1];
+    if (!token) {
+      return res.apiResponse(HttpStatusCode.UNAUTHORIZED, "Missed token");
     }
+
+    let decodedToken;
+    try {
+      decodedToken = await tokenUtils.verify(token);
+    } catch (error) {
+      res.apiResponse(HttpStatusCode.UNAUTHORIZED, "Invalid token or expired");
+    }
+
+    req.user = decodedToken;
+    next();
   } catch (error) {
     res.apiResponse(HttpStatusCode.BAD_REQUEST, error);
   }
 };
+
+export default isAuth;

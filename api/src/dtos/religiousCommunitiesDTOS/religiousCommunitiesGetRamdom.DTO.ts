@@ -6,9 +6,9 @@ export class ReligiousCommunitiesGetRamdomDTO {
   @Transform((value) => value.obj._id)
   id!: string;
 
-  @Expose({ name: "religious_space_name" })
+  @Expose()
   @Transform((value) => {
-    return value.obj.religious_space_name
+    return value.obj.religiousSpaceName
       .toLowerCase()
       .split(" ")
       .map((s: string) => s.charAt(0).toUpperCase() + s.substring(1))
@@ -17,36 +17,34 @@ export class ReligiousCommunitiesGetRamdomDTO {
   religiousSpaceName!: string;
 
   @Expose()
-  @Transform((value) =>
-    slugify(value.obj.religious_space_name, { lower: true })
-  )
+  @Transform((value) => slugify(value.obj.religiousSpaceName, { lower: true }))
   slugify!: string;
 
-  @Expose({ name: "religious_space_year_foundation" })
+  @Expose()
   religiousSpaceYearFoundation!: number;
 
-  @Expose({ name: "religious_space_nation" })
+  @Expose()
   religiousSpaceNation!: string;
 
-  @Expose({ name: "community_address" })
+  @Expose()
   @Transform((value) => {
     const parts = [
-      value.obj.community_address.street,
-      value.obj.community_address.number,
-      value.obj.community_address.neighborhood,
-      value.obj.community_address.city,
-      value.obj.community_address.state,
-      value.obj.community_address.zipcode,
+      value.obj.communityAddress.street,
+      value.obj.communityAddress.number,
+      value.obj.communityAddress.neighborhood,
+      value.obj.communityAddress.city,
+      value.obj.communityAddress.state,
+      value.obj.communityAddress.zipcode,
     ];
     return parts.filter(Boolean).join(", ");
   })
   fullAddress!: string;
 
   @Expose()
-  @Transform((value) => value.obj.community_google_api_localization.lat)
+  @Transform((value) => value.obj.communityGoogleApiLocalization.lat)
   lat!: number;
 
   @Expose()
-  @Transform((value) => value.obj.community_google_api_localization.long)
+  @Transform((value) => value.obj.communityGoogleApiLocalization.long)
   long!: number;
 }

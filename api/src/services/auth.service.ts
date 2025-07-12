@@ -42,7 +42,7 @@ export const authService = {
   },
   validateToken: async (
     token: string
-  ): Promise<ApiResponseType<boolean | string>> => {
+  ): Promise<ApiResponseType<string | IUser>> => {
     try {
       const decodedToken = tokenUtils.verify(token);
 
@@ -62,6 +62,7 @@ export const authService = {
       }
 
       return {
+        data: user,
         status: true,
       };
     } catch (error: any) {

@@ -1,22 +1,41 @@
 import { Router } from "express";
 import { religiousCommunityController } from "@/api/controllers/religiousCommunity.controller";
-
-const religiousCommunityRoutes = Router();
-
-religiousCommunityRoutes.get("/list", religiousCommunityController.list);
-religiousCommunityRoutes.get("/ramdom", religiousCommunityController.getRamdom);
-religiousCommunityRoutes.get(
-  "/maping",
-  religiousCommunityController.getDataFromMaping
-);
-religiousCommunityRoutes.get(
-  "/:id",
-  religiousCommunityController.getCommunityById
-);
+import isAuth from "@/api/middlewares/isAuth";
+import { HttpStatusCode } from "../enum/HttpStatusCode.enum";
 
 const router = Router();
-let BASE_URL = process.env.NODE_BASE_URL || "/api/v1";
+const basePath = process.env.NODE_BASE_URL || "/api/v1";
+const path = `${basePath}/religious-communities`;
 
-router.use(`${BASE_URL}/religiousCommunities`, religiousCommunityRoutes);
+router.get(`${path}/list`, religiousCommunityController.list);
+router.get(`${path}/random`, religiousCommunityController.getRamdom);
+router.get(`${path}/mapping`, religiousCommunityController.getDataFromMaping);
+router.get(
+  `${path}/count-religious-communities-by-user-id`,
+  isAuth,
+  religiousCommunityController.getCountReligiousCommunitiesByUserId
+);
+router.get(
+  `${path}/religious-communities-by-user-id`,
+  isAuth,
+  religiousCommunityController.getReligiousCommunitiesByUserId
+);
+router.get(`${path}/:id`, religiousCommunityController.getCommunityById);
+
+router.post(
+  `${path}/upload-main-picture/:id`,
+  religiousCommunityController.postUploadMainPicture
+);
+router.post(
+  `${path}/create-religious-community`,
+  isAuth,
+  religiousCommunityController.createReligiousCommunity
+);
+
+router.put(
+  `${path}/update-religious-community/:id`,
+  isAuth,
+  religiousCommunityController.updateReligiousCommunity
+);
 
 export default router;

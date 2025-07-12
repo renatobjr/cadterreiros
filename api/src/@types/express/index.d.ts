@@ -3,4 +3,7 @@ declare namespace Express {
   interface Response {
     apiResponse: ResponseType;
   }
+  interface Request {
+    user?: any;
+  }
 }

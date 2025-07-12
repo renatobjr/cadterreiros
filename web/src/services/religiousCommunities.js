@@ -9,7 +9,6 @@ export const religiousCommunityService = {
         search: options
       },
     });
-    console.log(response);
     if (response.status) {
       return response.results;
     }

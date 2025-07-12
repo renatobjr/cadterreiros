@@ -12,33 +12,33 @@ export class ReligiousCommunitiesListDTO {
   slugify!: string;
 
   @Expose()
-  @Transform((value) => value.obj.community_google_api_localization.lat)
+  @Transform((value) => value.obj.communityGoogleApiLocalization.lat)
   lat!: number;
 
   @Expose()
-  @Transform((value) => value.obj.community_google_api_localization.long)
+  @Transform((value) => value.obj.communityGoogleApiLocalization.long)
   long!: number;
 
-  @Expose({ name: "community_type" })
+  @Expose()
   communityType!: string;
 
-  @Expose({ name: "religious_space_year_foundation" })
+  @Expose()
   religiousSpaceYearFoundation!: string;
 
-  @Expose({ name: "religious_space_nation" })
+  @Expose()
   religiousSpaceNation!: string;
 
-  @Expose({ name: "religious_space_pratical_languages" })
+  @Expose()
   religiousSpacePraticalLanguages!: string;
 
-  @Expose({ name: "religious_space_name" })
+  @Expose()
   religiousSpaceName!: string;
 
   @Expose()
-  @Transform((value) => value.obj.community_address.neighborhood)
+  @Transform((value) => value.obj.communityAddress.neighborhood)
   neighborhood!: string;
 
   @Expose()
-  @Transform((value) => value.obj.community_address.city)
+  @Transform((value) => value.obj.communityAddress.city)
   city!: string;
 }
