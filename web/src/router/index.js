@@ -1,14 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router/auto'
-import base from './base'
+import base, { baseRoute } from './base'
+import auth, { authRoute } from './auth'
+import { useAuthStore } from '@/stores/auth.store';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     ...base,
+    ...auth
   ],
   scrollBehavior(to, from, savedPosition) {
     return { top: 0, behavior: 'smooth' };
   }
+})
+
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore();
+  const { isAuth } = authStore;
+  if (!isAuth && to.meta.requiresAuth) {
+    const checkAuth = await authStore.checkAuth();
+
+    if (!checkAuth) return { name: baseRoute.login }
+  }
+
+  next();
 })
 
 router.onError((err, to) => {

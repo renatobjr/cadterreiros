@@ -1,16 +1,26 @@
-<script setup>
+<script lang="ts" setup>
 import { computed, onBeforeMount } from "vue";
-import Default from "./layouts/default.vue";
+import Base from "./layouts/Base.vue";
+import Dashboard from "./layouts/Dashboard.vue";
+import { RouteLocationNormalizedLoaded } from "vue-router";
 
-let route;
-
+let route: RouteLocationNormalizedLoaded;
 onBeforeMount(() => {
   route = useRoute();
 });
 
 const layout = computed(() => {
-  const layout = Default;
-  return layout;
+  console.log(route.meta);
+  const currentLayout = Base;
+  if (route.meta.layout === "authenticated") {
+    return Dashboard;
+  }
+
+  return currentLayout;
+});
+
+console.log({
+  layout,
 });
 </script>
 

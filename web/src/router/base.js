@@ -8,6 +8,7 @@ export const baseRoute = {
   search: 'search',
   communityRegister: 'communityRegister',
   aboutCCIAO: 'AboutCCIAO',
+  login: "Login"
 }
 
 const Index = () => import('@/pages/Index.vue')
@@ -19,6 +20,7 @@ const Community = () => import('@/pages/Community.vue')
 const Search = () => import('@/pages/Search.vue')
 const CommunityRegister = () => import('@/pages/CommunityRegister.vue')
 const AboutCCIAO = () => import('@/pages/gridFAQ/AboutCCIAO.vue')
+const Login = () => import('@/pages/Login.vue')
 
 export default [
   {
@@ -67,4 +69,15 @@ export default [
     name: baseRoute.aboutCCIAO,
     component: AboutCCIAO,
   },
-]
+  {
+    path: '/login',
+    name: baseRoute.login,
+    component: Login,
+  },
+].map(route => ({
+  ...route,
+  meta: {
+    layout: 'base',
+    requiresAuth: false
+  }
+}))

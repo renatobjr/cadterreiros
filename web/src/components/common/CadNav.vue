@@ -42,6 +42,7 @@ const links = [
           key="login"
           text="login"
           variant="tonal"
+          @click="$router.push({ name: baseRoute.login })"
         ></v-btn>
       </div>
     </v-container>
