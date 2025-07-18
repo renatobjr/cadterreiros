@@ -168,11 +168,12 @@ export const religiousCommunityController = {
   },
 
   assignOwner: async (req: Request, res: Response): Promise<void> => {
-    const { communityId, userId } = req.body;
+    const { communityId, userId, keepStatus } = req.body;
 
     const response = await religiousCommunityService.assignOwner(
       communityId,
-      userId
+      userId,
+      keepStatus
     );
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
@@ -200,6 +201,29 @@ export const religiousCommunityController = {
     const response = await religiousCommunityService.requestCorrections(
       communityId,
       userId,
+      rejectedReason
+    );
+    return res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  approveCensus: async (req: Request, res: Response): Promise<void> => {
+    const { communityId } = req.body;
+    const response = await religiousCommunityService.approveCensus(communityId);
+    return res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  rejectCensus: async (req: Request, res: Response): Promise<void> => {
+    const { communityId, rejectedReason } = req.body;
+    const response = await religiousCommunityService.rejectCensus(
+      communityId,
       rejectedReason
     );
     return res.apiResponse(HttpStatusCode.OK, {

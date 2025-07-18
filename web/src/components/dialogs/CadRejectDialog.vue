@@ -1,9 +1,7 @@
 <script setup>
-import { computed, ref, onMounted, watch } from "vue";
 import validator from "@/utils/validator";
-import { useUsersStore } from "@/stores/users.store";
-import { useReligiousCommunitiesStore } from "@/stores/religiousCommunities.store";
 import { useSnackbarStore } from "@/stores/components/snackbar.store";
+import { useReligiousCommunitiesStore } from "@/stores/religiousCommunities.store";
 
 const props = defineProps({
   communityId: {
@@ -17,16 +15,13 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:modelValue", "on-owner-assigned"]);
+const emit = defineEmits(["update:modelValue", "on-reject"]);
 
-const usersStore = useUsersStore();
 const religiousCommunitiesStore = useReligiousCommunitiesStore();
 
 const form = ref(null);
-const listUsers = ref([]);
+const rejectedReason = ref("");
 const isLoading = ref(false);
-const selectedCensusTaker = ref(null);
-const keepStatus = ref(false);
 
 const dialog = computed({
   get: () => props.modelValue,
@@ -49,7 +44,7 @@ watch(dialog, (newValue) => {
   }
 });
 
-const assignOwner = async () => {
+const rejectCensus = async () => {
   if (!form.value) return;
 
   const { valid } = await form.value.validate();
@@ -58,13 +53,14 @@ const assignOwner = async () => {
   isLoading.value = true;
 
   try {
-    const response = await religiousCommunitiesStore.assignOwner(
+    const response = await religiousCommunitiesStore.rejectCensus(
       props.communityId,
-      selectedCensusTaker.value,
-      keepStatus.value
+      rejectedReason.value
     );
 
-    emit("on-owner-assigned", {
+    console.log(response);
+
+    emit("on-reject", {
       status: response.status,
       data: response.data,
     });
@@ -72,52 +68,41 @@ const assignOwner = async () => {
     closeDialog();
   } catch (error) {
     useSnackbarStore().showSnackbar({
-      message: "Erro ao atribuir recenseador.",
+      message: "Erro ao rejeitar o cadastro.",
       color: "red",
     });
   } finally {
     isLoading.value = false;
   }
 };
-
-onMounted(async () => {
-  isLoading.value = true;
-  await usersStore.list();
-  listUsers.value = usersStore.listUsers;
-  isLoading.value = false;
-});
 </script>
 
 <template>
   <v-dialog v-model="dialog" max-width="600" persistent>
     <v-card
-      title="Atribuir Recenseador a Comunidade"
-      subtitle="Atribua um recenseador para permitir a edição dos dados da comunidade"
+      title="Rejeitar e solicitar revisão"
+      subtitle="Solicite a revisão do cadastro da comunidade para o recenseador"
       :loading="isLoading"
     >
       <v-card-text class="pt-8">
         <p class="text-body-1 font-weight-regular mb-10">
-          Ao selecionar um novo recenseador para a comunidade, ele passará a ter
-          acesso aos dados e poderá editar o cadastro. Você pode marcar a opção
-          de "Manter o Status" se quiser que o cadastro seja mantido no status
-          atual.
+          Ao rejeitar e solictar uma revisão o recenseador deve corrigir as
+          inconsistências encontradas. Não esqueça de informar o motivo da
+          rejeição, seja claro no seu comentário.<br />
+          Por exemplo: "A foto não corresponse a uma fachada"
         </p>
-        <v-form ref="form" @submit.prevent="assignOwner">
-          <v-select
-            v-model="selectedCensusTaker"
+        <v-form ref="form" @submit.prevent="rejectCensus">
+          <v-textarea
+            v-model="rejectedReason"
+            class="mt-2 mb-8"
             density="compact"
             variant="outlined"
-            label="Selecione o Recenseador"
-            :items="listUsers"
-            item-title="fullname"
-            item-value="id"
+            label="Motivo do pedido de correção"
+            hide-details
+            single-line
+            clearable
+            :disabled="isLoading"
             :rules="[validator.isRequired]"
-            :disabled="isLoading"
-          ></v-select>
-          <v-checkbox
-            v-model="keepStatus"
-            label="Não modificar o status da comunidade"
-            :disabled="isLoading"
           />
         </v-form>
       </v-card-text>
@@ -129,11 +114,11 @@ onMounted(async () => {
         </v-btn>
         <v-btn
           color="primary"
+          @click="rejectCensus"
           variant="flat"
-          @click="assignOwner"
           :loading="isLoading"
         >
-          Atribuir Recenseador
+          Rejeitar e solicitar revisão
         </v-btn>
       </v-card-actions>
     </v-card>

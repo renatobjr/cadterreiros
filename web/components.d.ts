@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    CadApproveDialog: typeof import('./src/components/dialogs/CadApproveDialog.vue')['default']
     CadChip: typeof import('./src/components/common/CadChip.vue')['default']
     CadCommunity: typeof import('./src/components/common/CadCommunity.vue')['default']
     CadDataTableCommunitiesApproved: typeof import('./src/components/dataTables/CadDataTableCommunitiesApproved.vue')['default']
@@ -21,6 +22,7 @@ declare module 'vue' {
     CadHero: typeof import('./src/components/CadHero.vue')['default']
     CadMapNumbers: typeof import('./src/components/CadMapNumbers.vue')['default']
     CadNav: typeof import('./src/components/common/CadNav.vue')['default']
+    CadRejectDialog: typeof import('./src/components/dialogs/CadRejectDialog.vue')['default']
     CadRequestCorrectionsDialog: typeof import('./src/components/dialogs/CadRequestCorrectionsDialog.vue')['default']
     CadRequestReviewDialog: typeof import('./src/components/dialogs/CadRequestCorrectionsDialog.vue')['default']
     CadSetCensusStepDialog: typeof import('./src/components/dialogs/CadSetCensusStepDialog.vue')['default']

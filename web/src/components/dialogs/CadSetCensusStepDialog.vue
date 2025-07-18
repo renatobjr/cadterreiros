@@ -23,7 +23,7 @@ const religiousCommunitiesStore = useReligiousCommunitiesStore();
 const isLoading = ref(false);
 const form = ref(null);
 const selectedCensusStep = ref(null);
-const rejectedReason = ref('');
+const rejectedReason = ref("");
 
 const listCensusSteps = [
   {
@@ -89,7 +89,7 @@ const setCensusStep = async () => {
   } finally {
     isLoading.value = false;
   }
-}
+};
 </script>
 
 <template>
@@ -104,42 +104,55 @@ const setCensusStep = async () => {
           Defina os status para a comunidade (Pendente, Aprovado ou Rejeitado).
           Ao passar o mouse sobre os status, eles serão explicados.
 
-          <div class="mt-4">
-            <v-tooltip
-              text="Este é o status padrão de um nova comunidade."
-              location="top"
-            >
-              <template v-slot:activator="{ props }">
-                <v-chip v-bind:="props" class="ma-2" color="warning" label>
-                  Pendente
-                </v-chip>
-              </template>
-            </v-tooltip>
+          <v-tooltip
+            text="Este é o status padrão de um nova comunidade."
+            location="top"
+          >
+            <template v-slot:activator="{ props }">
+              <v-chip
+                v-bind:="props"
+                class="ma-2 mt-6 d-flex d-block align-center justify-center"
+                color="warning"
+                label
+              >
+                Pendente
+              </v-chip>
+            </template>
+          </v-tooltip>
 
-            <v-tooltip
-              text="Após a revisão dos dados, caso haja alguma inconsistência, você
+          <v-tooltip
+            text="Após a revisão dos dados, caso haja alguma inconsistência, você
                 pode rejeitar e o recenseador deve corrigir as pendências."
-              location="top"
-            >
-              <template v-slot:activator="{ props }">
-                <v-chip v-bind:="props" class="ma-2" color="error" label>
-                  Rejeitado
-                </v-chip>
-              </template>
-            </v-tooltip>
+            location="top"
+          >
+            <template v-slot:activator="{ props }">
+              <v-chip
+                v-bind:="props"
+                class="ma-2 d-flex d-block align-center justify-center"
+                color="error"
+                label
+              >
+                Rejeitado
+              </v-chip>
+            </template>
+          </v-tooltip>
 
-            <v-tooltip
-              text="Após a revisão dos dados e aprovação da
+          <v-tooltip
+            text="Após a revisão dos dados e aprovação da
                 comunidade, ela a ser exibida no mapa e no site."
-              location="top"
-            >
-              <template v-slot:activator="{ props }">
-                <v-chip v-bind:="props" class="ma-2" color="success" label>
-                  Aprovado
-                </v-chip>
-              </template>
-            </v-tooltip>
-          </div>
+            location="top"
+          >
+            <template v-slot:activator="{ props }">
+              <v-chip
+                v-bind:="props"
+                class="ma-2 d-flex d-block align-center justify-center"
+                color="success"
+                label
+              >
+                Aprovado
+              </v-chip>
+            </template>
+          </v-tooltip>
         </p>
 
         <v-form ref="form" @submit.prevent="setCensusStep">
@@ -173,7 +186,12 @@ const setCensusStep = async () => {
             <v-btn variant="text" @click="closeDialog" :disabled="isLoading">
               Cancelar
             </v-btn>
-            <v-btn color="primary" @click="setCensusStep"  variant="flat" :loading="isLoading">
+            <v-btn
+              color="primary"
+              @click="setCensusStep"
+              variant="flat"
+              :loading="isLoading"
+            >
               Atribuir Status
             </v-btn>
           </v-card-actions>

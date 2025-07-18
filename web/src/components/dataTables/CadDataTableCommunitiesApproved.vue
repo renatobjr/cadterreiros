@@ -119,7 +119,13 @@ const loadCommunities = async ({ page, itemsPerPage, sortBy }) => {
 };
 
 const goToCommunity = (slug, id) => {
-  router.push({ name: authRoute.communityPrivated, params: { id, slug } });
+  router.push({
+    name: authRoute.communityPrivated,
+    params: { id, slug },
+    state: {
+      fromApproved: true,
+    },
+  });
 };
 
 const setOwner = (id) => {

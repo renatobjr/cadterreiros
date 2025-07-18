@@ -108,8 +108,8 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
     community.value = await religiousCommunityService.getPrivateCommunityById(id);
   }
 
-  async function assignOwner(communityId, userId) {
-    return await religiousCommunityService.assignOwner(communityId, userId);
+  async function assignOwner(communityId, userId, keepStatus) {
+    return await religiousCommunityService.assignOwner(communityId, userId, keepStatus);
   }
 
   async function setCensusStep(communityId, step, rejectedReason) {
@@ -118,6 +118,14 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
 
   async function requestCorrections(communityId, userId, rejectedReason) {
     return await religiousCommunityService.requestCorrections(communityId, userId, rejectedReason);
+  }
+
+  async function approveCensus(communityId) {
+    return await religiousCommunityService.approveCensus(communityId);
+  }
+
+  async function rejectCensus(communityId, rejectedReason) {
+    return await religiousCommunityService.rejectCensus(communityId, rejectedReason);
   }
 
   return {
@@ -137,7 +145,9 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
     getPrivateCommunityId,
     assignOwner,
     setCensusStep,
-    requestCorrections
+    requestCorrections,
+    approveCensus,
+    rejectCensus
   };
 })
 

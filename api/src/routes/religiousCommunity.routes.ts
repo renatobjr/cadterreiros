@@ -60,6 +60,16 @@ router.put(
   isAuth,
   religiousCommunityController.requestCorrections
 );
+router.put(
+  `${path}/approve-census`,
+  isAuth,
+  religiousCommunityController.approveCensus
+);
+router.put(
+  `${path}/reject-census`,
+  isAuth,
+  religiousCommunityController.rejectCensus
+);
 // Get id
 router.get(
   `${path}/:id`,

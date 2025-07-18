@@ -405,16 +405,25 @@ export const religiousCommunityService = {
 
   assignOwner: async (
     communityId: string,
-    userId: string
+    userId: string,
+    keepStatus: boolean
   ): Promise<Record<string, boolean | string>> => {
+    console.log({
+      keepStatus,
+    });
     try {
+      const updatedComnunity: any = {
+        censusTaker: new Types.ObjectId(userId),
+      };
+
+      if (!keepStatus) {
+        updatedComnunity.censusStep = ECensusStep.PENDING;
+      }
+
       await ReligiousCommunity.findOneAndUpdate(
         { _id: new Types.ObjectId(communityId) },
         {
-          $set: {
-            censusTaker: new Types.ObjectId(userId),
-            censusStep: ECensusStep.PENDING,
-          },
+          $set: updatedComnunity,
         }
       );
 
@@ -470,6 +479,54 @@ export const religiousCommunityService = {
           $set: {
             censusStep: ECensusStep.REJECTED,
             censusTaker: new Types.ObjectId(userId),
+            rejectedReason: rejectedReason,
+          },
+        }
+      );
+
+      return {
+        data: true,
+        status: true,
+      };
+    } catch (error) {
+      return {
+        error: error as string,
+        status: false,
+      };
+    }
+  },
+
+  approveCensus: async (communityId: string) => {
+    try {
+      await ReligiousCommunity.findOneAndUpdate(
+        { _id: new Types.ObjectId(communityId) },
+        {
+          $set: {
+            censusStep: ECensusStep.APPROVED,
+            rejectedReason: undefined,
+          },
+        }
+      );
+
+      return {
+        data: true,
+        status: true,
+      };
+    } catch (error) {
+      return {
+        error: error as string,
+        status: false,
+      };
+    }
+  },
+
+  rejectCensus: async (communityId: string, rejectedReason: string) => {
+    try {
+      await ReligiousCommunity.findOneAndUpdate(
+        { _id: new Types.ObjectId(communityId) },
+        {
+          $set: {
+            censusStep: ECensusStep.REJECTED,
             rejectedReason: rejectedReason,
           },
         }

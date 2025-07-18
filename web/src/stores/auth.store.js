@@ -39,6 +39,11 @@ export const useAuthStore = defineStore("auth", () => {
     return response;
   };
 
+  function logout() {
+    clearLoginData();
+    localStorage.removeItem("SESSION_TOKEN");
+  };
+
   async function checkAuth() {
     const token = localStorage.getItem("SESSION_TOKEN");
     if (token) {
@@ -60,6 +65,7 @@ export const useAuthStore = defineStore("auth", () => {
     recoveryEmail,
 
     login,
+    logout,
     checkAuth
   };
 });

@@ -35,7 +35,7 @@ const login = async () => {
     <v-card
       class="d-flex flex-column h-100 pa-6 rounded-lg mt-4"
       color="grey-lighten-5"
-      elevation="0"
+      elevation="1"
     >
       <v-img class="mb-12" :src="cadComplete" height="120" />
       <v-form ref="form">

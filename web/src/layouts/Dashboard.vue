@@ -2,6 +2,10 @@
 import cadLogo from "@/assets/svg/cad.logo.svg";
 import { useAuthStore } from "@/stores/auth.store";
 import { useSnackbarStore } from "@/stores/components/snackbar.store";
+import { baseRoute } from "@/router/base";
+import { authRoute } from "@/router/auth";
+
+const router = useRouter();
 
 const authStore = useAuthStore();
 const username = ref(null);
@@ -9,6 +13,11 @@ const email = ref(null);
 
 const snackbarStore = useSnackbarStore();
 const { snackbar } = storeToRefs(snackbarStore);
+
+const logout = () => {
+  authStore.logout();
+  router.push({ name: baseRoute.index });
+};
 
 onMounted(() => {
   const user = authStore.user;
@@ -35,6 +44,7 @@ onMounted(() => {
             :prepend-avatar="cadLogo"
             :subtitle="email"
             :title="username"
+            @click="$router.push({ name: authRoute.dashboard })"
           ></v-list-item>
         </v-list>
 
@@ -50,6 +60,7 @@ onMounted(() => {
             prepend-icon="mdi-logout"
             title="Logout"
             value="logout"
+            @click="logout"
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>

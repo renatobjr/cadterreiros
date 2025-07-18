@@ -5,18 +5,26 @@ import cadMarkerSimple from "@/assets/svg/marker.simple.svg";
 import { useReligiousCommunitiesStore } from "@/stores/religiousCommunities.store";
 import { setChipColor } from "@/utils/setChipColor";
 import { ECensusStep } from "@/enum/ECensusStep";
-import router from "@/router";
 import { authRoute } from "@/router/auth";
+import { useSnackbarStore } from "@/stores/components/snackbar.store";
 
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS;
 const imgAPI = import.meta.env.VITE_IMG_RELIGIOUS_COMMUNITY_URL;
 
 const religiousCommunitiesStore = useReligiousCommunitiesStore();
 const route = useRoute();
+const navigate = useRouter();
 
 const isLoading = ref(true);
 const community = ref({});
+
 const showSetRequestCorrections = ref(false);
+const showSetApproveDialog = ref(false);
+const showSetRejectDialog = ref(false);
+
+const isFromApproved = ref(false);
+const isFromReject = ref(false);
+const isFromPending = ref(false);
 
 const communityId = route.params.id;
 
@@ -27,6 +35,13 @@ onMounted(async () => {
   if (religiousCommunitiesStore.community) {
     community.value = religiousCommunitiesStore.community;
     isLoading.value = false;
+  }
+
+  const state = history.state;
+  if (state) {
+    isFromApproved.value = state.fromApproved;
+    isFromReject.value = state.fromRejected;
+    isFromPending.value = state.fromPending;
   }
 });
 
@@ -47,14 +62,54 @@ const setChipCensusStepLabel = (censusStep) => {
   }
 };
 
-const setRequestCorrections = () => {
-  showSetRequestCorrections.value = true;
+const setOpenDialog = (dialog) => {
+  switch (dialog) {
+    case "setRequestCorrections":
+      showSetRequestCorrections.value = true;
+      break;
+    case "setApprove":
+      showSetApproveDialog.value = true;
+      break;
+    case "setReject":
+      showSetRejectDialog.value = true;
+      break;
+  }
 };
 
 const onRequestCorrections = async (data) => {
   if (data.status) {
     showSetRequestCorrections.value = false;
-    router.push({ name: authRoute.dashboard });
+    navigate.push({ name: authRoute.dashboard });
+
+    useSnackbarStore().showSnackbar({
+      message: "Correções solicitadas com sucesso!",
+      color: "green",
+    });
+  }
+};
+
+const onApprove = async (data) => {
+  if (data.status) {
+    showSetApproveDialog.value = false;
+    navigate.push({ name: authRoute.dashboard });
+
+    useSnackbarStore().showSnackbar({
+      message: "Cadastro aprovado com sucesso!",
+      color: "green",
+    });
+  }
+};
+
+const onReject = async (data) => {
+  console.log("reject", data);
+  if (data.status) {
+    showSetRejectDialog.value = false;
+    navigate.push({ name: authRoute.dashboard });
+
+    useSnackbarStore().showSnackbar({
+      message: "Cadastro rejeitado e enviado para revisão!",
+      color: "green",
+    });
   }
 };
 </script>
@@ -92,13 +147,33 @@ const onRequestCorrections = async (data) => {
         >
           {{ setChipCensusStepLabel(community[0].censusStep) }}
         </v-chip>
+
         <v-btn
+          v-if="isFromApproved"
           class="float-right"
           density="default"
           color="warning"
           variant="flat"
-          @click="setRequestCorrections(community[0].id)"
+          @click="setOpenDialog('setRequestCorrections')"
           >Solicitar correções</v-btn
+        >
+        <v-btn
+          v-if="isFromPending || isFromReject"
+          class="float-right mr-2"
+          density="default"
+          color="green"
+          variant="flat"
+          @click="setOpenDialog('setApprove')"
+          >Aprovar</v-btn
+        >
+        <v-btn
+          v-if="isFromPending || isFromReject"
+          class="float-right mr-2"
+          density="default"
+          color="red"
+          variant="flat"
+          @click="setOpenDialog('setReject')"
+          >Rejeitar e solictar revisão</v-btn
         >
       </v-card-subtitle>
 
@@ -142,13 +217,24 @@ const onRequestCorrections = async (data) => {
         </v-row>
       </v-card-text>
     </v-card>
-    {{ community }}
   </v-container>
 
   <cad-request-corrections-dialog
     v-model="showSetRequestCorrections"
     :community-id="communityId"
     @on-request-corrections="onRequestCorrections"
+  />
+
+  <cad-approve-dialog
+    v-model="showSetApproveDialog"
+    :community-id="communityId"
+    @on-approve="onApprove"
+  />
+
+  <cad-reject-dialog
+    v-model="showSetRejectDialog"
+    :community-id="communityId"
+    @on-reject="onReject"
   />
 </template>
 

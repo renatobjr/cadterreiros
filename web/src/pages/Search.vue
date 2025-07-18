@@ -116,7 +116,7 @@ const goToCommunity = (slug, id) => {
     <v-card
       class="d-flex flex-column h-100 pa-4 rounded-lg"
       color="grey-lighten-5"
-      elevation="0"
+      elevation="1"
       title="Buscar um Terreiro"
       subtitle="Encontre um Terreiro cadastrado na nossa base de dados"
       text="Você pode buscar um Terreiro pelo nome ou usar o nosso mapa interativo."
