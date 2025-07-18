@@ -9,7 +9,7 @@ import {
   ReligiousCommunityInitialData,
   UserInitialData,
 } from "./data/initialData";
-import { User } from "@/api/schemas/User";
+import { ERole, User } from "@/api/schemas/User";
 import { UserEmailToInsert } from "./data/userEmailToInsert";
 import { ObjectId, Types } from "mongoose";
 import fs from "fs";

@@ -7,10 +7,12 @@ import { useAuthStore } from "@/stores/auth.store";
 import { useSnackbarStore } from "@/stores/components/snackbar.store";
 import { authRoute } from "@/router/auth";
 
+const navigate = useRouter();
+
 const form = ref();
 const loginForm = reactive({
-  email: "",
-  password: "",
+  email: "belatuca@hotmail.com",
+  password: "test.password",
 });
 
 const login = async () => {
@@ -20,12 +22,13 @@ const login = async () => {
   const response = await useAuthStore().login(loginForm);
 
   if (!response.status) {
+    console.log(response);
     useSnackbarStore().showSnackbar({
-      message: "Ops! Email ou senha inválidos.",
+      message: response.error,
       color: "red",
     });
   } else {
-    router.push({ name: authRoute.dashboard });
+    navigate.push({ name: authRoute.dashboard });
   }
 };
 </script>

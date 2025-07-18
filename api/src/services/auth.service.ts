@@ -1,18 +1,19 @@
 import { ApiResponseType } from "../@types/responsesTypes";
-import { IUser, User } from "../schemas/User";
+import { ERole, IUser, User } from "../schemas/User";
 import tokenUtils from "../utils/token.utils";
 import bcrypt from "bcryptjs";
 
 export const authService = {
   login: async (
     email: string,
-    password: string
+    password: string,
+    origin: string
   ): Promise<ApiResponseType<IUser | string>> => {
     try {
       let user = await User.findOne({ email, isEnabled: true });
       if (!user) {
         return {
-          error: "User not found",
+          error: "Email ou senha inválida",
           status: false,
         };
       }
@@ -20,12 +21,20 @@ export const authService = {
       const isValidPassword = bcrypt.compareSync(password, user.password);
       if (!isValidPassword) {
         return {
-          error: "Invalid password",
+          error: "Email ou senha inválida",
+          status: false,
+        };
+      }
+
+      if (origin === "web" && user.role !== ERole.ADMIN) {
+        return {
+          error: "Você não tem permissão de acesso",
           status: false,
         };
       }
 
       const generateToken = tokenUtils.generate({ id: user._id });
+      await User.findByIdAndUpdate(user._id, { lastLogin: new Date() });
       return {
         data: {
           ...user.toJSON(),

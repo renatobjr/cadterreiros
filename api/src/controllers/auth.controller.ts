@@ -7,8 +7,8 @@ import { IUser } from "../schemas/User";
 
 const login: Handler = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
-    const response = await authService.login(email, password);
+    const { email, password, origin } = req.body;
+    const response = await authService.login(email, password, origin);
     res.apiResponse<IUser>(HttpStatusCode.OK, {
       error: response?.error,
       data: plainToInstance(AuthLoginDTO, response.data, {

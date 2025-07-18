@@ -4,15 +4,15 @@ export interface IPermissions {
   [key: string]: boolean;
 }
 
-export interface IRole {
-  [key: string]: boolean;
+export enum ERole {
+  "ADMIN" = "admin",
+  "CENSUS_TAKER" = "census_taker",
 }
 
 export interface IUser {
   fullname: string;
   email: string;
-  permissions: IPermissions;
-  role: IRole;
+  role: string;
   password: string;
   token: string;
   isEnabled: boolean;
@@ -25,8 +25,7 @@ const UserSchemna = new Schema(
   {
     fullname: { type: String, required: true },
     email: { type: String, required: true },
-    permissions: { type: Object, required: false },
-    role: { type: Object, required: false },
+    role: { type: Object, required: true, enum: ERole },
     password: { type: String, required: true },
     token: { type: String, required: false },
     isEnabled: { type: Boolean, default: true },

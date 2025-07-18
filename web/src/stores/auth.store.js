@@ -30,6 +30,7 @@ export const useAuthStore = defineStore("auth", () => {
   };
 
   async function login(payload) {
+    payload.origin = 'web';
     const response = await authService.login(payload);
 
     if (response.status) {
