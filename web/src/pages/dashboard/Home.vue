@@ -16,8 +16,6 @@ provide("refreshAllTables", refreshAllTables);
 watch(tab, () => {
   refreshAllTables();
 });
-
-console.log(authStore.user);
 </script>
 
 <template>

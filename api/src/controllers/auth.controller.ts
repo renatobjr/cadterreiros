@@ -7,7 +7,6 @@ import { IUser } from "../schemas/User";
 
 const login: Handler = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const { email, password } = req.body;
     const response = await authService.login(email, password);
     res.apiResponse<IUser>(HttpStatusCode.OK, {

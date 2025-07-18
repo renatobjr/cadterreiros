@@ -169,7 +169,6 @@ export const religiousCommunityController = {
 
   assignOwner: async (req: Request, res: Response): Promise<void> => {
     const { communityId, userId } = req.body;
-    console.log(communityId, userId);
 
     const response = await religiousCommunityService.assignOwner(
       communityId,
@@ -183,7 +182,6 @@ export const religiousCommunityController = {
   },
 
   setCensusStep: async (req: Request, res: Response): Promise<void> => {
-    console.log(req.body);
     const { communityId, step, rejectedReason } = req.body;
     const response = await religiousCommunityService.setCensusStep(
       communityId,

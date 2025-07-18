@@ -52,14 +52,11 @@ const setRequestCorrections = () => {
 };
 
 const onRequestCorrections = async (data) => {
-  console.log(data);
   if (data.status) {
     showSetRequestCorrections.value = false;
     router.push({ name: authRoute.dashboard });
   }
 };
-
-console.log(community.value);
 </script>
 
 <template>

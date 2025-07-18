@@ -58,7 +58,6 @@ export const religiousCommunityService = {
       communityId,
       userId,
     });
-    console.log(response);
     if (response.status) {
       return response
     }
