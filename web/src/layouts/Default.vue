@@ -10,15 +10,11 @@ const { snackbar } = storeToRefs(snackbarStore);
   <v-app>
     <v-snackbar
       v-model="snackbar.show"
-      variant="tonal"
+      class="elevation-15"
       location="top"
       :color="snackbar.color"
     >
       <span>{{ snackbar.message }}</span>
-
-      <template v-slot:actions>
-        <v-btn color="primary" flat @click="snackbar.show = false">Close</v-btn>
-      </template>
     </v-snackbar>
     <slot />
   </v-app>

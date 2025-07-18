@@ -166,4 +166,34 @@ export const religiousCommunityController = {
       status: response.status,
     });
   },
+
+  assignOwner: async (req: Request, res: Response): Promise<void> => {
+    const { communityId, userId } = req.body;
+    console.log(communityId, userId);
+
+    const response = await religiousCommunityService.assignOwner(
+      communityId,
+      userId
+    );
+    return res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  setCensusStep: async (req: Request, res: Response): Promise<void> => {
+    console.log(req.body);
+    const { communityId, step, rejectedReason } = req.body;
+    const response = await religiousCommunityService.setCensusStep(
+      communityId,
+      step,
+      rejectedReason
+    );
+    return res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
 };

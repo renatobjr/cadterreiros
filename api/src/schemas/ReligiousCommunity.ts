@@ -84,6 +84,7 @@ export interface IReligiousCommunity {
   bio?: string | undefined;
   censusStep: ECensusStep;
   censusTaker: Types.ObjectId;
+  rejectedReason?: string;
   createdAt: Date | string;
 }
 
@@ -134,6 +135,7 @@ const ReligiousCommunitySchema = new Schema(
       default: ECensusStep.PENDING,
     },
     censusTaker: { type: Schema.Types.ObjectId, required: true },
+    rejectedReason: { type: String, required: false },
   },
   { timestamps: true }
 );

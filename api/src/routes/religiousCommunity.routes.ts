@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { religiousCommunityController } from "@/api/controllers/religiousCommunity.controller";
 import isAuth from "@/api/middlewares/isAuth";
-import { HttpStatusCode } from "../enum/HttpStatusCode.enum";
 
 const router = Router();
 const basePath = process.env.NODE_BASE_URL || "/api/v1";
@@ -30,11 +29,7 @@ router.get(
   isAuth,
   religiousCommunityController.getReligiousCommunitiesByUserId
 );
-router.get(
-  `${path}/:id`,
-  isAuth,
-  religiousCommunityController.getCommunityById
-);
+router.get(`${path}/list`, isAuth, religiousCommunityController.list);
 router.post(
   `${path}/upload-main-picture/:id`,
   isAuth,
@@ -49,6 +44,22 @@ router.put(
   `${path}/update-religious-community/:id`,
   isAuth,
   religiousCommunityController.updateReligiousCommunity
+);
+router.put(
+  `${path}/assign-owner`,
+  isAuth,
+  religiousCommunityController.assignOwner
+);
+router.put(
+  `${path}/set-census-step`,
+  isAuth,
+  religiousCommunityController.setCensusStep
+);
+// Get id
+router.get(
+  `${path}/:id`,
+  isAuth,
+  religiousCommunityController.getCommunityById
 );
 
 export default router;

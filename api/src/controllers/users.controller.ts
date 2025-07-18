@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { usersService } from "@/api/services/users.service";
 import { HttpStatusCode } from "@/api/enum/HttpStatusCode.enum";
 import { IUser } from "@/api/schemas/User";
+import { plainToInstance } from "class-transformer";
+import { UsersListDTO } from "../dtos/usersDTO/usersList.DTO";
 
 export const usersController = {
   list: async (req: Request, res: Response): Promise<void> => {
@@ -12,7 +14,10 @@ export const usersController = {
     }
 
     res.apiResponse<IUser[]>(HttpStatusCode.OK, {
-      data: response.results,
+      error: response?.error,
+      data: plainToInstance(UsersListDTO, response.data, {
+        excludeExtraneousValues: true,
+      }),
       status: response.status,
     });
   },

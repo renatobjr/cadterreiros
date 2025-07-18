@@ -12,7 +12,6 @@ export const useAuthStore = defineStore("auth", () => {
   let recoveryEmail = ref(null);
 
   const isAuth = computed(() => {
-    console.log('isAuth', loggedToken.value)
     return loggedToken.value !== null;
   });
 
@@ -38,6 +37,18 @@ export const useAuthStore = defineStore("auth", () => {
       localStorage.setItem("SESSION_TOKEN", response.data.token);
     }
     return response;
+  };
+
+  async function checkAuth() {
+    const token = localStorage.getItem("SESSION_TOKEN");
+    if (token) {
+      const response = await authService.validateToken(token);
+      if (response.status) {
+        setLoginData(response.data, token);
+        return true;
+      }
+    }
+    return false;
   }
 
   return {
@@ -49,6 +60,7 @@ export const useAuthStore = defineStore("auth", () => {
     recoveryEmail,
 
     login,
+    checkAuth
   };
 });
 

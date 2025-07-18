@@ -10,6 +10,9 @@ declare module 'vue' {
   export interface GlobalComponents {
     CadChip: typeof import('./src/components/common/CadChip.vue')['default']
     CadCommunity: typeof import('./src/components/common/CadCommunity.vue')['default']
+    CadDataTableCommunitiesApproved: typeof import('./src/components/dataTables/CadDataTableCommunitiesApproved.vue')['default']
+    CadDataTableCommunitiesPending: typeof import('./src/components/dataTables/CadDataTableCommunitiesPending.vue')['default']
+    CadDataTableCommunitiesRejected: typeof import('./src/components/dataTables/CadDataTableCommunitiesRejected.vue')['default']
     CadEmphasis: typeof import('./src/components/common/CadEmphasis.vue')['default']
     CadFooter: typeof import('./src/components/common/CadFooter.vue')['default']
     CadGlobalLoader: typeof import('./src/components/common/CadGlobalLoader.vue')['default']
@@ -18,6 +21,8 @@ declare module 'vue' {
     CadHero: typeof import('./src/components/CadHero.vue')['default']
     CadMapNumbers: typeof import('./src/components/CadMapNumbers.vue')['default']
     CadNav: typeof import('./src/components/common/CadNav.vue')['default']
+    CadSetCensusStepDialog: typeof import('./src/components/dialogs/CadSetCensusStepDialog.vue')['default']
+    CadSetOwnerDialog: typeof import('./src/components/dialogs/CadSetOwnerDialog.vue')['default']
     CadShare: typeof import('./src/components/common/CadShare.vue')['default']
     CadShowcase: typeof import('./src/components/CadShowcase.vue')['default']
     CadUnderDevel: typeof import('./src/components/common/CadUnderDevel.vue')['default']

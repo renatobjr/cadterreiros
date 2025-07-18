@@ -13,6 +13,7 @@ import fs from "fs";
 
 type searchType = {
   search: string;
+  censusStep?: ECensusStep;
 };
 
 interface SearchCondition {
@@ -115,11 +116,43 @@ export const religiousCommunityService = {
           });
         }
 
+        const user = await User.findOne({
+          fullname: { $regex: searchValue, $options: "i" },
+        });
+
+        if (user) {
+          orConditions.push({ censusTaker: user._id });
+        }
+
         searchTerm = { $or: orConditions };
       }
 
-      const religiousCommunities = await ReligiousCommunity.find(searchTerm);
-      console.log(searchTerm);
+      if (options.censusStep !== undefined) {
+        if (Object.keys(searchTerm).length === 0) {
+          searchTerm = { censusStep: options.censusStep };
+        } else {
+          searchTerm = {
+            $and: [searchTerm, { censusStep: options.censusStep }],
+          };
+        }
+      }
+
+      const religiousCommunities = await ReligiousCommunity.aggregate([
+        {
+          $match: searchTerm,
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "censusTaker",
+            foreignField: "_id",
+            as: "censusTaker",
+          },
+        },
+        {
+          $unwind: "$censusTaker",
+        },
+      ]);
 
       return {
         data: religiousCommunities,
@@ -132,6 +165,7 @@ export const religiousCommunityService = {
       };
     }
   },
+
   getRandom: async (): Promise<ApiResponseType<IReligiousCommunity[]>> => {
     try {
       const getRamdomCommunities = await ReligiousCommunity.aggregate([
@@ -341,7 +375,10 @@ export const religiousCommunityService = {
     }
   },
 
-  postUpdateMainPicture: async (id: string, file: any) => {
+  postUpdateMainPicture: async (
+    id: string,
+    file: any
+  ): Promise<Record<string, boolean | string>> => {
     try {
       const ext = fileUtils.getFileExtension(file[0].originalname);
       const originalPath = fileUtils.getPublicPath(file[0].filename);
@@ -360,7 +397,62 @@ export const religiousCommunityService = {
       };
     } catch (error) {
       return {
-        error: error,
+        error: error as string,
+        status: false,
+      };
+    }
+  },
+
+  assignOwner: async (
+    communityId: string,
+    userId: string
+  ): Promise<Record<string, boolean | string>> => {
+    try {
+      await ReligiousCommunity.findOneAndUpdate(
+        { _id: new Types.ObjectId(communityId) },
+        {
+          $set: {
+            censusTaker: new Types.ObjectId(userId),
+            censusStep: ECensusStep.PENDING,
+          },
+        }
+      );
+
+      return {
+        data: true,
+        status: true,
+      };
+    } catch (error) {
+      return {
+        error: error as string,
+        status: false,
+      };
+    }
+  },
+
+  setCensusStep: async (
+    communityId: string,
+    step: ECensusStep,
+    rejectedReason?: string
+  ): Promise<Record<string, boolean | string>> => {
+    try {
+      await ReligiousCommunity.findOneAndUpdate(
+        { _id: new Types.ObjectId(communityId) },
+        {
+          $set: {
+            censusStep: step,
+            rejectedReason: rejectedReason,
+          },
+        }
+      );
+
+      return {
+        data: true,
+        status: true,
+      };
+    } catch (error) {
+      return {
+        error: error as string,
         status: false,
       };
     }

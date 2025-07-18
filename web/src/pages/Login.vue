@@ -24,10 +24,9 @@ const login = async () => {
       message: "Ops! Email ou senha inválidos.",
       color: "red",
     });
-    return;
+  } else {
+    router.push({ name: authRoute.dashboard });
   }
-
-  router.push({ name: authRoute.dashboard });
 };
 </script>
 

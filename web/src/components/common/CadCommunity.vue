@@ -1,6 +1,5 @@
 <script setup>
 import cadMarkerSimple from "@/assets/svg/marker.simple.svg";
-import { setChipColor } from "@/utils/setChipColor";
 import dayjs from "dayjs";
 import { GoogleMap, Marker } from "vue3-google-map";
 

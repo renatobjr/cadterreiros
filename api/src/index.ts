@@ -13,6 +13,7 @@ import path from "path";
 import health from "@/api/routes/health.routes";
 import religiousCommunityRoutes from "@/api/routes/religiousCommunity.routes";
 import authPublicRoutes from "@/api/routes/auth.routes";
+import usersRoutes from "@/api/routes/users.route";
 
 const api = express();
 
@@ -53,7 +54,8 @@ api
   .use(handleResponse)
   .use(health)
   .use(authPublicRoutes)
-  .use(religiousCommunityRoutes);
+  .use(religiousCommunityRoutes)
+  .use(usersRoutes);
 
 const API_PORT = process.env.API_PORT || 3000;
 const MONGO_URL = process.env.MONGO_URL as string;

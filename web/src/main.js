@@ -16,6 +16,13 @@ import CadHero from './components/CadHero.vue'
 import CadShowcase from './components/CadShowcase.vue'
 import CadMapNumbers from './components/CadMapNumbers.vue'
 
+import CadSetOwnerDialog from './components/dialogs/CadSetOwnerDialog.vue'
+import CadSetCensusStepDialog from './components/dialogs/CadSetCensusStepDialog.vue'
+
+import CadDataTableCommunitiesApproved from './components/dataTables/CadDataTableCommunitiesApproved.vue'
+import CadDataTableCommunitiesRejected from './components/dataTables/CadDataTableCommunitiesRejected.vue'
+import CadDataTableCommunitiesPending from './components/dataTables/CadDataTableCommunitiesPending.vue'
+
 import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'
 
@@ -36,6 +43,14 @@ app.component('CadGridFaq', CadGridFAQ)
 app.component('CadHero', CadHero)
 app.component('CadShowcase', CadShowcase)
 app.component('CadMapNumbers', CadMapNumbers)
+
+app.component('CadSetOwnerDialog', CadSetOwnerDialog)
+app.component('CadSetCensusStepDialog', CadSetCensusStepDialog)
+
+app.component('CadDataTableCommunitiesApproved', CadDataTableCommunitiesApproved)
+app.component('CadDataTableCommunitiesRejected', CadDataTableCommunitiesRejected)
+app.component('CadDataTableCommunitiesPending', CadDataTableCommunitiesPending)
+
 
 const vuetify = createVuetify({
   locale: {

@@ -5,6 +5,12 @@ export const get = async (url, params) => {
   return response.data
 }
 
+export const put = async (url, data) => {
+  const response = await axios.put(url, data);
+  return response.data
+}
+
 export default {
-  get
+  get,
+  put
 }

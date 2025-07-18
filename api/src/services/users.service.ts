@@ -4,15 +4,15 @@ import { IUser, User } from "@/api/schemas/User";
 export const usersService = {
   list: async (): Promise<ApiResponseType<IUser[]>> => {
     try {
-      const users = await User.find();
+      const users = await User.find({ isEnabled: true });
 
       return {
-        results: users,
+        data: users,
         status: true,
       };
     } catch (error: any) {
       return {
-        results: error,
+        data: error,
         status: true,
       };
     }

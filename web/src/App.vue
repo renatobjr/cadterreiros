@@ -10,17 +10,12 @@ onBeforeMount(() => {
 });
 
 const layout = computed(() => {
-  console.log(route.meta);
   const currentLayout = Base;
   if (route.meta.layout === "authenticated") {
     return Dashboard;
   }
 
   return currentLayout;
-});
-
-console.log({
-  layout,
 });
 </script>
 

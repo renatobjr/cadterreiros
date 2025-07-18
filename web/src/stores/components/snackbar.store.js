@@ -4,13 +4,13 @@ export const useSnackbarStore = defineStore("snackbar", () => {
   const snackbar = reactive({
     show: false,
     message: "",
-    type: "success",
+    color: "green",
   });
 
-  const showSnackbar = ({ message, type }: any) => {
+  const showSnackbar = ({ message, color }) => {
     snackbar.show = true;
     snackbar.message = message;
-    snackbar.type = type;
+    snackbar.color = color;
   };
 
   return {

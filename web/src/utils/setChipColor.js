@@ -1,3 +1,4 @@
+import { ECensusStep } from "@/enum/ECensusStep";
 import { ECommunityTypes } from "@/enum/ECommunityTypes";
 import { ENations } from "@/enum/ENations";
 
@@ -18,5 +19,13 @@ export const setChipColor = (type) => {
       return 'african';
     case ECommunityTypes.TRADITIONAL:
       return 'tradicional';
+    case ECensusStep.APPROVED:
+      return 'green';
+    case ECensusStep.PENDING:
+      return 'orange-darken-1';
+    case ECensusStep.REJECTED:
+      return 'red';
+    default:
+      return 'green';
   }
 }

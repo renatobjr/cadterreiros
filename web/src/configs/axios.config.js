@@ -5,7 +5,14 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(
-  function (config) {
+  async function (config) {
+    config.headers = config.headers || {};
+    const token = localStorage.getItem("SESSION_TOKEN");
+
+    if (token && config.headers) {
+      config.headers["X-Access-Token"] = `Bearer ${token}`;
+    }
+
     return config;
   },
   (error) => Promise.reject(error)

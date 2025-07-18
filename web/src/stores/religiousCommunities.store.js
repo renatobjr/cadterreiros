@@ -51,6 +51,10 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
     communityList.value = await religiousCommunityService.list(options);
   }
 
+  async function listWithUserId(options, censusStep) {
+    communityList.value = await religiousCommunityService.listWithUserId(options, censusStep);
+  }
+
   async function fetchData({
     page,
     itemsPerPage,
@@ -101,6 +105,14 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
     community.value = await religiousCommunityService.getCommunityById(id);
   }
 
+  async function assignOwner(communityId, userId) {
+    return await religiousCommunityService.assignOwner(communityId, userId);
+  }
+
+  async function setCensusStep(communityId, step, rejectedReason) {
+    return await religiousCommunityService.setCensusStep(communityId, step, rejectedReason);
+  }
+
   return {
     community,
     communityList,
@@ -108,11 +120,15 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
     ramdomReligiousCommunityList,
     dataFromMapping,
     religiousCommunity,
+
     list,
+    listWithUserId,
     fetchData,
     getRandom,
     getDataFromMaping,
-    getCommunityId
+    getCommunityId,
+    assignOwner,
+    setCensusStep
   };
 })
 
