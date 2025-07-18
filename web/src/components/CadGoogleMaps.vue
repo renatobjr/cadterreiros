@@ -1,4 +1,5 @@
 <script setup>
+import { ref, computed, onMounted } from "vue"; // 1. Importar ref e onMounted
 import { GoogleMap, Marker, MarkerCluster } from "vue3-google-map";
 import { useReligiousCommunitiesStore } from "@/stores/religiousCommunities.store";
 import cadMarkerCluster from "@/assets/svg/marker.cluster.svg";
@@ -9,8 +10,14 @@ import { baseRoute } from "@/router/base";
 
 const religiousCommunitiesStore = useReligiousCommunitiesStore();
 
-const communitiesToday = computed(() => {
-  return religiousCommunitiesStore.ramdomReligiousCommunityList;
+const communitiesToday = ref([]);
+const isLoading = ref(true);
+
+onMounted(async () => {
+  await religiousCommunitiesStore.getRandom();
+  communitiesToday.value =
+    religiousCommunitiesStore.ramdomReligiousCommunityList;
+  isLoading.value = false;
 });
 
 const validCommunities = computed(() =>
@@ -18,10 +25,12 @@ const validCommunities = computed(() =>
 );
 
 const center = computed(() => {
-  if (!validCommunities.value.length) return null;
+  if (validCommunities.value.length === 0) {
+    return { lat: -7.1195, lng: -34.8451 };
+  }
 
-  const latitudes = validCommunities.value.map((c) => c.lat);
-  const longitudes = validCommunities.value.map((c) => c.long);
+  const latitudes = validCommunities.value.map((c) => parseFloat(c.lat));
+  const longitudes = validCommunities.value.map((c) => parseFloat(c.long));
 
   return {
     lat: latitudes.reduce((a, b) => a + b, 0) / latitudes.length,
@@ -29,10 +38,14 @@ const center = computed(() => {
   };
 });
 
-const hasValidCenter = computed(() => center.value !== null);
+const canRenderMap = computed(
+  () => !isLoading.value && validCommunities.value.length > 0
+);
 
 const renderer = {
   render({ count, position }) {
+    if (!window.google || !window.google.maps) return null;
+
     return new google.maps.Marker({
       position,
       label: {
@@ -70,7 +83,7 @@ const goToCommunity = (slug, id) => {
       </p>
 
       <div
-        v-if="isLoading || !hasValidCenter"
+        v-if="isLoading"
         class="d-flex justify-center align-center"
         style="height: 600px"
       >
@@ -78,21 +91,20 @@ const goToCommunity = (slug, id) => {
       </div>
 
       <GoogleMap
-        v-else
+        v-show="canRenderMap"
         class="map rounded-lg elevation-3"
-        api-key="AIzaSyCww53qH4bTw9z2le42RZu0QFam20AiuyU"
-        disableDefaultUi="false"
+        :disable-default-ui="false"
         :center="center"
         :zoom="13"
       >
         <MarkerCluster :options="{ renderer }">
           <Marker
-            v-for="(community, i) in communitiesToday"
-            :key="i"
+            v-for="community in validCommunities"
+            :key="community.id"
             :options="{
               position: {
-                lat: community.lat,
-                lng: community.long,
+                lat: parseFloat(community.lat),
+                lng: parseFloat(community.long),
               },
               icon: {
                 url: cadMarkerSimple,

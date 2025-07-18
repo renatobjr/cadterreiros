@@ -142,7 +142,7 @@ const setCensusStep = async () => {
           </div>
         </p>
 
-        <v-form ref="form">
+        <v-form ref="form" @submit.prevent="setCensusStep">
           <v-select
             v-model="selectedCensusStep"
             density="compact"

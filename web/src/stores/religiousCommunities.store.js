@@ -104,6 +104,9 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
   async function getCommunityId(id) {
     community.value = await religiousCommunityService.getCommunityById(id);
   }
+  async function getPrivateCommunityId(id) {
+    community.value = await religiousCommunityService.getPrivateCommunityById(id);
+  }
 
   async function assignOwner(communityId, userId) {
     return await religiousCommunityService.assignOwner(communityId, userId);
@@ -111,6 +114,10 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
 
   async function setCensusStep(communityId, step, rejectedReason) {
     return await religiousCommunityService.setCensusStep(communityId, step, rejectedReason);
+  }
+
+  async function requestCorrections(communityId, userId, rejectedReason) {
+    return await religiousCommunityService.requestCorrections(communityId, userId, rejectedReason);
   }
 
   return {
@@ -127,8 +134,10 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
     getRandom,
     getDataFromMaping,
     getCommunityId,
+    getPrivateCommunityId,
     assignOwner,
-    setCensusStep
+    setCensusStep,
+    requestCorrections
   };
 })
 

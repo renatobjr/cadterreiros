@@ -457,4 +457,33 @@ export const religiousCommunityService = {
       };
     }
   },
+
+  requestCorrections: async (
+    communityId: string,
+    userId: string,
+    rejectedReason: string
+  ) => {
+    try {
+      await ReligiousCommunity.findOneAndUpdate(
+        { _id: new Types.ObjectId(communityId) },
+        {
+          $set: {
+            censusStep: ECensusStep.REJECTED,
+            censusTaker: new Types.ObjectId(userId),
+            rejectedReason: rejectedReason,
+          },
+        }
+      );
+
+      return {
+        data: true,
+        status: true,
+      };
+    } catch (error) {
+      return {
+        error: error as string,
+        status: false,
+      };
+    }
+  },
 };

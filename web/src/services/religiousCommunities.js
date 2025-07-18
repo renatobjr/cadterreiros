@@ -45,6 +45,13 @@ export const religiousCommunityService = {
     }
     return "";
   },
+  getPrivateCommunityById: async (id) => {
+    const response = await api.get(`${religiousCommunitiesURL}/${id}`);
+    if (response.status) {
+      return response.data;
+    }
+    return "";
+  },
 
   assignOwner: async (communityId, userId) => {
     const response = await api.put(`${religiousCommunitiesURL}/assign-owner`, {
@@ -59,7 +66,6 @@ export const religiousCommunityService = {
   },
 
   setCensusStep: async (communityId, step, rejectedReason) => {
-    console.log(communityId, step, rejectedReason);
     const response = await api.put(`${religiousCommunitiesURL}/set-census-step`, {
       communityId,
       step,
@@ -70,4 +76,16 @@ export const religiousCommunityService = {
     }
     return "";
   },
+
+  requestCorrections: async (communityId, userId, rejectedReason) => {
+    const response = await api.put(`${religiousCommunitiesURL}/request-corrections`, {
+      communityId,
+      userId,
+      rejectedReason
+    });
+    if (response.status) {
+      return response
+    }
+    return "";
+  }
 };

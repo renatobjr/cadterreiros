@@ -196,4 +196,18 @@ export const religiousCommunityController = {
       status: response.status,
     });
   },
+
+  requestCorrections: async (req: Request, res: Response): Promise<void> => {
+    const { communityId, userId, rejectedReason } = req.body;
+    const response = await religiousCommunityService.requestCorrections(
+      communityId,
+      userId,
+      rejectedReason
+    );
+    return res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
 };

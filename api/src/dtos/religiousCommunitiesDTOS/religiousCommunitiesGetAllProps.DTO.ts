@@ -88,5 +88,9 @@ export class ReligiousCommunitiesGetByAllPropsDTO {
   censusTaker!: ObjectId;
 
   @Expose()
+  @Transform((value) => value.obj.censusTaker.fullname)
+  censusTakerFullname!: string;
+
+  @Expose()
   createdAt!: Date | string;
 }

@@ -1,9 +1,10 @@
 <script setup>
-import { baseRoute } from "@/router/base";
 import { useReligiousCommunitiesStore } from "@/stores/religiousCommunities.store";
 import { setChipColor } from "@/utils/setChipColor";
 import { useSnackbarStore } from "@/stores/components/snackbar.store";
 import { ECensusStep } from "@/enum/ECensusStep";
+import router from "@/router";
+import { authRoute } from "@/router/auth";
 
 const religiousCommunitiesStore = useReligiousCommunitiesStore();
 
@@ -118,7 +119,7 @@ const loadCommunities = async ({ page, itemsPerPage, sortBy }) => {
 };
 
 const goToCommunity = (slug, id) => {
-  router.push({ name: baseRoute.community, params: { id, slug } });
+  router.push({ name: authRoute.communityPrivated, params: { id, slug } });
 };
 
 const setOwner = (id) => {

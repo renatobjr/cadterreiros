@@ -17,16 +17,21 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthStore();
-  const { isAuth } = authStore;
-
-  if (!isAuth && to.meta.requiresAuth) {
-    const checkAuth = await authStore.checkAuth();
-
-    if (!checkAuth) return { name: baseRoute.login }
+  if (!to.meta.requiresAuth) {
+    return next();
   }
 
-  next();
+  const authStore = useAuthStore();
+  if (authStore.isAuth) {
+    return next();
+  }
+
+  const checkAuth = await authStore.checkAuth();
+  if (checkAuth) {
+    return next();
+  }
+
+  next({ name: baseRoute.index });
 })
 
 router.onError((err, to) => {

@@ -55,6 +55,11 @@ router.put(
   isAuth,
   religiousCommunityController.setCensusStep
 );
+router.put(
+  `${path}/request-corrections`,
+  isAuth,
+  religiousCommunityController.requestCorrections
+);
 // Get id
 router.get(
   `${path}/:id`,

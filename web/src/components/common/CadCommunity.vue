@@ -11,6 +11,7 @@ defineProps({
 });
 
 const imgAPI = import.meta.env.VITE_IMG_RELIGIOUS_COMMUNITY_URL;
+const apiKey = import.meta.env.VITE_GOOGLE_MAPS;
 
 const fileUrl = (filename) => {
   if (filename) {
@@ -54,7 +55,7 @@ const fileUrl = (filename) => {
 
         <GoogleMap
           class="map rounded-lg mt-8 mb-8"
-          api-key="AIzaSyCww53qH4bTw9z2le42RZu0QFam20AiuyU"
+          :api-key="apiKey"
           disableDefaultUi="false"
           :center="{ lat: community[0].lat, lng: community[0].long }"
           :zoom="15"

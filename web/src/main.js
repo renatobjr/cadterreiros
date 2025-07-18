@@ -18,10 +18,12 @@ import CadMapNumbers from './components/CadMapNumbers.vue'
 
 import CadSetOwnerDialog from './components/dialogs/CadSetOwnerDialog.vue'
 import CadSetCensusStepDialog from './components/dialogs/CadSetCensusStepDialog.vue'
+import CadRequestCorrectionsDialog from './components/dialogs/CadRequestCorrectionsDialog.vue'
 
 import CadDataTableCommunitiesApproved from './components/dataTables/CadDataTableCommunitiesApproved.vue'
 import CadDataTableCommunitiesRejected from './components/dataTables/CadDataTableCommunitiesRejected.vue'
 import CadDataTableCommunitiesPending from './components/dataTables/CadDataTableCommunitiesPending.vue'
+import CadTableCommunity from './components/dataTables/CadTableCommunity.vue'
 
 import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'
@@ -46,10 +48,12 @@ app.component('CadMapNumbers', CadMapNumbers)
 
 app.component('CadSetOwnerDialog', CadSetOwnerDialog)
 app.component('CadSetCensusStepDialog', CadSetCensusStepDialog)
+app.component('CadRequestCorrectionsDialog', CadRequestCorrectionsDialog)
 
 app.component('CadDataTableCommunitiesApproved', CadDataTableCommunitiesApproved)
 app.component('CadDataTableCommunitiesRejected', CadDataTableCommunitiesRejected)
 app.component('CadDataTableCommunitiesPending', CadDataTableCommunitiesPending)
+app.component('CadTableCommunity', CadTableCommunity)
 
 
 const vuetify = createVuetify({
