@@ -9,13 +9,20 @@ const navigate = useRouter();
 
 const route = useRoute();
 const otp = ref("");
+const isFromForget = ref(true);
+
+onMounted(() => {
+  const state = history.state;
+  if (state) {
+    isFromForget.value = state.isFromForget;
+  }
+});
 
 const token = route.params.token;
 const userEmail = route.params.email;
 
 const verifyOTP = async () => {
   const response = await authStore.verifyOTP(token, otp.value);
-  console.log(response);
 
   if (!response.status) {
     useSnackbarStore().showSnackbar({
@@ -26,6 +33,9 @@ const verifyOTP = async () => {
     navigate.push({
       name: baseRoute.setPassword,
       params: { token },
+      state: {
+        isFromForget: isFromForget.value,
+      },
     });
   }
 };

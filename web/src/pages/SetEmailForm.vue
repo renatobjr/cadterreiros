@@ -3,6 +3,7 @@ import validator from "@/utils/validator";
 import cadComplete from "@/assets/svg/cad.complete.svg";
 import { baseRoute } from "@/router/base";
 import { useAuthStore } from "@/stores/auth.store";
+import { useSnackbarStore } from "@/stores/components/snackbar.store";
 
 const authStore = useAuthStore();
 const navigate = useRouter();
@@ -10,12 +11,23 @@ const navigate = useRouter();
 const form = ref();
 const userEmail = ref("renato.bonfim.jr@cciao.org");
 
-const resetPassword = async () => {
+const isFromForget = ref(true);
+
+onMounted(() => {
+  const state = history.state;
+  if (state) {
+    isFromForget.value = state.isFromForget;
+  }
+});
+
+const setEmail = async () => {
   const isValid = await form.value.validate();
   if (!isValid) return;
 
-  const response = await authStore.forgetPassword(userEmail.value);
-  console.log(response);
+  const response = await authStore.generateUserToken(
+    userEmail.value,
+    isFromForget.value
+  );
 
   if (!response.status) {
     useSnackbarStore().showSnackbar({
@@ -28,6 +40,9 @@ const resetPassword = async () => {
       params: {
         token: response.data,
         email: userEmail.value,
+      },
+      state: {
+        isFromForget: isFromForget.value,
       },
     });
   }
@@ -43,8 +58,12 @@ const resetPassword = async () => {
     >
       <v-img class="mb-12" :src="cadComplete" height="120" />
       <v-form ref="form">
-        <p>
+        <p v-if="isFromForget">
           Informe o seu email para iniciar o processo de recuperação da senha.
+        </p>
+        <p v-else>
+          Informe o seu email de cadastro para iniciar o processo para
+          configuração de sua senha.
         </p>
         <v-text-field
           v-model="userEmail"
@@ -62,11 +81,11 @@ const resetPassword = async () => {
             class="bg-primary text-white"
             rounded="lg"
             size="large"
-            text="Recuperar Senha"
+            :text="isFromForget ? 'Recuperar Senha' : 'Cadastrar Senha'"
             variant="outlined"
             prepend-icon="mdi-login"
             :disabled="!userEmail"
-            @click="resetPassword"
+            @click="setEmail"
           />
         </div>
       </v-form>

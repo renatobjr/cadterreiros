@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { ApiResponseType } from "../@types/responsesTypes";
-import { EMailTYpes } from "../enum/EmailTYpes.enum";
+import { EMailTypes } from "../enum/EmailTYpes.enum";
 import { ERole, IUser, User } from "../schemas/User";
 import mailUtils from "../utils/mail.utils";
 import tokenUtils from "../utils/token.utils";
@@ -53,12 +53,22 @@ export const authService = {
     }
   },
 
-  forgetPassword: async (email: string): Promise<ApiResponseType<string>> => {
+  generateUserToken: async (
+    email: string,
+    isForget: boolean
+  ): Promise<ApiResponseType<string>> => {
     try {
       const user = await User.findOne({ email, isEnabled: true });
       if (!user) {
         return {
           error: "Email inválido",
+          status: false,
+        };
+      }
+
+      if (user.role !== ERole.ADMIN) {
+        return {
+          error: "Você não tem as permissões para acessar este serviço.",
           status: false,
         };
       }
@@ -76,18 +86,18 @@ export const authService = {
       );
 
       const html = await mailUtils.template({
-        type: EMailTYpes.CHANGE_PASSWORD,
+        type: isForget ? EMailTypes.CHANGE_PASSWORD : EMailTypes.FIRST_ACCESS,
         data: {
-          username: user.fullname,
+          username: user.fullname ?? user.email,
           code: code,
         },
       });
 
-      mailUtils.sendMail({
-        to: user.email,
-        subject: "Recuperar senha",
-        html: html,
-      });
+      // mailUtils.sendMail({
+      //   to: user.email,
+      //   subject: isForget ? "Recuperação de senha" : "Primeiro acesso",
+      //   html: html,
+      // });
 
       User.updateOne({ _id: user._id }, { token: token });
 
@@ -179,10 +189,9 @@ export const authService = {
     }
   },
 
-  setPassword: async (token: string, password: string) => {
+  setPassword: async (token: string, password: string, fullname: string) => {
     try {
       const docodedToken = tokenUtils.verify(token);
-      console.log(token, password, docodedToken);
 
       if (!docodedToken) {
         return {
@@ -205,7 +214,17 @@ export const authService = {
       user.password = hash;
       user.token = undefined;
 
-      await user.save();
+      const updateUserData: Record<string, any> = {
+        password: hash,
+        token: undefined,
+        isFirstLogin: false,
+      };
+
+      if (fullname) {
+        updateUserData.fullname = fullname;
+      }
+
+      await User.updateOne({ _id: user._id }, updateUserData);
 
       return {
         data: user,

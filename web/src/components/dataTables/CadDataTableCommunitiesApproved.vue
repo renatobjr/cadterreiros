@@ -238,7 +238,7 @@ const onCensusStepAssigned = async (data) => {
       </v-chip>
     </template>
 
-    <template cvl #item.actions="{ item }">
+    <template #item.actions="{ item }">
       <v-tooltip text="Ver registro da comunidade" location="top">
         <template v-slot:activator="{ props }">
           <v-btn

@@ -6,7 +6,7 @@ import { useReligiousCommunitiesStore } from "@/stores/religiousCommunities.stor
 
 const props = defineProps({
   communityId: {
-    type: String,
+    type: String || null,
     required: true,
     default: null,
   },
@@ -46,19 +46,12 @@ const dialog = computed({
 });
 
 const closeDialog = () => {
+  if (form.value) {
+    form.value.reset();
+    form.value.resetValidation();
+  }
   dialog.value = false;
 };
-
-watch(dialog, (newValue) => {
-  if (!newValue) {
-    setTimeout(() => {
-      if (form.value) {
-        form.value.reset();
-        form.value.resetValidation();
-      }
-    }, 300);
-  }
-});
 
 const setCensusStep = async () => {
   if (!form.value) return;

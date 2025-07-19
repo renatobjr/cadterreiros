@@ -5,7 +5,7 @@ import { useReligiousCommunitiesStore } from "@/stores/religiousCommunities.stor
 
 const props = defineProps({
   communityId: {
-    type: String,
+    type: String || null,
     required: false,
     default: null,
   },
@@ -29,20 +29,13 @@ const dialog = computed({
 });
 
 const closeDialog = () => {
+  if (form.value) {
+    form.value.reset();
+    form.value.resetValidation();
+    selectedCensusTaker.value = null;
+  }
   dialog.value = false;
 };
-
-watch(dialog, (newValue) => {
-  if (!newValue) {
-    setTimeout(() => {
-      if (form.value) {
-        form.value.reset();
-        form.value.resetValidation();
-        selectedCensusTaker.value = null;
-      }
-    }, 300);
-  }
-});
 
 const rejectCensus = async () => {
   if (!form.value) return;
@@ -57,8 +50,6 @@ const rejectCensus = async () => {
       props.communityId,
       rejectedReason.value
     );
-
-    console.log(response);
 
     emit("on-reject", {
       status: response.status,

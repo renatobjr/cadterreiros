@@ -10,6 +10,7 @@ export const baseRoute = {
   aboutCCIAO: 'AboutCCIAO',
   login: "Login",
   fogetPassword: "forgetPassword",
+  firstAccess: "firstAccess",
   otp: "otp",
   setPassword: 'setPassword'
 }
@@ -24,7 +25,7 @@ const Search = () => import('@/pages/Search.vue')
 const CommunityRegister = () => import('@/pages/CommunityRegister.vue')
 const AboutCCIAO = () => import('@/pages/gridFAQ/AboutCCIAO.vue')
 const Login = () => import('@/pages/Login.vue')
-const ForgetPassword = () => import('@/pages/ForgetPassword.vue')
+const SetEmailForm = () => import('@/pages/SetEmailForm.vue')
 const Otp = () => import('@/pages/OTP.vue')
 const SetPassword = () => import('@/pages/SetPassword.vue')
 
@@ -83,7 +84,12 @@ export default [
   {
     path: '/esqueci-minha-senha',
     name: baseRoute.fogetPassword,
-    component: ForgetPassword
+    component: SetEmailForm
+  },
+  {
+    path: '/primeiro-acesso',
+    name: baseRoute.firstAccess,
+    component: SetEmailForm
   },
   {
     path: '/otp/:token/:email',

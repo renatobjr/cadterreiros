@@ -17,17 +17,17 @@ export interface IUser {
   token: string | undefined;
   isEnabled: boolean;
   isFirstLogin: boolean;
-  lastLogin: Date;
+  lastLogin: Date | string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const UserSchemna = new Schema(
   {
-    fullname: { type: String, required: true },
+    fullname: { type: String, required: false },
     email: { type: String, required: true },
     role: { type: Object, required: true, enum: ERole },
-    password: { type: String, required: true },
+    password: { type: String, required: false },
     token: { type: String, required: false },
     isEnabled: { type: Boolean, default: true },
     isFirstLogin: { type: Boolean, default: true },

@@ -22,7 +22,6 @@ watch(tab, () => {
   <v-container class="pa-10" fluid>
     <v-card
       class="d-flex flex-column h-100 pa-4 rounded-lg"
-      color="grey-lighten-5"
       elevation="1"
       :title="`Olá, ${authStore.user.fullname}!`"
       subtitle="Aqui você pode visualizar as comunidades cadastradas na nossa base de dados, use o sistema de busca para encontrar um Terreiro."

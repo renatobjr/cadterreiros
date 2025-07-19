@@ -53,6 +53,12 @@ onMounted(() => {
         <v-list density="compact" nav>
           <v-list-item
             prepend-icon="mdi-account-multiple"
+            title="Gestão de Usuários"
+            value="users"
+            @click="$router.push({ name: authRoute.users })"
+          ></v-list-item>
+          <v-list-item
+            prepend-icon="mdi-account"
             title="Perfil"
             value="profile"
           ></v-list-item>

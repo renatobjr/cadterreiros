@@ -13,7 +13,10 @@ const route = useRoute();
 const token = route.params.token;
 
 const form = ref();
+const isLoading = ref(false);
+const isFromForget = ref(true);
 const setPasswordData = reactive({
+  fullname: undefined,
   password: "",
   repeatPassword: "",
 });
@@ -22,42 +25,76 @@ const setPassword = async () => {
   const isValid = await form.value.validate();
   if (!isValid) return;
 
-  const response = await authStore.setPassword(token, setPasswordData.password);
-  console.log(response);
+  isLoading.value = true;
 
-  if (!response.status) {
+  try {
+    const response = await authStore.setPassword(
+      token,
+      setPasswordData.password,
+      setPasswordData.fullname
+    );
+
+    if (!response.status) {
+      useSnackbarStore().showSnackbar({
+        message: response.error,
+        color: "red",
+      });
+    } else {
+      useSnackbarStore().showSnackbar({
+        message: "Senha atualizada com sucesso!",
+        color: "green",
+      });
+      navigate.push({
+        name: baseRoute.login,
+      });
+    }
+  } catch (error) {
     useSnackbarStore().showSnackbar({
       message: response.error,
       color: "red",
     });
-  } else {
-    useSnackbarStore().showSnackbar({
-      message: "Senha atualizada com sucesso!",
-      color: "green",
-    });
-    navigate.push({
-      name: baseRoute.login,
-    });
+  } finally {
+    isLoading.value = false;
   }
 };
+
+onMounted(() => {
+  const state = history.state;
+  if (state) {
+    isFromForget.value = state.isFromForget;
+  }
+});
 </script>
 
 <template>
   <v-container class="mx-auto cad-container" max-width="60vh">
     <v-card
-      class="py-8 px-6 text-center mx-auto ma-4"
+      class="d-flex flex-column h-100 pa-6 rounded-lg mt-4"
+      color="grey-lighten-5"
       elevation="1"
-      max-width="400"
-      width="100%"
     >
       <v-img class="mb-12" :src="cadComplete" height="120" />
       <v-form ref="form">
+        <p class="text-h6 font-weight-bold text-center">
+          {{ isFromForget ? "Recuperar Senha" : "Criar Senha" }}
+        </p>
+        <v-text-field
+          v-if="!isFromForget"
+          v-model="setPasswordData.fullname"
+          density="compact"
+          variant="outlined"
+          label="Nome completo"
+          name="fullname"
+          type="text"
+          class="mt-4"
+          :rules="[validator.isRequired]"
+        />
         <v-text-field
           v-model="setPasswordData.password"
           density="compact"
           variant="outlined"
           label="Senha"
-          name="passwordteste"
+          name="password"
           type="password"
           class="mt-4"
           :rules="[validator.isRequired]"
@@ -84,7 +121,7 @@ const setPassword = async () => {
             class="bg-primary text-white"
             rounded="lg"
             size="large"
-            text="Atualizar Senha"
+            :text="isFromForget ? 'Recuperar Senha' : 'Criar Senha'"
             variant="outlined"
             prepend-icon="mdi-login"
             @click="setPassword"

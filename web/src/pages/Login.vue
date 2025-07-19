@@ -8,6 +8,7 @@ import { useSnackbarStore } from "@/stores/components/snackbar.store";
 import { authRoute } from "@/router/auth";
 
 const navigate = useRouter();
+const isLoading = ref(false);
 
 const form = ref();
 const loginForm = reactive({
@@ -19,15 +20,26 @@ const login = async () => {
   const isValid = await form.value.validate();
   if (!isValid) return;
 
-  const response = await useAuthStore().login(loginForm);
+  isLoading.value = true;
 
-  if (!response.status) {
+  try {
+    const response = await useAuthStore().login(loginForm);
+
+    if (!response.status) {
+      useSnackbarStore().showSnackbar({
+        message: response.error,
+        color: "red",
+      });
+    } else {
+      navigate.push({ name: authRoute.dashboard });
+    }
+  } catch (error) {
     useSnackbarStore().showSnackbar({
       message: response.error,
       color: "red",
     });
-  } else {
-    navigate.push({ name: authRoute.dashboard });
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>
@@ -68,7 +80,7 @@ const login = async () => {
             size="large"
             text="Login"
             variant="outlined"
-            prepend-icon="mdi-login"
+            :loading="isLoading"
             @click="login"
           />
           <v-btn
@@ -77,8 +89,25 @@ const login = async () => {
             size="large"
             text="Esquici minha senha"
             variant="outlined"
-            prepend-icon="mdi-login"
-            @click="router.push({ name: baseRoute.fogetPassword })"
+            @click="
+              router.push({
+                name: baseRoute.fogetPassword,
+                state: { isFromForget: true },
+              })
+            "
+          />
+          <v-btn
+            class="bg-warning text-white mt-2"
+            rounded="lg"
+            size="large"
+            text="Primeiro Acesso"
+            variant="outlined"
+            @click="
+              router.push({
+                name: baseRoute.firstAccess,
+                state: { isFromForget: false },
+              })
+            "
           />
         </div>
       </v-form>

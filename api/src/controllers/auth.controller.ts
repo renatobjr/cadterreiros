@@ -4,6 +4,7 @@ import { authService } from "../services/auth.service";
 import { plainToInstance } from "class-transformer";
 import { AuthLoginDTO } from "../dtos/authDTOS/authLogin.DTO";
 import { IUser } from "../schemas/User";
+import castUtils from "../utils/cast.utils";
 
 const login: Handler = async (req: Request, res: Response) => {
   try {
@@ -24,10 +25,12 @@ const login: Handler = async (req: Request, res: Response) => {
   }
 };
 
-const forgetPassword: Handler = async (req: Request, res: Response) => {
+const generateUserToken: Handler = async (req: Request, res: Response) => {
   try {
-    const { email } = req.params;
-    const response = await authService.forgetPassword(email);
+    const { email, isFromForget } = req.params;
+    const isForget = castUtils.stringToBoolean(isFromForget);
+
+    const response = await authService.generateUserToken(email, isForget);
     res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
       data: response.data,
@@ -60,8 +63,8 @@ const verifyOTP: Handler = async (req: Request, res: Response) => {
 
 const setPassword: Handler = async (req: Request, res: Response) => {
   try {
-    const { token, password } = req.body;
-    const response = await authService.setPassword(token, password);
+    const { token, password, fullname } = req.body;
+    const response = await authService.setPassword(token, password, fullname);
     res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
       data: response.data,
@@ -100,7 +103,7 @@ const validateToken: Handler = async (req: Request, res: Response) => {
 
 export default {
   login,
-  forgetPassword,
+  generateUserToken,
   validateToken,
   verifyOTP,
   setPassword,

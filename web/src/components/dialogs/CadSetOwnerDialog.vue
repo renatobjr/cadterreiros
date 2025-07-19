@@ -7,7 +7,7 @@ import { useSnackbarStore } from "@/stores/components/snackbar.store";
 
 const props = defineProps({
   communityId: {
-    type: String,
+    type: String || null,
     required: false,
     default: null,
   },
@@ -34,20 +34,13 @@ const dialog = computed({
 });
 
 const closeDialog = () => {
+  if (form.value) {
+    form.value.reset();
+    form.value.resetValidation();
+    selectedCensusTaker.value = null;
+  }
   dialog.value = false;
 };
-
-watch(dialog, (newValue) => {
-  if (!newValue) {
-    setTimeout(() => {
-      if (form.value) {
-        form.value.reset();
-        form.value.resetValidation();
-        selectedCensusTaker.value = null;
-      }
-    }, 300);
-  }
-});
 
 const assignOwner = async () => {
   if (!form.value) return;
@@ -83,7 +76,7 @@ const assignOwner = async () => {
 onMounted(async () => {
   isLoading.value = true;
   await usersStore.list();
-  listUsers.value = usersStore.listUsers;
+  listUsers.value = usersStore.usersList;
   isLoading.value = false;
 });
 </script>

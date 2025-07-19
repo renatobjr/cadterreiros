@@ -8,4 +8,16 @@ export class UsersListDTO {
   fullname!: string;
   @Expose()
   email!: string;
+  @Expose()
+  role!: string;
+  @Expose()
+  isEnabled!: boolean;
+  @Expose()
+  isFirstLogin!: boolean;
+  @Expose()
+  lastLogin!: Date;
+  @Expose()
+  createdAt!: Date;
+  @Expose()
+  updatedAt!: Date;
 }

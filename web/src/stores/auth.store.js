@@ -40,8 +40,8 @@ export const useAuthStore = defineStore("auth", () => {
     return response;
   };
 
-  async function forgetPassword(userEmail) {
-    const response = await authService.forgetPassword(userEmail);
+  async function generateUserToken(userEmail, isFromForget = false) {
+    const response = await authService.generateUserToken(userEmail, isFromForget);
 
     if (response.status) {
       recoveryEmail.value = userEmail;
@@ -71,8 +71,8 @@ export const useAuthStore = defineStore("auth", () => {
     return response;
   };
 
-  async function setPassword(token, password) {
-    const response = await authService.setPassword(token, password);
+  async function setPassword(token, password, fullname) {
+    const response = await authService.setPassword(token, password, fullname);
     return response;
   };
 
@@ -85,7 +85,7 @@ export const useAuthStore = defineStore("auth", () => {
     recoveryEmail,
 
     login,
-    forgetPassword,
+    generateUserToken,
     logout,
     checkAuth,
     verifyOTP,

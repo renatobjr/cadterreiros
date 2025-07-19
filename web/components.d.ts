@@ -8,7 +8,10 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    CadAddUserDialog: typeof import('./src/components/dialogs/CadAddUserDialog.vue')['default']
     CadApproveDialog: typeof import('./src/components/dialogs/CadApproveDialog.vue')['default']
+    CadChangeUserRole: typeof import('./src/components/dialogs/CadChangeUserRoleDialog.vue')['default']
+    CadChangeUserRoleDialog: typeof import('./src/components/dialogs/CadChangeUserRoleDialog.vue')['default']
     CadChip: typeof import('./src/components/common/CadChip.vue')['default']
     CadCommunity: typeof import('./src/components/common/CadCommunity.vue')['default']
     CadDataTableCommunitiesApproved: typeof import('./src/components/dataTables/CadDataTableCommunitiesApproved.vue')['default']
@@ -27,6 +30,7 @@ declare module 'vue' {
     CadRequestReviewDialog: typeof import('./src/components/dialogs/CadRequestCorrectionsDialog.vue')['default']
     CadSetCensusStepDialog: typeof import('./src/components/dialogs/CadSetCensusStepDialog.vue')['default']
     CadSetOwnerDialog: typeof import('./src/components/dialogs/CadSetOwnerDialog.vue')['default']
+    CadSetUserStatusDialog: typeof import('./src/components/dialogs/CadSetUserStatusDialog.vue')['default']
     CadShare: typeof import('./src/components/common/CadShare.vue')['default']
     CadShowcase: typeof import('./src/components/CadShowcase.vue')['default']
     CadTableCommunity: typeof import('./src/components/dataTables/CadTableCommunity.vue')['default']

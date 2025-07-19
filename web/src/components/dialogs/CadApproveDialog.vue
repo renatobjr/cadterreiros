@@ -4,7 +4,7 @@ import { useSnackbarStore } from "@/stores/components/snackbar.store";
 
 const props = defineProps({
   communityId: {
-    type: String,
+    type: String || null,
     required: false,
     default: null,
   },

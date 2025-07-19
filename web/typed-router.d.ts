@@ -24,7 +24,7 @@ declare module 'vue-router/auto-routes' {
     '/dashboard/Community': RouteRecordInfo<'/dashboard/Community', '/dashboard/Community', Record<never, never>, Record<never, never>>,
     '/dashboard/Home': RouteRecordInfo<'/dashboard/Home', '/dashboard/Home', Record<never, never>, Record<never, never>>,
     '/dashboard/Profile': RouteRecordInfo<'/dashboard/Profile', '/dashboard/Profile', Record<never, never>, Record<never, never>>,
-    '/ForgetPassword': RouteRecordInfo<'/ForgetPassword', '/ForgetPassword', Record<never, never>, Record<never, never>>,
+    '/dashboard/Users': RouteRecordInfo<'/dashboard/Users', '/dashboard/Users', Record<never, never>, Record<never, never>>,
     '/gridFAQ/AboutCCIAO': RouteRecordInfo<'/gridFAQ/AboutCCIAO', '/gridFAQ/AboutCCIAO', Record<never, never>, Record<never, never>>,
     '/gridFAQ/GridFAQLanguages': RouteRecordInfo<'/gridFAQ/GridFAQLanguages', '/gridFAQ/GridFAQLanguages', Record<never, never>, Record<never, never>>,
     '/gridFAQ/GridFAQNations': RouteRecordInfo<'/gridFAQ/GridFAQNations', '/gridFAQ/GridFAQNations', Record<never, never>, Record<never, never>>,
@@ -33,6 +33,7 @@ declare module 'vue-router/auto-routes' {
     '/Login': RouteRecordInfo<'/Login', '/Login', Record<never, never>, Record<never, never>>,
     '/OTP': RouteRecordInfo<'/OTP', '/OTP', Record<never, never>, Record<never, never>>,
     '/Search': RouteRecordInfo<'/Search', '/Search', Record<never, never>, Record<never, never>>,
+    '/SetEmailForm': RouteRecordInfo<'/SetEmailForm', '/SetEmailForm', Record<never, never>, Record<never, never>>,
     '/SetPassword': RouteRecordInfo<'/SetPassword', '/SetPassword', Record<never, never>, Record<never, never>>,
   }
 }

@@ -1,23 +1,30 @@
 export const authRoute = {
   dashboard: "dashboard",
   communityPrivated: "communityPrivated",
+  users: "users",
 };
 
-const dashboard = () => import("@/pages/dashboard/Home.vue");
-const communityPrivate = () => import("@/pages/dashboard/Community.vue");
+const Dashboard = () => import("@/pages/dashboard/Home.vue");
+const Community_Private = () => import("@/pages/dashboard/Community.vue");
+const Users = () => import("@/pages/dashboard/Users.vue");
 
 export default [
   {
     path: "/dashboard",
     name: authRoute.dashboard,
-    component: dashboard,
+    component: Dashboard,
   },
   {
     path: "/dashboard/:id/:slug",
     name: authRoute.communityPrivated,
-    component: communityPrivate,
+    component: Community_Private,
     props: true,
-  }
+  },
+  {
+    path: "/dashboard/users",
+    name: authRoute.users,
+    component: Users,
+  },
 ].map((route) => ({
   ...route,
   meta: {

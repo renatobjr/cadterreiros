@@ -8,9 +8,11 @@ export const authService = {
     return response.data;
   },
 
-  forgetPassword: async (userEmail) => {
-    const response = await api.get(`${authURL}/forget-password/${userEmail}`);
-    return response.data
+  generateUserToken: async (userEmail, isFromForget) => {
+    const response = await api.get(
+      `${authURL}/generate-user-token/${userEmail}/${isFromForget}`
+    );
+    return response.data;
   },
 
   verifyOTP: async (token, otp) => {
@@ -27,8 +29,12 @@ export const authService = {
     return response.data;
   },
 
-  setPassword: async (token, password) => {
-    const response = await api.post(`${authURL}/set-password`, { token, password });
-    return response.data
-  }
-}
+  setPassword: async (token, password, fullname) => {
+    const response = await api.post(`${authURL}/set-password`, {
+      token,
+      password,
+      fullname,
+    });
+    return response.data;
+  },
+};

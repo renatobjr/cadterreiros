@@ -10,7 +10,13 @@ export const put = async (url, data) => {
   return response.data
 }
 
+export const post = async (url, data) => {
+  const response = await axios.post(url, data);
+  return response.data
+}
+
 export default {
   get,
-  put
+  put,
+  post
 }
