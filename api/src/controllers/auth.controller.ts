@@ -24,6 +24,57 @@ const login: Handler = async (req: Request, res: Response) => {
   }
 };
 
+const forgetPassword: Handler = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.params;
+    const response = await authService.forgetPassword(email);
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  } catch (error) {
+    res.apiResponse(HttpStatusCode.BAD_REQUEST, {
+      error: error,
+      status: false,
+    });
+  }
+};
+
+const verifyOTP: Handler = async (req: Request, res: Response) => {
+  try {
+    const { token, otp } = req.body;
+    const response = await authService.verifyOTP(token, otp);
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  } catch (error) {
+    res.apiResponse(HttpStatusCode.BAD_REQUEST, {
+      error: error,
+      status: false,
+    });
+  }
+};
+
+const setPassword: Handler = async (req: Request, res: Response) => {
+  try {
+    const { token, password } = req.body;
+    const response = await authService.setPassword(token, password);
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  } catch (error) {
+    res.apiResponse(HttpStatusCode.BAD_REQUEST, {
+      error: error,
+      status: false,
+    });
+  }
+};
+
 const validateToken: Handler = async (req: Request, res: Response) => {
   try {
     const reqToken =
@@ -49,5 +100,8 @@ const validateToken: Handler = async (req: Request, res: Response) => {
 
 export default {
   login,
+  forgetPassword,
   validateToken,
+  verifyOTP,
+  setPassword,
 };

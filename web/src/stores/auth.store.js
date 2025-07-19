@@ -40,6 +40,15 @@ export const useAuthStore = defineStore("auth", () => {
     return response;
   };
 
+  async function forgetPassword(userEmail) {
+    const response = await authService.forgetPassword(userEmail);
+
+    if (response.status) {
+      recoveryEmail.value = userEmail;
+    }
+    return response;
+  };
+
   function logout() {
     clearLoginData();
     localStorage.removeItem("SESSION_TOKEN");
@@ -55,7 +64,17 @@ export const useAuthStore = defineStore("auth", () => {
       }
     }
     return false;
-  }
+  };
+
+  async function verifyOTP(token, otp) {
+    const response = await authService.verifyOTP(token, otp);
+    return response;
+  };
+
+  async function setPassword(token, password) {
+    const response = await authService.setPassword(token, password);
+    return response;
+  };
 
   return {
     user,
@@ -66,8 +85,11 @@ export const useAuthStore = defineStore("auth", () => {
     recoveryEmail,
 
     login,
+    forgetPassword,
     logout,
-    checkAuth
+    checkAuth,
+    verifyOTP,
+    setPassword
   };
 });
 

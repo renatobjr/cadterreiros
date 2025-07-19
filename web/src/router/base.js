@@ -8,7 +8,10 @@ export const baseRoute = {
   search: 'search',
   communityRegister: 'communityRegister',
   aboutCCIAO: 'AboutCCIAO',
-  login: "Login"
+  login: "Login",
+  fogetPassword: "forgetPassword",
+  otp: "otp",
+  setPassword: 'setPassword'
 }
 
 const Index = () => import('@/pages/Index.vue')
@@ -21,6 +24,9 @@ const Search = () => import('@/pages/Search.vue')
 const CommunityRegister = () => import('@/pages/CommunityRegister.vue')
 const AboutCCIAO = () => import('@/pages/gridFAQ/AboutCCIAO.vue')
 const Login = () => import('@/pages/Login.vue')
+const ForgetPassword = () => import('@/pages/ForgetPassword.vue')
+const Otp = () => import('@/pages/OTP.vue')
+const SetPassword = () => import('@/pages/SetPassword.vue')
 
 export default [
   {
@@ -74,6 +80,23 @@ export default [
     name: baseRoute.login,
     component: Login,
   },
+  {
+    path: '/esqueci-minha-senha',
+    name: baseRoute.fogetPassword,
+    component: ForgetPassword
+  },
+  {
+    path: '/otp/:token/:email',
+    name: baseRoute.otp,
+    component: Otp,
+    props: true
+  },
+  {
+    path: '/set-password/:token',
+    name: baseRoute.setPassword,
+    component: SetPassword,
+    props: true
+  }
 ].map(route => ({
   ...route,
   meta: {

@@ -14,8 +14,9 @@ export interface IUser {
   email: string;
   role: string;
   password: string;
-  token: string;
+  token: string | undefined;
   isEnabled: boolean;
+  isFirstLogin: boolean;
   lastLogin: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -29,6 +30,7 @@ const UserSchemna = new Schema(
     password: { type: String, required: true },
     token: { type: String, required: false },
     isEnabled: { type: Boolean, default: true },
+    isFirstLogin: { type: Boolean, default: true },
     lastLogin: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

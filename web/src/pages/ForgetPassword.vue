@@ -1,25 +1,21 @@
 <script setup>
-import router from "@/router";
 import validator from "@/utils/validator";
 import cadComplete from "@/assets/svg/cad.complete.svg";
 import { baseRoute } from "@/router/base";
 import { useAuthStore } from "@/stores/auth.store";
-import { useSnackbarStore } from "@/stores/components/snackbar.store";
-import { authRoute } from "@/router/auth";
 
+const authStore = useAuthStore();
 const navigate = useRouter();
 
 const form = ref();
-const loginForm = reactive({
-  email: "belatuca@hotmail.com",
-  password: "test.password",
-});
+const userEmail = ref("renato.bonfim.jr@cciao.org");
 
-const login = async () => {
+const resetPassword = async () => {
   const isValid = await form.value.validate();
   if (!isValid) return;
 
-  const response = await useAuthStore().login(loginForm);
+  const response = await authStore.forgetPassword(userEmail.value);
+  console.log(response);
 
   if (!response.status) {
     useSnackbarStore().showSnackbar({
@@ -27,7 +23,13 @@ const login = async () => {
       color: "red",
     });
   } else {
-    navigate.push({ name: authRoute.dashboard });
+    navigate.push({
+      name: baseRoute.otp,
+      params: {
+        token: response.data,
+        email: userEmail.value,
+      },
+    });
   }
 };
 </script>
@@ -41,8 +43,11 @@ const login = async () => {
     >
       <v-img class="mb-12" :src="cadComplete" height="120" />
       <v-form ref="form">
+        <p>
+          Informe o seu email para iniciar o processo de recuperação da senha.
+        </p>
         <v-text-field
-          v-model="loginForm.email"
+          v-model="userEmail"
           density="compact"
           variant="outlined"
           label="E-mail"
@@ -51,34 +56,17 @@ const login = async () => {
           class="mt-4"
           :rules="[validator.isRequired]"
         />
-        <v-text-field
-          v-model="loginForm.password"
-          density="compact"
-          variant="outlined"
-          label="Senha"
-          name="password"
-          type="password"
-          class="mt-2"
-          :rules="[validator.isRequired]"
-        />
+
         <div class="d-flex flex-column justify-center mt-12">
           <v-btn
             class="bg-primary text-white"
             rounded="lg"
             size="large"
-            text="Login"
+            text="Recuperar Senha"
             variant="outlined"
             prepend-icon="mdi-login"
-            @click="login"
-          />
-          <v-btn
-            class="bg-red text-white mt-2"
-            rounded="lg"
-            size="large"
-            text="Esquici minha senha"
-            variant="outlined"
-            prepend-icon="mdi-login"
-            @click="router.push({ name: baseRoute.fogetPassword })"
+            :disabled="!userEmail"
+            @click="resetPassword"
           />
         </div>
       </v-form>

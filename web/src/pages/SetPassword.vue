@@ -1,25 +1,29 @@
 <script setup>
-import router from "@/router";
-import validator from "@/utils/validator";
 import cadComplete from "@/assets/svg/cad.complete.svg";
 import { baseRoute } from "@/router/base";
 import { useAuthStore } from "@/stores/auth.store";
+import validator from "@/utils/validator";
 import { useSnackbarStore } from "@/stores/components/snackbar.store";
-import { authRoute } from "@/router/auth";
+
+const authStore = useAuthStore();
 
 const navigate = useRouter();
 
+const route = useRoute();
+const token = route.params.token;
+
 const form = ref();
-const loginForm = reactive({
-  email: "belatuca@hotmail.com",
-  password: "test.password",
+const setPasswordData = reactive({
+  password: "",
+  repeatPassword: "",
 });
 
-const login = async () => {
+const setPassword = async () => {
   const isValid = await form.value.validate();
   if (!isValid) return;
 
-  const response = await useAuthStore().login(loginForm);
+  const response = await authStore.setPassword(token, setPasswordData.password);
+  console.log(response);
 
   if (!response.status) {
     useSnackbarStore().showSnackbar({
@@ -27,7 +31,13 @@ const login = async () => {
       color: "red",
     });
   } else {
-    navigate.push({ name: authRoute.dashboard });
+    useSnackbarStore().showSnackbar({
+      message: "Senha atualizada com sucesso!",
+      color: "green",
+    });
+    navigate.push({
+      name: baseRoute.login,
+    });
   }
 };
 </script>
@@ -35,50 +45,49 @@ const login = async () => {
 <template>
   <v-container class="mx-auto cad-container" max-width="60vh">
     <v-card
-      class="d-flex flex-column h-100 pa-6 rounded-lg mt-4"
-      color="grey-lighten-5"
+      class="py-8 px-6 text-center mx-auto ma-4"
       elevation="1"
+      max-width="400"
+      width="100%"
     >
       <v-img class="mb-12" :src="cadComplete" height="120" />
       <v-form ref="form">
         <v-text-field
-          v-model="loginForm.email"
+          v-model="setPasswordData.password"
           density="compact"
           variant="outlined"
-          label="E-mail"
-          name="email"
-          type="email"
+          label="Senha"
+          name="passwordteste"
+          type="password"
           class="mt-4"
           :rules="[validator.isRequired]"
         />
         <v-text-field
-          v-model="loginForm.password"
+          v-model="setPasswordData.repeatPassword"
           density="compact"
           variant="outlined"
-          label="Senha"
-          name="password"
+          label="Repita a senha"
+          name="repeatPassword"
           type="password"
-          class="mt-2"
-          :rules="[validator.isRequired]"
+          class="mt-4"
+          :rules="[
+            validator.isRequired,
+            validator.isMathcing(
+              setPasswordData.password,
+              setPasswordData.repeatPassword
+            ),
+          ]"
         />
+
         <div class="d-flex flex-column justify-center mt-12">
           <v-btn
             class="bg-primary text-white"
             rounded="lg"
             size="large"
-            text="Login"
+            text="Atualizar Senha"
             variant="outlined"
             prepend-icon="mdi-login"
-            @click="login"
-          />
-          <v-btn
-            class="bg-red text-white mt-2"
-            rounded="lg"
-            size="large"
-            text="Esquici minha senha"
-            variant="outlined"
-            prepend-icon="mdi-login"
-            @click="router.push({ name: baseRoute.fogetPassword })"
+            @click="setPassword"
           />
         </div>
       </v-form>

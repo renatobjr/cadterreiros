@@ -8,6 +8,16 @@ export const authService = {
     return response.data;
   },
 
+  forgetPassword: async (userEmail) => {
+    const response = await api.get(`${authURL}/forget-password/${userEmail}`);
+    return response.data
+  },
+
+  verifyOTP: async (token, otp) => {
+    const response = await api.post(`${authURL}/verify-otp`, { token, otp });
+    return response.data;
+  },
+
   validateToken: async (token) => {
     const response = await api.post(`${authURL}/validate-token`, null, {
       headers: {
@@ -16,4 +26,9 @@ export const authService = {
     });
     return response.data;
   },
+
+  setPassword: async (token, password) => {
+    const response = await api.post(`${authURL}/set-password`, { token, password });
+    return response.data
+  }
 }

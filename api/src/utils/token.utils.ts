@@ -7,8 +7,8 @@ type DecodedToken = {
 };
 
 const tokenUtils = {
-  generate: (data: any): string => {
-    return jwt.sign(data, process.env.JWT_SECRET as string);
+  generate: (data: any, options?: any): string => {
+    return jwt.sign(data, process.env.JWT_SECRET as string, options);
   },
   verify: (token: string): DecodedToken | null => {
     if (token !== undefined) {
