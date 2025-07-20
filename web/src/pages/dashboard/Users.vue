@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { useSnackbarStore } from "@/stores/components/snackbar.store";
 
 const userStore = useUsersStore();
+const isGlobalLoading = computed(() => userStore.isLoading);
 
 const isLoading = ref(false);
 const users = ref([]);
@@ -187,6 +188,14 @@ const setEnabled = (isEnabled) => {
 
 <template>
   <v-container class="pa-10" fluid>
+    <v-overlay
+      :model-value="isGlobalLoading"
+      opacity="0.6"
+      class="z-10 d-flex justify-center align-center"
+      persistent
+    >
+      <v-progress-circular indeterminate size="64" color="primary" />
+    </v-overlay>
     <v-card class="d-flex flex-column h-100 pa-4 rounded-lg" elevation="1">
       <template #title>
         <div class="d-flex justify-space-between align-center w-100">

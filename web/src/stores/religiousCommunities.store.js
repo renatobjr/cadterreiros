@@ -3,6 +3,7 @@ import { defineStore, acceptHMRUpdate } from 'pinia';
 import { ref } from 'vue';
 
 export const useReligiousCommunitiesStore = defineStore('religiousCommunities', () => {
+  let isLoading = ref(false);
   let community = ref({});
   let communityList = ref([]);
   let totalReligiousCommunities = ref(0);
@@ -11,10 +12,7 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
 
   let religiousCommunity = ref({
     authorization: undefined,
-    communityGoogleApiLocalization: {
-      lat: 0,
-      long: 0,
-    },
+    communityGoogleApiLocalization: { lat: 0, long: 0 },
     communityAddress: {
       fullAddress: undefined,
       street: undefined,
@@ -48,18 +46,24 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
   });
 
   async function list(options) {
-    communityList.value = await religiousCommunityService.list(options);
+    isLoading.value = true;
+    try {
+      communityList.value = await religiousCommunityService.list(options);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function listWithUserId(options, censusStep) {
-    communityList.value = await religiousCommunityService.listWithUserId(options, censusStep);
+    isLoading.value = true;
+    try {
+      communityList.value = await religiousCommunityService.listWithUserId(options, censusStep);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  async function fetchData({
-    page,
-    itemsPerPage,
-    sortBy
-  }) {
+  async function fetchData({ page, itemsPerPage, sortBy }) {
     if (communityList) {
       totalReligiousCommunities.value = communityList.value.length;
 
@@ -75,67 +79,107 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
             const aValue = a[sortKey];
             const bValue = b[sortKey];
 
-            if (sortOrder === "asc") {
-              return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-            } else {
-              return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-            }
+            if (sortOrder === "asc") return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+            else return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
           });
         }
 
         const paginated = communityList.value.slice(start, end);
 
-        resolve({
-          items: paginated,
-          total: communityList.value.length
-        })
-      })
+        resolve({ items: paginated, total: communityList.value.length });
+      });
     }
   }
 
   async function getRandom() {
-    ramdomReligiousCommunityList.value = await religiousCommunityService.getRandom();
+    isLoading.value = true;
+    try {
+      ramdomReligiousCommunityList.value = await religiousCommunityService.getRandom();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function getDataFromMaping() {
-    dataFromMapping.value = await religiousCommunityService.getDataFromMaping();
+    isLoading.value = true;
+    try {
+      dataFromMapping.value = await religiousCommunityService.getDataFromMaping();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function getCommunityId(id) {
-    community.value = await religiousCommunityService.getCommunityById(id);
+    isLoading.value = true;
+    try {
+      community.value = await religiousCommunityService.getCommunityById(id);
+    } finally {
+      isLoading.value = false;
+    }
   }
+
   async function getPrivateCommunityId(id) {
-    community.value = await religiousCommunityService.getPrivateCommunityById(id);
+    isLoading.value = true;
+    try {
+      community.value = await religiousCommunityService.getPrivateCommunityById(id);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function assignOwner(communityId, userId, keepStatus) {
-    return await religiousCommunityService.assignOwner(communityId, userId, keepStatus);
+    isLoading.value = true;
+    try {
+      return await religiousCommunityService.assignOwner(communityId, userId, keepStatus);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function setCensusStep(communityId, step, rejectedReason) {
-    return await religiousCommunityService.setCensusStep(communityId, step, rejectedReason);
+    isLoading.value = true;
+    try {
+      return await religiousCommunityService.setCensusStep(communityId, step, rejectedReason);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function requestCorrections(communityId, userId, rejectedReason) {
-    return await religiousCommunityService.requestCorrections(communityId, userId, rejectedReason);
+    isLoading.value = true;
+    try {
+      return await religiousCommunityService.requestCorrections(communityId, userId, rejectedReason);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function approveCensus(communityId) {
-    return await religiousCommunityService.approveCensus(communityId);
+    isLoading.value = true;
+    try {
+      return await religiousCommunityService.approveCensus(communityId);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function rejectCensus(communityId, rejectedReason) {
-    return await religiousCommunityService.rejectCensus(communityId, rejectedReason);
+    isLoading.value = true;
+    try {
+      return await religiousCommunityService.rejectCensus(communityId, rejectedReason);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   return {
+    isLoading,
     community,
     communityList,
     totalReligiousCommunities,
     ramdomReligiousCommunityList,
     dataFromMapping,
     religiousCommunity,
-
     list,
     listWithUserId,
     fetchData,
@@ -149,7 +193,7 @@ export const useReligiousCommunitiesStore = defineStore('religiousCommunities', 
     approveCensus,
     rejectCensus
   };
-})
+});
 
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useReligiousCommunitiesStore, import.meta.hot));

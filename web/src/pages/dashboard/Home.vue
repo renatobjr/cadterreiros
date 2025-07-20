@@ -1,8 +1,13 @@
 <script setup>
+import { computed, provide, ref, watch } from "vue";
 import { useAuthStore } from "@/stores/auth.store";
+import { useReligiousCommunitiesStore } from "@/stores/religiousCommunities.store";
 
 const tab = ref("approved");
 const authStore = useAuthStore();
+const religiousCommunitiesStore = useReligiousCommunitiesStore();
+
+const isGlobalLoading = computed(() => religiousCommunitiesStore.isLoading);
 
 const refreshTrigger = ref(0);
 
@@ -20,6 +25,15 @@ watch(tab, () => {
 
 <template>
   <v-container class="pa-10" fluid>
+    <v-overlay
+      :model-value="isGlobalLoading"
+      opacity="0.6"
+      class="z-10 d-flex justify-center align-center"
+      persistent
+    >
+      <v-progress-circular indeterminate size="64" color="primary" />
+    </v-overlay>
+
     <v-card
       class="d-flex flex-column h-100 pa-4 rounded-lg"
       elevation="1"

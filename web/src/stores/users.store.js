@@ -1,36 +1,48 @@
 import { userService } from "@/services/users";
 import { defineStore, acceptHMRUpdate } from "pinia";
+import { ref } from "vue";
 
 export const useUsersStore = defineStore("users", () => {
-  let usersList = ref([])
-  let totalUsers = ref(0)
+  const isLoading = ref(false);
+  const usersList = ref([]);
+  const totalUsers = ref(0);
 
   async function list() {
-    usersList.value = await userService.list();
+    isLoading.value = true;
+    try {
+      usersList.value = await userService.list();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function listAll() {
-    usersList.value = await userService.listAll();
+    isLoading.value = true;
+    try {
+      usersList.value = await userService.listAll();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  async function fetchData({
-    page,
-    itemsPerPage,
-    sortBy
-  }) {
-    if (usersList) {
-      totalUsers.value = usersList.value.length;
+  async function fetchData({ page, itemsPerPage, sortBy }) {
+    if (!usersList.value.length) {
+      totalUsers.value = 0;
+      return { items: [], total: 0 };
     }
+
+    totalUsers.value = usersList.value.length;
 
     return new Promise((resolve) => {
       const start = (page - 1) * itemsPerPage;
       const end = page * itemsPerPage;
 
-      if (sortBy.length) {
-        const sortKey = sortBy[0].key;
-        const sortOrder = sortBy[0].order;
+      let sorted = [...usersList.value];
 
-        usersList.value.sort((a, b) => {
+      if (sortBy.length) {
+        const { key: sortKey, order: sortOrder } = sortBy[0];
+
+        sorted.sort((a, b) => {
           const aValue = a[sortKey];
           const bValue = b[sortKey];
 
@@ -42,37 +54,53 @@ export const useUsersStore = defineStore("users", () => {
         });
       }
 
-      const paginated = usersList.value.slice(start, end);
+      const paginated = sorted.slice(start, end);
 
       resolve({
         items: paginated,
         total: usersList.value.length
-      })
-    })
+      });
+    });
   }
 
   async function setUserStatus(status, id) {
-    return await userService.setUserStatus(status, id);
+    isLoading.value = true;
+    try {
+      return await userService.setUserStatus(status, id);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function changeUserRole(id, role) {
-    return await userService.changeUserRole(id, role);
+    isLoading.value = true;
+    try {
+      return await userService.changeUserRole(id, role);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function addUser(email, role) {
-    return await userService.addUser(email, role);
+    isLoading.value = true;
+    try {
+      return await userService.addUser(email, role);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   return {
+    isLoading,
     usersList,
-
+    totalUsers,
     list,
     listAll,
     fetchData,
     setUserStatus,
     changeUserRole,
     addUser
-  }
+  };
 });
 
 if (import.meta.hot) {

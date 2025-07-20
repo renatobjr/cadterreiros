@@ -58,11 +58,6 @@ onMounted(() => {
             @click="$router.push({ name: authRoute.users })"
           ></v-list-item>
           <v-list-item
-            prepend-icon="mdi-account"
-            title="Perfil"
-            value="profile"
-          ></v-list-item>
-          <v-list-item
             prepend-icon="mdi-logout"
             title="Logout"
             value="logout"
