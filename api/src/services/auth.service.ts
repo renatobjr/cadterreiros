@@ -93,11 +93,11 @@ export const authService = {
         },
       });
 
-      // mailUtils.sendMail({
-      //   to: user.email,
-      //   subject: isForget ? "Recuperação de senha" : "Primeiro acesso",
-      //   html: html,
-      // });
+      mailUtils.sendMail({
+        to: user.email,
+        subject: isForget ? "Recuperação de senha" : "Primeiro acesso",
+        html: html,
+      });
 
       User.updateOne({ _id: user._id }, { token: token });
 
