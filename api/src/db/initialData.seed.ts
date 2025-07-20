@@ -15,6 +15,7 @@ import { ObjectId, Types } from "mongoose";
 import fs from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
+import { generate } from "generate-password";
 
 const initialDataSeed = async () => {
   const hasUserData = await User.countDocuments();
@@ -23,7 +24,14 @@ const initialDataSeed = async () => {
   if (hasUserData === 0) {
     try {
       for (const user of UserInitialData) {
-        user.password = bcryptjs.hashSync("test.password", 10);
+        const generatedPassword = generate({
+          length: 10,
+          numbers: true,
+          uppercase: true,
+          symbols: false,
+        });
+
+        user.password = bcryptjs.hashSync(generatedPassword, 10);
         await User.create(user);
       }
       console.log("[✔] User Data has been seeded successfully.");

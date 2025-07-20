@@ -7266,7 +7266,7 @@ export const UserInitialData: Partial<IUser>[] = [
     lastLogin: "2025-07-19 16:00:27",
     password: undefined,
     token: undefined,
-    isEnabled: true,
+    isEnabled: false,
     isFirstLogin: false,
   },
   {
@@ -7286,7 +7286,7 @@ export const UserInitialData: Partial<IUser>[] = [
     lastLogin: "2025-07-19 16:00:27",
     password: undefined,
     token: undefined,
-    isEnabled: true,
+    isEnabled: false,
     isFirstLogin: false,
   },
   {
@@ -7296,7 +7296,7 @@ export const UserInitialData: Partial<IUser>[] = [
     lastLogin: "2019-12-04 18:21:59",
     password: undefined,
     token: undefined,
-    isEnabled: true,
+    isEnabled: false,
     isFirstLogin: false,
   },
   {
@@ -7306,7 +7306,7 @@ export const UserInitialData: Partial<IUser>[] = [
     lastLogin: "2019-09-03 12:25:21",
     password: undefined,
     token: undefined,
-    isEnabled: true,
+    isEnabled: false,
     isFirstLogin: false,
   },
   {
@@ -7316,7 +7316,7 @@ export const UserInitialData: Partial<IUser>[] = [
     lastLogin: "2019-12-02 13:18:05",
     password: undefined,
     token: undefined,
-    isEnabled: true,
+    isEnabled: false,
     isFirstLogin: false,
   },
   {
@@ -7330,13 +7330,13 @@ export const UserInitialData: Partial<IUser>[] = [
     isFirstLogin: false,
   },
   {
-    fullname: "J\u00f4 Pontes",
+    fullname: "Jô Pontes",
     email: "jowpontess@gmail.com",
     role: "census_taker",
     lastLogin: "2019-10-31 06:47:46",
     password: undefined,
     token: undefined,
-    isEnabled: true,
+    isEnabled: false,
     isFirstLogin: false,
   },
   {
@@ -7346,7 +7346,7 @@ export const UserInitialData: Partial<IUser>[] = [
     lastLogin: "2019-12-04 12:33:05",
     password: undefined,
     token: undefined,
-    isEnabled: true,
+    isEnabled: false,
     isFirstLogin: false,
   },
 ];
