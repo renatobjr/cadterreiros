@@ -66,13 +66,6 @@ export const authService = {
         };
       }
 
-      if (user.role !== ERole.ADMIN) {
-        return {
-          error: "Você não tem as permissões para acessar este serviço.",
-          status: false,
-        };
-      }
-
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       const token = tokenUtils.generate(
         {
