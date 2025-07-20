@@ -25,14 +25,14 @@ import { baseRoute } from "@/router/base";
         </div>
 
         <div class="d-flex ga-4 justify-center">
-          <v-btn
+          <!-- <v-btn
             class="text-none"
             color="red"
             rounded="lg"
             text="Cadastro Voluntário"
             size="large"
             @click="$router.push({ name: baseRoute.communityRegister })"
-          />
+          /> -->
 
           <v-btn
             append-icon="mdi-chevron-right"
