@@ -25,9 +25,7 @@ export const religiousCommunityController = {
 
   getRandom: async (req: Request, res: Response): Promise<void> => {
     const response = await religiousCommunityService.getRandom();
-    if (!response.status) {
-      res.apiResponse(HttpStatusCode.BAD_REQUEST, response.error);
-    }
+
     res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
       error: response?.error,
       data: plainToInstance(ReligiousCommunitiesGetRamdomDTO, response.data, {
@@ -39,12 +37,10 @@ export const religiousCommunityController = {
 
   getDataFromMaping: async (req: Request, res: Response): Promise<void> => {
     const response = await religiousCommunityService.getDataFromMaping();
-    if (!response.status) {
-      res.apiResponse(HttpStatusCode.BAD_REQUEST, response.error);
-    }
+
     res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
       error: response?.error,
-      results: response.data,
+      data: response.data,
       status: response.status,
     });
   },
@@ -120,12 +116,10 @@ export const religiousCommunityController = {
   ): Promise<void> => {
     const community = req.body as IReligiousCommunity;
     const { id } = req.user;
-
     const response = await religiousCommunityService.createReligiousCommunity(
       community,
       id
     );
-
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
       data: response.data,

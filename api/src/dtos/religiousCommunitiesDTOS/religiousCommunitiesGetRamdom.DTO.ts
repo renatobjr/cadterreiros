@@ -2,7 +2,7 @@ import { Expose, Transform } from "class-transformer";
 import slugify from "slugify";
 
 export class ReligiousCommunitiesGetRamdomDTO {
-  @Expose({ name: "id" })
+  @Expose()
   @Transform((value) => value.obj._id)
   id!: string;
 

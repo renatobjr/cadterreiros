@@ -177,7 +177,6 @@ export const religiousCommunityService = {
         status: true,
       };
     } catch (error: any) {
-      console.log(error);
       return {
         error: error,
         status: false,
@@ -226,6 +225,7 @@ export const religiousCommunityService = {
         status: true,
       };
     } catch (error: any) {
+      console.log(error);
       return {
         error: error,
         status: false,

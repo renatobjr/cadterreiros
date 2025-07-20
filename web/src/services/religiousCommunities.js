@@ -31,8 +31,7 @@ export const religiousCommunityService = {
     return [];
   },
   getDataFromMaping: async () => {
-    const response = await api.get(`${religiousCommunitiesURL}/public/maping`);
-
+    const response = await api.get(`${religiousCommunitiesURL}/public/mapping`);
     if (response.status) {
       return response.data;
     }
