@@ -12,8 +12,8 @@ const isLoading = ref(false);
 
 const form = ref();
 const loginForm = reactive({
-  email: "belatuca@hotmail.com",
-  password: "test.password",
+  email: "",
+  password: "",
 });
 
 const login = async () => {

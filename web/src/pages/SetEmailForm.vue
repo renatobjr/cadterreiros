@@ -9,7 +9,7 @@ const authStore = useAuthStore();
 const navigate = useRouter();
 
 const form = ref();
-const userEmail = ref("renato.bonfim.jr@cciao.org");
+const userEmail = ref("");
 
 const isFromForget = ref(true);
 
