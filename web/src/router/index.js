@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router/auto'
 import base, { baseRoute } from './base'
 import auth from './auth'
-import user from './user'
 import { useAuthStore } from '@/stores/auth.store';
 
 const router = createRouter({
@@ -9,7 +8,6 @@ const router = createRouter({
   routes: [
     ...base,
     ...auth,
-    ...user
   ],
   scrollBehavior(to, from, savedPosition) {
     return { top: 0, behavior: 'smooth' };

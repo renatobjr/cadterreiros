@@ -10,7 +10,6 @@ declare module 'vue' {
   export interface GlobalComponents {
     CadAddUserDialog: typeof import('./src/components/dialogs/CadAddUserDialog.vue')['default']
     CadApproveDialog: typeof import('./src/components/dialogs/CadApproveDialog.vue')['default']
-    CadChangeUserRole: typeof import('./src/components/dialogs/CadChangeUserRoleDialog.vue')['default']
     CadChangeUserRoleDialog: typeof import('./src/components/dialogs/CadChangeUserRoleDialog.vue')['default']
     CadChip: typeof import('./src/components/common/CadChip.vue')['default']
     CadCommunity: typeof import('./src/components/common/CadCommunity.vue')['default']
@@ -27,7 +26,6 @@ declare module 'vue' {
     CadNav: typeof import('./src/components/common/CadNav.vue')['default']
     CadRejectDialog: typeof import('./src/components/dialogs/CadRejectDialog.vue')['default']
     CadRequestCorrectionsDialog: typeof import('./src/components/dialogs/CadRequestCorrectionsDialog.vue')['default']
-    CadRequestReviewDialog: typeof import('./src/components/dialogs/CadRequestCorrectionsDialog.vue')['default']
     CadSetCensusStepDialog: typeof import('./src/components/dialogs/CadSetCensusStepDialog.vue')['default']
     CadSetOwnerDialog: typeof import('./src/components/dialogs/CadSetOwnerDialog.vue')['default']
     CadSetUserStatusDialog: typeof import('./src/components/dialogs/CadSetUserStatusDialog.vue')['default']
