@@ -7,9 +7,11 @@ import { ApiResponseType } from "@/api/@types/responsesTypes";
 import OpenAI from "openai";
 import { gptPrompt } from "../configs/gptPrompt";
 import { Types } from "mongoose";
-import { IUser, User } from "../schemas/User";
+import { ERole, IUser, User } from "../schemas/User";
 import fileUtils from "../utils/file.utils";
 import fs from "fs";
+import mailUtils from "../utils/mail.utils";
+import { EMailTypes } from "../enum/EmailTYpes.enum";
 
 type searchType = {
   search: string;
@@ -32,6 +34,33 @@ export const religiousCommunityService = {
       const createdCommunity = await ReligiousCommunity.create(
         religiousCommunity
       );
+
+      const user = await User.findById(userId);
+      const adminUsers = await User.find({
+        role: ERole.ADMIN,
+      });
+
+      const html = await mailUtils.template({
+        type: EMailTypes.ADD_COMMUNITY,
+        data: {
+          communityName: createdCommunity.religiousSpaceName,
+          censusTaker: user?.fullname ?? user?.email,
+          fullAddress: createdCommunity.communityAddress.fullAddress,
+        },
+      });
+
+      const mappedAdmins = adminUsers.map((user) => {
+        return {
+          address: user.email,
+        };
+      });
+
+      mailUtils.sendMail({
+        to: mappedAdmins,
+        subject: "Nova comunidade cadastrada",
+        html: html,
+      });
+
       return {
         data: createdCommunity,
         status: true,
@@ -58,7 +87,34 @@ export const religiousCommunityService = {
         };
       }
 
+      religiousCommunity.censusStep = ECensusStep.PENDING;
       await community.updateOne(religiousCommunity);
+
+      const user = await User.findById(community.censusTaker);
+      const adminUsers = await User.find({
+        role: ERole.ADMIN,
+      });
+
+      const html = await mailUtils.template({
+        type: EMailTypes.UPDATE_COMMUNITY,
+        data: {
+          communityName: community.religiousSpaceName,
+          censusTaker: user?.fullname ?? user?.email,
+          fullAddress: community.communityAddress.fullAddress,
+        },
+      });
+
+      const mappedAdmins = adminUsers.map((user) => {
+        return {
+          address: user.email,
+        };
+      });
+
+      mailUtils.sendMail({
+        to: mappedAdmins,
+        subject: "Comunidade atualizada",
+        html: html,
+      });
 
       return {
         data: community,
@@ -408,9 +464,6 @@ export const religiousCommunityService = {
     userId: string,
     keepStatus: boolean
   ): Promise<Record<string, boolean | string>> => {
-    console.log({
-      keepStatus,
-    });
     try {
       const updatedComnunity: any = {
         censusTaker: new Types.ObjectId(userId),
@@ -420,12 +473,29 @@ export const religiousCommunityService = {
         updatedComnunity.censusStep = ECensusStep.PENDING;
       }
 
-      await ReligiousCommunity.findOneAndUpdate(
+      const community = await ReligiousCommunity.findOneAndUpdate(
         { _id: new Types.ObjectId(communityId) },
         {
           $set: updatedComnunity,
         }
       );
+
+      const userData = await User.findOne({ _id: community?.censusTaker });
+
+      const html = await mailUtils.template({
+        type: EMailTypes.ASSIGN_OWNER,
+        data: {
+          censusTakerName: userData?.fullname,
+          communityName: community?.religiousSpaceName,
+          fullAddress: community?.communityAddress.fullAddress,
+        },
+      });
+
+      mailUtils.sendMail({
+        to: userData?.email,
+        subject: "Responsável pela Atualização",
+        html: html,
+      });
 
       return {
         data: true,
@@ -522,7 +592,7 @@ export const religiousCommunityService = {
 
   rejectCensus: async (communityId: string, rejectedReason: string) => {
     try {
-      await ReligiousCommunity.findOneAndUpdate(
+      const community = await ReligiousCommunity.findOneAndUpdate(
         { _id: new Types.ObjectId(communityId) },
         {
           $set: {
@@ -531,6 +601,24 @@ export const religiousCommunityService = {
           },
         }
       );
+
+      const userData = await User.findOne({ _id: community?.censusTaker });
+
+      const html = await mailUtils.template({
+        type: EMailTypes.REQUEST_CORRECTIONS,
+        data: {
+          censusTakerName: userData?.fullname,
+          communityName: community?.religiousSpaceName,
+          fullAddress: community?.communityAddress.fullAddress,
+          correctionNotes: rejectedReason,
+        },
+      });
+
+      mailUtils.sendMail({
+        to: userData?.email,
+        subject: "Solictaçào de correção",
+        html: html,
+      });
 
       return {
         data: true,

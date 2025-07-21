@@ -16,4 +16,7 @@ export class ReligiousCommunitiesGetByUserIdDTO {
 
   @Expose()
   communityType!: string;
+
+  @Expose()
+  rejectedReason!: string;
 }

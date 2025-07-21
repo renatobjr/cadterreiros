@@ -22,19 +22,23 @@ const props = defineProps({
         </tr>
         <tr>
           <td>Cargo da Liderança:</td>
-          <td>{{ community.religiousSpacePositionName }}</td>
+          <td class="text-capitalize">
+            {{ community.religiousSpacePositionName }}
+          </td>
         </tr>
         <tr>
           <td>Identificação da Casa:</td>
-          <td>{{ community.communityType }}</td>
+          <td class="text-capitalize">{{ community.communityType }}</td>
         </tr>
         <tr>
           <td>Linhas/Nações:</td>
-          <td>{{ community.religiousSpaceNation }}</td>
+          <td class="text-capitalize">{{ community.religiousSpaceNation }}</td>
         </tr>
         <tr>
           <td>Liguas Práticadas:</td>
-          <td>{{ community.religiousSpacePraticalLanguages }}</td>
+          <td class="text-capitalize">
+            {{ community.religiousSpacePraticalLanguages }}
+          </td>
         </tr>
         <tr>
           <td>Ano de Fundaçào da Casa/Ilê</td>
@@ -89,8 +93,27 @@ const props = defineProps({
         </tr>
         <tr>
           <td>Participação em Programas Sociais:</td>
-          <td>{{ community.leaderSocialProgram }}</td>
+          <td>
+            <template
+              v-if="
+                community.leaderSocialProgram &&
+                community.leaderSocialProgram.length > 0
+              "
+            >
+              <div
+                v-for="(program, index) in community.leaderSocialProgram"
+                :key="index"
+                style="margin-bottom: 4px"
+              >
+                {{ program }}
+              </div>
+            </template>
+            <template v-else>
+              <span>Sem participações registradas</span>
+            </template>
+          </td>
         </tr>
+
         <tr>
           <td>Já sofreu racismo?</td>
           <td>{{ community.leaderSufferedRacism === true ? "Sim" : "Nao" }}</td>

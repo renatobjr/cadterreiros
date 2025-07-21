@@ -32,7 +32,6 @@ const closeDialog = () => {
   if (form.value) {
     form.value.reset();
     form.value.resetValidation();
-    selectedCensusTaker.value = null;
   }
   dialog.value = false;
 };
