@@ -126,6 +126,9 @@ const onReject = async (data) => {
     <v-card class="d-flex flex-column h-100 pa-8 rounded-lg">
       <v-card-title class="text-h6 mb-2">
         {{ community[0].religiousSpaceName }}
+        <span class="text-title-1 d-block font-weight-light"
+          >{{ `Endereço: ${community[0].communityAddress.fullAddress}` }}
+        </span>
         <span class="text-subtitle-1 d-block font-weight-light">{{
           `Recenseado em ${dayjs(community[0].createdAt).format(
             "DD/MM/YYYY"
