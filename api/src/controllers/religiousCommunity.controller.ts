@@ -71,7 +71,7 @@ export const religiousCommunityController = {
       );
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
-      data: response,
+      data: response.data,
       status: response.status,
     });
   },

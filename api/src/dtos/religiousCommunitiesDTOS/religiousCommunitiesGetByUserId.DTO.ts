@@ -1,22 +1,96 @@
+import {
+  ECensusStep,
+  EReligiousSpaceStatus,
+  ICommunityAddress,
+  IContacts,
+  IGeoLocation,
+} from "@/api/schemas/ReligiousCommunity";
 import { Expose, Transform } from "class-transformer";
+import { ObjectId } from "mongoose";
 
 export class ReligiousCommunitiesGetByUserIdDTO {
   @Expose()
   @Transform((value) => value.obj._id)
-  id!: string;
+  id!: ObjectId;
 
   @Expose()
-  religiousSpaceName!: string;
+  authorization!: number;
 
   @Expose()
-  censusStep!: string;
+  communityGoogleApiLocalization!: IGeoLocation;
 
   @Expose()
-  religiousSpaceNation!: string;
+  communityAddress!: ICommunityAddress;
 
   @Expose()
   communityType!: string;
 
   @Expose()
+  @Transform((value) => value.obj.religiousSpaceYearFoundation.toString())
+  religiousSpaceYearFoundation!: string;
+
+  @Expose()
+  religiousSpaceLeaderFoundation!: string;
+
+  @Expose()
+  religiousSpaceNation!: string;
+
+  @Expose()
+  religiousSpacePraticalLanguages!: string;
+
+  @Expose()
+  religiousSpaceName!: string;
+
+  @Expose()
+  religiousSpaceLeaderName!: string;
+
+  @Expose()
+  religiousSpacePositionName!: string;
+
+  @Expose()
+  religiousSpaceStartedBy!: string;
+
+  @Expose()
+  religiousSpaceNameDateStartedBy!: Date | string;
+
+  @Expose()
+  leaderContacts!: IContacts;
+
+  @Expose()
+  leaderEthnicity!: string;
+
+  @Expose()
+  leaderGender!: string;
+
+  @Expose()
+  leaderEducationalLevel!: string;
+
+  @Expose()
+  leaderSocialProgram!: string | null;
+
+  @Expose()
+  leaderSufferedRacism!: boolean;
+
+  @Expose()
+  religiousSpaceMainPicture!: string;
+
+  @Expose()
+  religiousSpaceStatus!: EReligiousSpaceStatus;
+
+  @Expose()
+  censusStep!: ECensusStep;
+
+  @Expose()
+  @Transform((value) => value.obj.censusTaker._id)
+  censusTaker!: ObjectId;
+
+  @Expose()
+  @Transform((value) => value.obj.censusTaker.fullname)
+  censusTakerFullname!: string;
+
+  @Expose()
   rejectedReason!: string;
+
+  @Expose()
+  createdAt!: Date | string;
 }

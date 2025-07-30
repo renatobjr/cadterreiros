@@ -76,7 +76,7 @@ const setRequestCorrections = async () => {
 onMounted(async () => {
   isLoading.value = true;
   await usersStore.list();
-  listUsers.value = usersStore.listUsers;
+  listUsers.value = usersStore.usersList;
   isLoading.value = false;
 });
 </script>
@@ -106,7 +106,7 @@ onMounted(async () => {
             item-value="id"
             :rules="[validator.isRequired]"
             :disabled="isLoading"
-          />
+          ></v-select>
           <v-textarea
             v-model="rejectedReason"
             class="mt-2 mb-8"
