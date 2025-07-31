@@ -448,7 +448,7 @@ export const religiousCommunityService = {
       );
 
       return {
-        data: true,
+        data: filename,
         status: true,
       };
     } catch (error) {
