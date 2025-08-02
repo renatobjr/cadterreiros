@@ -100,8 +100,8 @@ export const religiousCommunityService = {
       ];
 
       religiousCommunity.communityAddress = {
-        fullAddress: parts.join(", "),
         ...religiousCommunity.communityAddress,
+        fullAddress: parts.join(" - "),
       } as ICommunityAddress;
 
       await community.updateOne(religiousCommunity);
