@@ -1,5 +1,6 @@
 import {
   ECensusStep,
+  ICommunityAddress,
   IReligiousCommunity,
   ReligiousCommunity,
 } from "@/api/schemas/ReligiousCommunity";
@@ -88,6 +89,21 @@ export const religiousCommunityService = {
       }
 
       religiousCommunity.censusStep = ECensusStep.PENDING;
+
+      const parts = [
+        religiousCommunity.communityAddress?.street,
+        religiousCommunity.communityAddress?.number,
+        religiousCommunity.communityAddress?.neighborhood,
+        religiousCommunity.communityAddress?.city,
+        religiousCommunity.communityAddress?.state,
+        religiousCommunity.communityAddress?.zipcode,
+      ];
+
+      religiousCommunity.communityAddress = {
+        fullAddress: parts.join(", "),
+        ...religiousCommunity.communityAddress,
+      } as ICommunityAddress;
+
       await community.updateOne(religiousCommunity);
 
       const user = await User.findById(community.censusTaker);
