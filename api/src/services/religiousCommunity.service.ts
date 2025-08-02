@@ -464,6 +464,7 @@ export const religiousCommunityService = {
     userId: string,
     keepStatus: boolean
   ): Promise<Record<string, boolean | string>> => {
+    console.log(communityId, userId, keepStatus);
     try {
       const updatedComnunity: any = {
         censusTaker: new Types.ObjectId(userId),
@@ -480,7 +481,7 @@ export const religiousCommunityService = {
         }
       );
 
-      const userData = await User.findOne({ _id: community?.censusTaker });
+      const userData = await User.findOne({ _id: userId });
 
       const html = await mailUtils.template({
         type: EMailTypes.ASSIGN_OWNER,
