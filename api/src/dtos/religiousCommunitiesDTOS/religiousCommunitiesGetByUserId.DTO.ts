@@ -92,7 +92,7 @@ export class ReligiousCommunitiesGetByUserIdDTO {
   rejectedReason!: string;
 
   @Expose()
-  religiousSpaceLiturgicCalendar!: [];
+  religiousSpaceEvents!: [];
 
   @Expose()
   createdAt!: Date | string;

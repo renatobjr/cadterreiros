@@ -81,7 +81,7 @@ export interface IReligiousCommunity {
   leaderSufferedRacism: boolean;
   religiousSpaceMainPicture: string;
   religiousSpaceStatus: EReligiousSpaceStatus;
-  religiousSpaceLiturgicCalendar?: [];
+  religiousSpaceEvents?: [];
   bio?: string | undefined;
   censusStep: ECensusStep;
   censusTaker: Types.ObjectId;
@@ -128,7 +128,7 @@ const ReligiousCommunitySchema = new Schema(
       enum: EReligiousSpaceStatus,
       default: EReligiousSpaceStatus.ACTIVE,
     },
-    religiousSpaceLiturgicCalendar: { type: Array, required: false },
+    religiousSpaceEvents: { type: Array, required: false },
     bio: { type: String, required: false },
     censusStep: {
       type: String,

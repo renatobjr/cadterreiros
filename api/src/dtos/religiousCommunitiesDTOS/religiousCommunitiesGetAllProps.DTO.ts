@@ -81,7 +81,7 @@ export class ReligiousCommunitiesGetByAllPropsDTO {
   bio?: string;
 
   @Expose()
-  religiousSpaceLiturgicCalendar?: [];
+  religiousSpaceEvents?: [];
 
   @Expose()
   censusStep!: ECensusStep;
