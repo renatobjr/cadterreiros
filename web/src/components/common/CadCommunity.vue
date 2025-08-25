@@ -55,7 +55,6 @@ const fileUrl = (filename) => {
 
         <GoogleMap
           class="map rounded-lg mt-8 mb-8"
-          :api-key="apiKey"
           disableDefaultUi="false"
           :center="{ lat: community[0].lat, lng: community[0].long }"
           :zoom="15"
