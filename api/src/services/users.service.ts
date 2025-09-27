@@ -6,7 +6,7 @@ import { EMailTypes } from "../enum/EmailTYpes.enum";
 export const usersService = {
   list: async (): Promise<ApiResponseType<IUser[]>> => {
     try {
-      const users = await User.find({ isEnabled: true });
+      const users = await User.find({ isEnabled: true, isFirstLogin: false });
 
       return {
         data: users,
