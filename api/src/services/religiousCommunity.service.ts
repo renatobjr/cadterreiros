@@ -199,15 +199,9 @@ export const religiousCommunityService = {
         searchTerm = { $or: orConditions };
       }
 
-      if (options.censusStep !== undefined) {
-        if (Object.keys(searchTerm).length === 0) {
-          searchTerm = { censusStep: options.censusStep };
-        } else {
-          searchTerm = {
-            $and: [searchTerm, { censusStep: options.censusStep }],
-          };
-        }
-      }
+      searchTerm = {
+        $and: [searchTerm, { censusStep: ECensusStep.APPROVED }],
+      };
 
       const religiousCommunities = await ReligiousCommunity.aggregate([
         {
@@ -241,6 +235,7 @@ export const religiousCommunityService = {
   getRandom: async (): Promise<ApiResponseType<IReligiousCommunity[]>> => {
     try {
       const getRamdomCommunities = await ReligiousCommunity.aggregate([
+        { $match: { censusStep: ECensusStep.APPROVED } },
         { $sample: { size: 9 } },
       ]);
 
@@ -267,6 +262,7 @@ export const religiousCommunityService = {
         await ReligiousCommunity.countDocuments();
 
       const totalCities = await ReligiousCommunity.aggregate([
+        { $match: { censusStep: ECensusStep.APPROVED } },
         {
           $group: {
             _id: "$communityAddress.city",
@@ -278,6 +274,7 @@ export const religiousCommunityService = {
       ]);
 
       const totalNeighborhoods = await ReligiousCommunity.aggregate([
+        { $match: { censusStep: ECensusStep.APPROVED } },
         {
           $group: {
             _id: "$communityAddress.neighborhood",
