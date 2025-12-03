@@ -1,4 +1,5 @@
 import api from "@/configs/api.config";
+import { ECensusStep } from "@/enum/ECensusStep";
 
 const religiousCommunitiesURL = "religious-communities";
 
@@ -6,6 +7,7 @@ export const religiousCommunityService = {
   list: async (options) => {
     const response = await api.get(`${religiousCommunitiesURL}/public/list`, {
       search: options,
+      censusStep: ECensusStep.APPROVED
     });
     if (response.status) {
       return response.data;

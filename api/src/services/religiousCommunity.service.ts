@@ -199,9 +199,15 @@ export const religiousCommunityService = {
         searchTerm = { $or: orConditions };
       }
 
-      searchTerm = {
-        $and: [searchTerm, { censusStep: ECensusStep.APPROVED }],
-      };
+      if (options.censusStep !== undefined) {
+        if (Object.keys(searchTerm).length === 0) {
+          searchTerm = { censusStep: options.censusStep };
+        } else {
+          searchTerm = {
+            $and: [searchTerm, { censusStep: options.censusStep }],
+          };
+        }
+      }
 
       const religiousCommunities = await ReligiousCommunity.aggregate([
         {
