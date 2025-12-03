@@ -92,9 +92,9 @@ onMounted(async () => {
   await initializeData();
 });
 
-watch(refreshTrigger, async () => {
-  await initializeData();
-});
+// watch(refreshTrigger, async () => {
+//   await initializeData();
+// });
 
 watch(search, async (generic) => {
   await religiousCommunitiesStore.listWithUserId(generic, ECensusStep.APPROVED);
@@ -104,6 +104,10 @@ watch(search, async (generic) => {
 const loadCommunities = async ({ page, itemsPerPage, sortBy }) => {
   isLoaded.value = true;
 
+  await religiousCommunitiesStore.listWithUserId(
+    search.value,
+    ECensusStep.APPROVED
+  );
   await religiousCommunitiesStore
     .fetchData({
       page,

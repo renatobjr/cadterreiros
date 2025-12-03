@@ -102,6 +102,10 @@ watch(search, async (generic) => {
 const loadCommunities = async ({ page, itemsPerPage, sortBy }) => {
   isLoaded.value = true;
 
+  await religiousCommunitiesStore.listWithUserId(
+    search.value,
+    ECensusStep.PENDING
+  );
   await religiousCommunitiesStore
     .fetchData({
       page,
