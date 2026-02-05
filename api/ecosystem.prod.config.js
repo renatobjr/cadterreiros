@@ -4,7 +4,7 @@ module.exports = {
       name: "cadterreiros_api_prod",
       script: "npm",
       args: "run start:prod:pm2",
-      watch: false,
+      watch: true,
     }
   ]
 };
