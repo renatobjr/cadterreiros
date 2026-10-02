@@ -1,11 +1,9 @@
 <script setup>
 import { baseRoute } from "@/router/base";
-import { GoogleMap, Marker, MarkerCluster } from "vue3-google-map";
+import CadMap from "@/components/common/CadMap.vue";
 import { ref, watch, onMounted } from "vue";
 import { setChipColor } from "@/utils/setChipColor";
 import { useReligiousCommunitiesStore } from "@/stores/religiousCommunities.store";
-import cadMarkerCluster from "@/assets/svg/marker.cluster.svg";
-import cadMarkerSimple from "@/assets/svg/marker.simple.svg";
 import normalizer from "@/utils/normalizer";
 import router from "@/router";
 
@@ -88,23 +86,17 @@ const center = computed(() => {
   };
 });
 
-const renderer = {
-  render({ count, position }) {
-    return new google.maps.Marker({
-      position,
-      label: {
-        text: String(count),
-        color: "#ffffff",
-        fontSize: "14px",
-      },
-      icon: {
-        url: cadMarkerCluster,
-        scaledSize: new google.maps.Size(40, 40),
-      },
-      zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count,
-    });
-  },
-};
+const markers = computed(() =>
+  communitiesToMap.value.map((community) => ({
+    lat: parseFloat(community.lat),
+    lng: parseFloat(community.long),
+    title:
+      normalizer.capitalize(community.religiousSpaceName) ||
+      community.religiousSpaceName,
+    slug: community.slugify,
+    id: community.id,
+  }))
+);
 
 const goToCommunity = (slug, id) => {
   router.push({ name: baseRoute.community, params: { id, slug } });
@@ -184,34 +176,15 @@ const goToCommunity = (slug, id) => {
 
         <v-tabs-window-item value="maps">
           <div class="mt-6">
-            <GoogleMap
+            <CadMap
               class="map rounded-lg elevation-3"
-              api-key="AIzaSyCww53qH4bTw9z2le42RZu0QFam20AiuyU"
-              disableDefaultUi="false"
               :center="center"
               :zoom="13"
-            >
-              <MarkerCluster :options="{ renderer }">
-                <Marker
-                  v-for="(community, i) in communitiesToMap"
-                  :key="i"
-                  :options="{
-                    position: {
-                      lat: community.lat,
-                      lng: community.long,
-                    },
-                    icon: {
-                      url: cadMarkerSimple,
-                      scaledSize: { width: 40, height: 40 },
-                    },
-                    title:
-                      normalizer.capitalize(community.religiousSpaceName) ||
-                      community.religiousSpaceName,
-                  }"
-                  @click="goToCommunity(community.slugify, community.id)"
-                />
-              </MarkerCluster>
-            </GoogleMap>
+              :markers="markers"
+              cluster
+              fit
+              @marker-click="goToCommunity($event.slug, $event.id)"
+            />
           </div>
         </v-tabs-window-item>
       </v-tabs-window>

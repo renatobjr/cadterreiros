@@ -1,14 +1,12 @@
 <script setup>
 import dayjs from "dayjs";
-import { GoogleMap, Marker } from "vue3-google-map";
-import cadMarkerSimple from "@/assets/svg/marker.simple.svg";
+import CadMap from "@/components/common/CadMap.vue";
 import { useReligiousCommunitiesStore } from "@/stores/religiousCommunities.store";
 import { setChipColor } from "@/utils/setChipColor";
 import { ECensusStep } from "@/enum/ECensusStep";
 import { authRoute } from "@/router/auth";
 import { useSnackbarStore } from "@/stores/components/snackbar.store";
 
-const apiKey = import.meta.env.VITE_GOOGLE_MAPS;
 const imgAPI = import.meta.env.VITE_IMG_RELIGIOUS_COMMUNITY_URL;
 
 const religiousCommunitiesStore = useReligiousCommunitiesStore();
@@ -17,6 +15,19 @@ const navigate = useRouter();
 
 const isLoading = ref(true);
 const community = ref({});
+
+const mapCenter = computed(() => ({
+  lat: community.value[0]?.communityGoogleApiLocalization?.lat,
+  lng: community.value[0]?.communityGoogleApiLocalization?.long,
+}));
+
+const mapMarkers = computed(() => {
+  const localization = community.value[0]?.communityGoogleApiLocalization;
+
+  if (!localization) return [];
+
+  return [{ lat: localization.lat, lng: localization.long }];
+});
 
 const showSetRequestCorrections = ref(false);
 const showSetApproveDialog = ref(false);
@@ -189,29 +200,12 @@ const onReject = async (data) => {
                 cover
                 class="rounded-lg main-picture"
               ></v-img>
-              <GoogleMap
+              <CadMap
                 class="map rounded-lg mt-8 mb-8"
-                :api-key="apiKey"
-                disableDefaultUi="false"
-                :center="{
-                  lat: community[0].communityGoogleApiLocalization.lat,
-                  lng: community[0].communityGoogleApiLocalization.long,
-                }"
+                :center="mapCenter"
                 :zoom="15"
-              >
-                <Marker
-                  :options="{
-                    position: {
-                      lat: community[0].communityGoogleApiLocalization.lat,
-                      lng: community[0].communityGoogleApiLocalization.long,
-                    },
-                    icon: {
-                      url: cadMarkerSimple,
-                      scaledSize: { width: 40, height: 40 },
-                    },
-                  }"
-                ></Marker>
-              </GoogleMap>
+                :markers="mapMarkers"
+              />
             </v-row>
           </v-col>
           <v-col cols="8">
