@@ -1,7 +1,8 @@
 <script setup>
 import { useReligiousCommunitiesStore } from "@/stores/religiousCommunities.store";
-import { GoogleMap, Marker } from "vue3-google-map";
-import cadMarkerSimple from "@/assets/svg/marker.simple.svg";
+import CadMap from "@/components/common/CadMap.vue";
+import CadAddressAutocomplete from "@/components/common/CadAddressAutocomplete.vue";
+import { reverseGeocode } from "@/utils/geocoding";
 import {
   communityLanguage,
   communitySpaceNation,
@@ -10,16 +11,11 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-const GOOGLE_MAP_API_KEY = import.meta.env.VITE_GOOGLE_MAPS;
-
 const religiousCommunitiesStore = useReligiousCommunitiesStore();
 const form = ref();
 
 const menu = ref(false);
 const selectedDate = ref(null);
-
-const autocompleteGoogleMapsInput = ref(null);
-let autocompleteGoogleMaps;
 
 const community = reactive({
   authorization: true,
@@ -53,76 +49,28 @@ const community = reactive({
   },
 });
 
-const geocoder = new google.maps.Geocoder();
+const mapCenter = computed(() => ({
+  lat: community.communityGoogleApiLocalization.lat,
+  lng: community.communityGoogleApiLocalization.long,
+}));
 
-const initAutocomplete = async () => {
-  if (!autocompleteGoogleMapsInput.value || autocompleteGoogleMaps) return;
-  await nextTick();
+const mapMarkers = computed(() => [
+  {
+    lat: community.communityGoogleApiLocalization.lat,
+    lng: community.communityGoogleApiLocalization.long,
+  },
+]);
 
-  const input = autocompleteGoogleMapsInput.value.$el.querySelector("input");
-
-  if (!input) {
-    console.error("Elemento de input não encontrado para o autocomplete.");
-    return;
-  }
-
-  if (typeof google === "undefined" || !google.maps || !google.maps.places) {
-    console.error(
-      "API Google Maps Places não carregada. Certifique-se de que a biblioteca 'places' está incluída."
-    );
-    return;
-  }
-
-  const options = {
-    componentRestrictions: { country: "br" },
-    fields: ["address_components", "geometry", "formatted_address"],
-  };
-
-  autocompleteGoogleMaps = new google.maps.places.Autocomplete(input, options);
-
-  autocompleteGoogleMaps.addListener("place_changed", () => {
-    const place = autocompleteGoogleMaps.getPlace();
-
-    if (!place.geometry) {
-      console.warn(
-        "Autocomplete não retornou geometria para o local selecionado."
-      );
-      return;
-    }
-
-    const { lat, lng } = place.geometry.location;
-    updateMarkerLocation(lat(), lng());
-    fillAddress(place);
+const fillAddress = (address) => {
+  Object.assign(community.communityAddress, {
+    fullAddress: address.fullAddress,
+    street: address.street,
+    number: address.number,
+    neighborhood: address.neighborhood,
+    city: address.city,
+    state: address.state,
+    zipcode: address.zipcode,
   });
-};
-
-const fillAddress = (place) => {
-  community.communityAddress.fullAddress = place.formatted_address;
-
-  const address = {
-    street: "",
-    number: "",
-    neighborhood: "",
-    city: "",
-    state: "",
-    zipcode: "",
-  };
-
-  place.address_components.forEach((component) => {
-    const types = component.types;
-
-    if (types.includes("route")) address.street = component.long_name;
-    if (types.includes("street_number")) address.number = component.long_name;
-    if (types.includes("sublocality") || types.includes("sublocality_level_1"))
-      address.neighborhood = component.long_name;
-    if (types.includes("administrative_area_level_2"))
-      address.city = component.long_name;
-    if (types.includes("administrative_area_level_1"))
-      address.state = component.short_name;
-    if (types.includes("postal_code")) address.zipcode = component.long_name;
-  });
-
-  Object.assign(community.communityAddress, address);
 };
 
 const updateMarkerLocation = (lat, lng) => {
@@ -130,17 +78,23 @@ const updateMarkerLocation = (lat, lng) => {
   community.communityGoogleApiLocalization.long = lng;
 };
 
-const onMapClick = (event) => {
-  const lat = event.latLng.lat();
-  const lng = event.latLng.lng();
+const onAddressSelect = (address) => {
+  fillAddress(address);
 
+  if (Number.isFinite(address.lat) && Number.isFinite(address.lng)) {
+    updateMarkerLocation(address.lat, address.lng);
+  }
+};
+
+const onMapClick = async ({ lat, lng }) => {
   updateMarkerLocation(lat, lng);
 
-  geocoder.geocode({ location: { lat, lng } }, (results, status) => {
-    if (status === "OK" && results[0]) {
-      fillAddress(results[0]);
-    }
-  });
+  try {
+    const address = await reverseGeocode(lat, lng);
+    if (address) fillAddress(address);
+  } catch (error) {
+    console.error("[CommunityRegister] reverseGeocode", error);
+  }
 };
 
 const saveDate = (date) => {
@@ -156,10 +110,6 @@ const saveDate = (date) => {
     );
   }
 };
-
-onMounted(() => {
-  initAutocomplete();
-});
 </script>
 
 <template>
@@ -174,7 +124,7 @@ onMounted(() => {
       </v-card-title>
 
       <p class="pa-4">
-        Voce pode cadastar um terreiro de forma voluntária para ajudar a
+        Voce pode cadastat um terreiro de forma voluntária para ajudar a
         divulgar as comunidades de matriz africana e de terreiro. Antes de
         começar é importante ressaltar que o cadastramento voluntário será
         avaliado pela Equipe de Curadoria da CCIAO.
@@ -197,40 +147,19 @@ onMounted(() => {
 
         <v-spacer class="my-12"></v-spacer>
 
-        <v-text-field
-          v-model="community.communityAddress.fullAddress"
-          ref="autocompleteGoogleMapsInput"
-          label="Digite o endereço"
-          density="compact"
-          variant="outlined"
-          clearable
-          rounded="lg"
-          color="sealbronw"
+        <CadAddressAutocomplete
+          v-model:search="community.communityAddress.fullAddress"
+          :latitude="community.communityGoogleApiLocalization.lat"
+          :longitude="community.communityGoogleApiLocalization.long"
+          @select="onAddressSelect"
         />
-        <GoogleMap
+        <CadMap
           class="map rounded-lg elevation-3"
-          disableDefaultUi="false"
-          :api-key="GOOGLE_MAP_API_KEY"
-          :center="{
-            lat: community.communityGoogleApiLocalization.lat,
-            lng: community.communityGoogleApiLocalization.long,
-          }"
+          :center="mapCenter"
           :zoom="13"
-          @click="onMapClick"
-        >
-          <Marker
-            :options="{
-              position: {
-                lat: community.communityGoogleApiLocalization.lat,
-                lng: community.communityGoogleApiLocalization.long,
-              },
-              icon: {
-                url: cadMarkerSimple,
-                scaledSize: { width: 40, height: 40 },
-              },
-            }"
-          />
-        </GoogleMap>
+          :markers="mapMarkers"
+          @map-click="onMapClick"
+        />
 
         <v-spacer class="my-12"></v-spacer>
 

@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    CadAddressAutocomplete: typeof import('./src/components/common/CadAddressAutocomplete.vue')['default']
     CadAddUserDialog: typeof import('./src/components/dialogs/CadAddUserDialog.vue')['default']
     CadApproveDialog: typeof import('./src/components/dialogs/CadApproveDialog.vue')['default']
     CadChangeUserRoleDialog: typeof import('./src/components/dialogs/CadChangeUserRoleDialog.vue')['default']
@@ -17,11 +18,12 @@ declare module 'vue' {
     CadDataTableCommunitiesPending: typeof import('./src/components/dataTables/CadDataTableCommunitiesPending.vue')['default']
     CadDataTableCommunitiesRejected: typeof import('./src/components/dataTables/CadDataTableCommunitiesRejected.vue')['default']
     CadEmphasis: typeof import('./src/components/common/CadEmphasis.vue')['default']
+    CadFeaturedMap: typeof import('./src/components/CadFeaturedMap.vue')['default']
     CadFooter: typeof import('./src/components/common/CadFooter.vue')['default']
     CadGlobalLoader: typeof import('./src/components/common/CadGlobalLoader.vue')['default']
-    CadGoogleMaps: typeof import('./src/components/CadGoogleMaps.vue')['default']
     CadGridFAQ: typeof import('./src/components/CadGridFAQ.vue')['default']
     CadHero: typeof import('./src/components/CadHero.vue')['default']
+    CadMap: typeof import('./src/components/common/CadMap.vue')['default']
     CadMapNumbers: typeof import('./src/components/CadMapNumbers.vue')['default']
     CadNav: typeof import('./src/components/common/CadNav.vue')['default']
     CadRejectDialog: typeof import('./src/components/dialogs/CadRejectDialog.vue')['default']

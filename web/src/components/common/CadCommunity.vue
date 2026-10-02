@@ -1,9 +1,8 @@
 <script setup>
-import cadMarkerSimple from "@/assets/svg/marker.simple.svg";
+import CadMap from "@/components/common/CadMap.vue";
 import dayjs from "dayjs";
-import { GoogleMap, Marker } from "vue3-google-map";
 
-defineProps({
+const props = defineProps({
   community: {
     type: Object,
     required: true,
@@ -11,7 +10,19 @@ defineProps({
 });
 
 const imgAPI = import.meta.env.VITE_IMG_RELIGIOUS_COMMUNITY_URL;
-const apiKey = import.meta.env.VITE_GOOGLE_MAPS;
+
+const mapCenter = computed(() => ({
+  lat: props.community[0]?.lat,
+  lng: props.community[0]?.long,
+}));
+
+const mapMarkers = computed(() => {
+  const { lat, long } = props.community[0] || {};
+
+  if (lat == null || long == null) return [];
+
+  return [{ lat: parseFloat(lat), lng: parseFloat(long) }];
+});
 
 const fileUrl = (filename) => {
   if (filename) {
@@ -53,25 +64,12 @@ const fileUrl = (filename) => {
           ></v-img>
         </v-card-text>
 
-        <GoogleMap
+        <CadMap
           class="map rounded-lg mt-8 mb-8"
-          disableDefaultUi="false"
-          :center="{ lat: community[0].lat, lng: community[0].long }"
+          :center="mapCenter"
           :zoom="15"
-        >
-          <Marker
-            :options="{
-              position: {
-                lat: community[0].lat,
-                lng: community[0].long,
-              },
-              icon: {
-                url: cadMarkerSimple,
-                scaledSize: { width: 40, height: 40 },
-              },
-            }"
-          ></Marker>
-        </GoogleMap>
+          :markers="mapMarkers"
+        />
       </div>
     </v-card>
   </v-container>

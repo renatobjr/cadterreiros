@@ -10,7 +10,7 @@ import CadCommunity from './components/common/CadCommunity.vue'
 import CadChip from './components/common/CadChip.vue'
 import CadGLobalLoader from './components/common/CadGlobalLoader.vue'
 
-import CadGoogleMaps from './components/CadGoogleMaps.vue'
+import CadFeaturedMap from './components/CadFeaturedMap.vue'
 import CadGridFAQ from './components/CadGridFAQ.vue'
 import CadHero from './components/CadHero.vue'
 import CadShowcase from './components/CadShowcase.vue'
@@ -46,7 +46,7 @@ app.component('CadCommunity', CadCommunity)
 app.component('CadChip', CadChip)
 app.component('CadGLobalLoader', CadGLobalLoader)
 
-app.component('CadGoogleMaps', CadGoogleMaps)
+app.component('CadFeaturedMap', CadFeaturedMap)
 app.component('CadGridFaq', CadGridFAQ)
 app.component('CadHero', CadHero)
 app.component('CadShowcase', CadShowcase)

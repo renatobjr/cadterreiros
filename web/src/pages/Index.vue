@@ -13,7 +13,7 @@ onMounted(async () => {
 <template>
   <cad-hero />
   <cad-showcase />
-  <cad-google-maps />
+  <cad-featured-map />
   <cad-grid-faq />
   <cad-map-numbers />
 </template>
