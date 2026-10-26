@@ -1,5 +1,7 @@
 import { registerPlugins } from '@/plugins'
 
+import router from '@/router'
+
 import App from './App.vue'
 
 import CadNav from './components/common/CadNav.vue'
@@ -81,5 +83,14 @@ const vuetify = createVuetify({
 app.use(vuetify)
 
 registerPlugins(app)
+
+// Rastreia navegação SPA no Google Analytics 4
+router.afterEach((to) => {
+  if (typeof window.gtag === 'function') {
+    window.gtag('config', 'G-CCSQS7ZTT2', {
+      page_path: to.fullPath,
+    })
+  }
+})
 
 app.mount('#app')
