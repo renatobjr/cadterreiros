@@ -16,3 +16,6 @@
 
 # Dist
 /api/dist
+
+# Artifacts
+.artifacts/
