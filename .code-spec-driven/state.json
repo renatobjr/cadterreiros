@@ -33,7 +33,7 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T35",
+    "current_task": "T41",
     "completed_tasks": [
       "T1",
       "T2",
@@ -68,10 +68,11 @@
       "T31",
       "T32",
       "T33",
-      "T34"
+      "T34",
+      "T40"
     ],
     "uncommitted_files": [],
-    "next_step": "T34 concluída (GET /public/oldest + 3 testes). Aguardando decisão para T35 (POST /public/create).",
+    "next_step": "T40 concluída (rate-limit + header + 4 testes). Aguardando decisão para T41 (class-validator strict).",
     "blockers": [],
     "branch": null,
     "completed_at": null,
