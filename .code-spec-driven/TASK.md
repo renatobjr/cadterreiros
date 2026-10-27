@@ -42,7 +42,7 @@
 | T32 | Auth Context | ✅ Done | login/logout funciona | Quick | commit 598e6e8; build ✓; lint ✓; 6 testes (AuthContext.test.tsx) | login/logout funciona | Quick | 
 | T33 | Schema registeredVoluntarily + censusTaker opcional | ✅ Done | campo presente; censusTaker optional | Build | commit 970637d; build ✓; 3 testes (schema test); 4 DTOs null-safe (censusTaker?._id / fullname ?? não informado) | campo presente; censusTaker optional | Build | 
 | T34 | GET /public/oldest | ✅ Done | retorna 9 ordenados | Full | commit 818a0b7; build ✓; 6 testes (3 T34 + 3 T33) | retorna 9 ordenados | Full | 
-| T35 | POST /public/create | ⬜ Pending | cria com PENDING, registeredVoluntarily true, censusTaker null; retorna id | Full | 
+| T35 | POST /public/create | ✅ Done | cria com PENDING, registeredVoluntarily true, censusTaker null; retorna id | Full | commit pendente; build ✓; 20 testes (5 T35 + 15 anteriores) | cria com PENDING, registeredVoluntarily true, censusTaker null; retorna id | Full | 
 | T36 | POST /public/upload-main-picture/:id | ⬜ Pending | upload funciona | Full | 
 | T37 | GET /public/stats/summary | ⬜ Pending | retorna totais | Full | 
 | T38 | GET /public/stats/by-* (10) | ⬜ Pending | 10 endpoints retornam | Full | 
@@ -59,6 +59,7 @@
 | T49 | CookieBanner component | ⬜ Pending | renderiza; persiste; integra gtag | Full | 
 | T50 | CookieBanner tests | ⬜ Pending | render/accept/reject/persist | Full | 
 | T51 | Importar CSS no main.tsx (tokens/base/components/pages/design-system/prototype) | ⬜ Pending | bundle CSS inclui design system; classes aplicadas | Build | |
+| T52 | Expandir ReligiousCommunityCreateDTO com todos os campos obrigatórios do schema | ⬜ Pending | DTO cobre todos os campos required; cadastro real no Mongo passa | Full | |
 
 ## Gate Commands
 
@@ -147,6 +148,7 @@
 - T49: CookieBanner component (composed) (MIG-11)
 - T50: CookieBanner tests (Vitest) (MIG-11)
 - T51: Importar CSS no main.tsx (tokens/base/components/pages/design-system/prototype) (MIG-02)
+- T52: Expandir ReligiousCommunityCreateDTO (todos os campos required do schema) (MIG-06)
 ## Tasks
 
 ### T1 — Scaffold Vite + React 18 + TS + ESLint + Vitest
@@ -622,3 +624,21 @@ Aprovado para execução?
 
 - **Tests:** build (CSS bundle size)
 - **Gate:** Build
+
+
+### T52 — Expandir ReligiousCommunityCreateDTO
+
+- **What:** Adicionar ao DTO todos os campos obrigatórios do schema que faltam: communityGoogleApiLocalization, religiousSpaceLeaderFoundation, religiousSpacePraticalLanguages, religiousSpacePositionName, religiousSpaceStartedBy, religiousSpaceNameDateStartedBy, leaderEthnicity, leaderGender, leaderEducationalLevel, leaderSufferedRacism.
+- **Where:** `api/src/dtos/religiousCommunitiesDTOS/religiousCommunitiesCreate.DTO.ts`
+- **Depends on:** T35, T41
+- **Reuses:** `api/src/schemas/ReligiousCommunity.ts` (enums e tipos)
+- **Requirement:** MIG-06
+
+- **Done when:**
+  - [ ] DTO cobre todos os campos `required: true` do schema
+  - [ ] Cadastro real (sem stub) grava no Mongo sem erro de validação
+  - [ ] Teste de integração com payload completo grava e retorna id
+  - [ ] Gate check passes: `npm test` (api)
+
+- **Tests:** integration (api/tests/)
+- **Gate:** Full

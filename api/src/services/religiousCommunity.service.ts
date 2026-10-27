@@ -74,6 +74,29 @@ export const religiousCommunityService = {
     }
   },
 
+  createPublicReligiousCommunity: async (
+    religiousCommunity: Partial<IReligiousCommunity>
+  ): Promise<ApiResponseType<IReligiousCommunity>> => {
+    try {
+      const createdCommunity = await ReligiousCommunity.create({
+        ...religiousCommunity,
+        censusTaker: null,
+        censusStep: ECensusStep.PENDING,
+        registeredVoluntarily: true,
+      });
+
+      return {
+        data: createdCommunity,
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
   updateReligiousCommunity: async (
     communityId: string,
     religiousCommunity: Partial<IReligiousCommunity>

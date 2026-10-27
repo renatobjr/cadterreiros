@@ -139,6 +139,39 @@ export const religiousCommunityController = {
     });
   },
 
+  createPublicReligiousCommunity: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const community = req.body as Partial<IReligiousCommunity>;
+    const response =
+      await religiousCommunityService.createPublicReligiousCommunity(community);
+
+    const created = response.data as
+      | (IReligiousCommunity & {
+          _id?: unknown;
+          toObject?: () => Record<string, unknown>;
+        })
+      | undefined;
+    const data = created
+      ? {
+          id: String(created._id ?? (created as { id?: string }).id),
+          ...(created.toObject ? created.toObject() : {}),
+        }
+      : undefined;
+
+    return res.apiResponse(
+      response.status
+        ? HttpStatusCode.CREATED
+        : HttpStatusCode.INTERNAL_SERVER_ERROR,
+      {
+        error: response?.error,
+        data,
+        status: response.status,
+      }
+    );
+  },
+
   updateReligiousCommunity: async (
     req: Request,
     res: Response

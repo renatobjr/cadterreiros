@@ -28,6 +28,7 @@ api
         "Accept",
         "X-Access-Token",
         "Authorization",
+        "x-cadterreiros-api",
       ],
     })
   )

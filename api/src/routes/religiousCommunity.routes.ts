@@ -1,12 +1,23 @@
 import { Router } from "express";
 import { religiousCommunityController } from "@/api/controllers/religiousCommunity.controller";
 import isAuth from "@/api/middlewares/isAuth";
+import { publicCreateRateLimit } from "@/api/middlewares/rateLimit";
+import requireApiKey from "@/api/middlewares/requireApiKey";
+import { validateDTO } from "@/api/middlewares/validateDTO";
+import { ReligiousCommunityCreateDTO } from "@/api/dtos/religiousCommunitiesDTOS/religiousCommunitiesCreate.DTO";
 
 const router = Router();
 const basePath = process.env.NODE_BASE_URL || "/api/v1";
 const path = `${basePath}/religious-communities`;
 
 // Public routes
+router.post(
+  `${path}/public/create`,
+  publicCreateRateLimit,
+  requireApiKey,
+  validateDTO(ReligiousCommunityCreateDTO),
+  religiousCommunityController.createPublicReligiousCommunity
+);
 router.get(`${path}/public/list`, religiousCommunityController.list);
 router.get(`${path}/public/oldest`, religiousCommunityController.getOldest);
 router.get(`${path}/public/random`, religiousCommunityController.getRandom);
