@@ -33,7 +33,7 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T25",
+    "current_task": "T26",
     "completed_tasks": [
       "T1",
       "T2",
@@ -58,10 +58,11 @@
       "T21",
       "T22",
       "T23",
-      "T24"
+      "T24",
+      "T25"
     ],
     "uncommitted_files": [],
-    "next_step": "T24 concluída (MappingCharts + 10 gráficos + test). Aguardando decisão para T25 (composed/Pagination).",
+    "next_step": "T25 concluída (Pagination + 7 testes). Aguardando decisão para T26 (composed/EmptyState).",
     "blockers": [],
     "branch": null,
     "completed_at": null,
