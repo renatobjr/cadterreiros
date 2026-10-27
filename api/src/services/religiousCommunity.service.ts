@@ -256,6 +256,27 @@ export const religiousCommunityService = {
       };
     }
   },
+
+  getOldest: async (): Promise<ApiResponseType<IReligiousCommunity[]>> => {
+    try {
+      const oldestCommunities = await ReligiousCommunity.aggregate([
+        { $match: { censusStep: ECensusStep.APPROVED } },
+        { $sort: { religiousSpaceYearFoundation: 1, religiousSpaceName: 1 } },
+        { $limit: 9 },
+      ]);
+
+      return {
+        data: oldestCommunities,
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
   getDataFromMaping: async (): Promise<
     ApiResponseType<{
       totalReligiousCommunities: number;
