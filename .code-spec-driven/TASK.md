@@ -33,7 +33,7 @@
 | T23 | Router + redirects | ✅ Done | todas rotas; redirects funcionam | Full | build ✓; lint ✓; react-router-dom; redirects legados + 404 |
 | T24 | features/metrics/MappingCharts | ✅ Done | renderiza | Full | build ✓; lint ✓; 1 teste (MappingCharts.test.tsx) | renderiza | Full | 
 | T25 | composed/Pagination | ✅ Done | navega páginas | Quick | 
-| T26 | composed/EmptyState | ⬜ Pending | renderiza | Quick | 
+| T26 | composed/EmptyState | ✅ Done | renderiza | Quick | 
 | T27 | pages/Login | ⬜ Pending | renderiza | Quick | 
 | T28 | pages/OTP | ⬜ Pending | submit OTP | Quick | 
 | T29 | pages/SetPassword | ⬜ Pending | renderiza | Quick | 
