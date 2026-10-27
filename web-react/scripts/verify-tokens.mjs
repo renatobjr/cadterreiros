@@ -11,7 +11,7 @@ import fs from 'node:fs'
 import { ALL_TOKENS, TOKEN_MAP } from './tokens.mjs'
 import { renderTokens } from './build-tokens.mjs'
 
-const cssFiles = ['tokens', 'base', 'components', 'pages', 'design-system'].map((f) => `src/styles/${f}.css`)
+const cssFiles = ['tokens', 'base', 'components', 'pages', 'design-system', 'prototype'].map((f) => `src/styles/${f}.css`)
 const walk = (d) => fs.existsSync(d) ? fs.readdirSync(d, { recursive: true }).map((f) => `${d}/${f}`) : []
 const codeFiles = [
   ...walk('src'),

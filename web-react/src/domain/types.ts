@@ -92,3 +92,55 @@ export interface TypeByNationStats {
   african: number;
   traditional: number;
 }
+
+export interface TypeStats {
+  type: string;
+  count: number;
+}
+
+export interface GenderStats {
+  gender: string;
+  count: number;
+}
+
+export interface EthnicityStats {
+  ethnicity: string;
+  count: number;
+}
+
+export interface LanguageStats {
+  language: string;
+  count: number;
+}
+
+export interface NeighborhoodStats {
+  neighborhood: string;
+  count: number;
+}
+
+export interface PhotoCoverageStats {
+  withPhoto: number;
+  withoutPhoto: number;
+  total: number;
+}
+
+export interface StatsSummary {
+  totalReligiousCommunities: number;
+  totalCities: number;
+  totalNeighborhoods: number;
+}
+
+/** Conjunto completo das agregações públicas consumidas pelo mapeamento. */
+export interface MappingStats {
+  summary: StatsSummary;
+  byNation: NationStats[];
+  byCity: CityStats[];
+  byDecade: DecadeStats[];
+  byTypeAndNation: TypeByNationStats[];
+  byType: TypeStats[];
+  byLeaderGender: GenderStats[];
+  byLeaderEthnicity: EthnicityStats[];
+  byLanguage: LanguageStats[];
+  byNeighborhood: NeighborhoodStats[];
+  byPhotoCoverage: PhotoCoverageStats;
+}

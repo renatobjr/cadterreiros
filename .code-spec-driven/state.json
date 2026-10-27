@@ -80,10 +80,11 @@
       "T43",
       "T44",
       "T45",
-      "T51"
+      "T51",
+      "T53"
     ],
     "uncommitted_files": [],
-    "next_step": "T51 concluída (CSS 80,97 kB). verify-classes: 9 classes sem regra (T47). Aguardando decisão.",
+    "next_step": "T53 concluída (Mapping integrado, 108 testes). verify-tokens: 2 problemas (tokens em SVG inline). verify-classes: 8 classes. Aguardando.",
     "blockers": [],
     "branch": null,
     "completed_at": null,
