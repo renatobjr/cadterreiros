@@ -33,7 +33,7 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T44",
+    "current_task": "T45",
     "completed_tasks": [
       "T1",
       "T2",
@@ -77,14 +77,15 @@
       "T40",
       "T41",
       "T42",
-      "T43"
+      "T43",
+      "T44"
     ],
     "uncommitted_files": [],
-    "next_step": "T43 concluída (Vitest já configurado desde T1, 86 testes). Aguardando decisão para T44 (testes fluxos reais).",
+    "next_step": "T44 concluída (10 testes de fluxo). LACUNA: Mapping.tsx estático. Aguardando decisão para T45 (verify-contrast).",
     "blockers": [],
     "branch": null,
     "completed_at": null,
-    "total_tasks": 52,
+    "total_tasks": 53,
     "cutover_plan": "Após testes em sandbox, último commit migrando web-react/ para web/ (substituindo Vue 3)"
   }
 }

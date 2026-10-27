@@ -53,7 +53,7 @@
 | T41 | class-validator strict | ✅ Done | 400 com erros | Full | commit 8e5c114; build ✓; 15 testes (5 T41 + 10 anteriores) | 400 com erros | Full | 
 | T42 | Remover /public/random + /public/mapping | ✅ Done | endpoints não existem | Full | commit 5fb8200; build ✓; 45 testes | endpoints não existem | Full | 
 | T43 | Vitest setup | ✅ Done | npm run test roda | Full | configurado desde T1 (commit e18cdab); vitest.config.ts + setup.ts; 86 testes (26 files) |
-| T44 | Testes fluxos reais | ⬜ Pending | testes passam | Full | 
+| T44 | Testes fluxos reais | ✅ Done | testes passam | Full | commit pendente; build ✓; lint ✓; 96 testes (30 files, +10) | testes passam | Full | 
 | T45 | verify-contrast | ⬜ Pending | verde | Full | 
 | T46 | verify-tokens | ⬜ Pending | verde | Quick | 
 | T47 | verify-classes | ⬜ Pending | verde | Quick | 
@@ -62,6 +62,7 @@
 | T50 | CookieBanner tests | ⬜ Pending | render/accept/reject/persist | Full | 
 | T51 | Importar CSS no main.tsx (tokens/base/components/pages/design-system/prototype) | ⬜ Pending | bundle CSS inclui design system; classes aplicadas | Build | |
 | T52 | Expandir ReligiousCommunityCreateDTO com todos os campos obrigatórios do schema | ⬜ Pending | DTO cobre todos os campos required; cadastro real no Mongo passa | Full | |
+| T53 | Integrar Mapping.tsx aos endpoints /public/stats/* | ⬜ Pending | mapa + 10 gráficos consomem API real; testes de integração | Full | |
 
 ## Gate Commands
 
@@ -151,6 +152,7 @@
 - T50: CookieBanner tests (Vitest) (MIG-11)
 - T51: Importar CSS no main.tsx (tokens/base/components/pages/design-system/prototype) (MIG-02)
 - T52: Expandir ReligiousCommunityCreateDTO (todos os campos required do schema) (MIG-06)
+- T53: Integrar Mapping.tsx aos endpoints /public/stats/* (MIG-07)
 ## Tasks
 
 ### T1 — Scaffold Vite + React 18 + TS + ESLint + Vitest
@@ -643,4 +645,23 @@ Aprovado para execução?
   - [ ] Gate check passes: `npm test` (api)
 
 - **Tests:** integration (api/tests/)
+- **Gate:** Full
+
+
+### T53 — Integrar Mapping.tsx aos endpoints /public/stats/*
+
+- **What:** Substituir os dados estáticos de `Mapping.tsx` (e `MappingCharts.tsx`) por chamadas reais a `/public/stats/summary` e `/public/stats/by-*`.
+- **Where:** `web-react/src/pages/Mapping.tsx`, `web-react/src/features/metrics/components/MappingCharts.tsx`
+- **Depends on:** T20, T24, T37, T38
+- **Reuses:** `src/api/communities.ts` (adicionar métodos de stats)
+- **Requirement:** MIG-07
+
+- **Done when:**
+  - [ ] `api/communities.ts` expõe `getStatsSummary()` e `getStatsBy*()` (10 métodos)
+  - [ ] `Mapping.tsx` consome a API real (loading/error/empty states)
+  - [ ] `MappingCharts.tsx` recebe dados da API (não estáticos)
+  - [ ] Testes de integração com API mockada (não fixture estática)
+  - [ ] Gate check passes: `npm run test` + `npm run build`
+
+- **Tests:** integration
 - **Gate:** Full
