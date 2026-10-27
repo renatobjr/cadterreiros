@@ -41,18 +41,17 @@ function communityPlace(community: ReligiousCommunity): {
   label: string;
 } {
   const address = community.communityAddress;
-  if (address?.neighborhood || address?.city) {
-    const neighborhood = address.neighborhood ?? "";
-    const city = address.city ?? "";
-    return { neighborhood, city, label: [neighborhood, city].filter(Boolean).join(", ") };
+  const neighborhood = address?.neighborhood ?? community.neighborhood ?? "";
+  const city = address?.city ?? community.city ?? "";
+  if (!neighborhood && !city) {
+    const parts = (community.fullAddress ?? "")
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean);
+    const n = parts.length >= 2 ? parts[0] : "";
+    const c = parts.length >= 2 ? parts[1] : parts[0] ?? "";
+    return { neighborhood: n, city: c, label: [n, c].filter(Boolean).join(", ") };
   }
-  const parts = (community.fullAddress ?? "")
-    .split(",")
-    .map((part) => part.trim())
-    .filter(Boolean);
-  // Formato esperado: `Bairro, Cidade, UF`.
-  const neighborhood = parts.length >= 2 ? parts[0] : "";
-  const city = parts.length >= 2 ? parts[1] : parts[0] ?? "";
   return { neighborhood, city, label: [neighborhood, city].filter(Boolean).join(", ") };
 }
 
