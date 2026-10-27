@@ -21,7 +21,7 @@
 | T12 | api/communities.ts | ✅ Done | chamadas tipadas | Quick | 
 | T13 | api/auth.ts | ✅ Done | chamadas tipadas | Quick | 
 | T14 | features/communities/CommunityCard | ✅ Done | renderiza com dados | Quick | 
-| T15 | features/communities/SearchFilters | ⬜ Pending | filtra sem reload | Quick | 
+| T15 | features/communities/SearchFilters | ✅ Done | filtra sem reload | Quick | 
 | T16 | features/auth/LoginForm | ⬜ Pending | submit chama API | Quick | 
 | T17 | pages/Home | ⬜ Pending | renderiza dados reais | Full | 
 | T18 | pages/Search | ⬜ Pending | filtra SPA | Full | 
