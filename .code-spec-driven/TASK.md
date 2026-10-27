@@ -61,7 +61,7 @@
 | T49 | CookieBanner component | ⬜ Pending | renderiza; persiste; integra gtag | Full | 
 | T50 | CookieBanner tests | ⬜ Pending | render/accept/reject/persist | Full | 
 | T51 | Importar CSS no main.tsx (tokens/base/components/pages/design-system/prototype) | ✅ Done | bundle CSS inclui design system; classes aplicadas | Build | commit 0f9ed11; CSS 1,79 kB → 80,97 kB; fontes importadas; 2 erros CSS corrigidos; 96 testes |
-| T52 | Expandir ReligiousCommunityCreateDTO com todos os campos obrigatórios do schema | ✅ Done | DTO cobre todos os campos required; cadastro real no Mongo passa | Full | commit pendente; 51 testes; 17 campos required; validação real do schema |
+| T52 | Expandir ReligiousCommunityCreateDTO com todos os campos obrigatórios do schema | ✅ Done | DTO cobre todos os campos required; cadastro real no Mongo passa | Full | commit 73e65cf; 51 testes; 17 campos required; validação real do schema |
 | T53 | Integrar Mapping.tsx aos endpoints /public/stats/* | ✅ Done | mapa + 10 gráficos consomem API real; testes de integração | Full | commit d1cdb25; 108 testes (30 files); 11 endpoints; loading/error/empty |
 
 ## Gate Commands
