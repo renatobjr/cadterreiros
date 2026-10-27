@@ -12,6 +12,8 @@ export interface LeafletMapProps {
   communities: ReligiousCommunity[];
   className?: string;
   height?: number;
+  /** Zoom máximo ao enquadrar os pontos (útil na ficha de um único terreiro). */
+  maxZoom?: number;
 }
 
 const DEFAULT_CENTER: L.LatLngTuple = [-7.1195, -34.8451];
@@ -26,7 +28,12 @@ const toCssUrl = (url: string) => String(url).replace(/'/g, "%27");
  * tile OSM, marcador próprio (`marker.simple.svg`) e cluster com contador
  * (`marker.cluster.svg`), `ResizeObserver` e `fitBounds`.
  */
-export function LeafletMap({ communities, className, height = 460 }: LeafletMapProps) {
+export function LeafletMap({
+  communities,
+  className,
+  height = 460,
+  maxZoom = DEFAULT_ZOOM,
+}: LeafletMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.MarkerClusterGroup | null>(null);
@@ -107,9 +114,9 @@ export function LeafletMap({ communities, className, height = 460 }: LeafletMapP
 
     const bounds = markerLayer.getBounds();
     if (bounds.isValid()) {
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom: DEFAULT_ZOOM });
+      map.fitBounds(bounds, { padding: [40, 40], maxZoom });
     }
-  }, [communities]);
+  }, [communities, maxZoom]);
 
   return (
     <div

@@ -235,7 +235,9 @@ export const religiousCommunityController = {
     res: Response
   ): Promise<void> => {
     const { id } = req.params;
-    const response = await religiousCommunityService.getCommunityById(id);
+    const response = await religiousCommunityService.getCommunityById(id, {
+      approvedOnly: true,
+    });
 
     res.apiResponse<IReligiousCommunity>(HttpStatusCode.OK, {
       error: response?.error,

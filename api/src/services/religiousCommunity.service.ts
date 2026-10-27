@@ -7,8 +7,6 @@ import {
   ReligiousCommunity,
 } from "@/api/schemas/ReligiousCommunity";
 import { ApiResponseType } from "@/api/@types/responsesTypes";
-import OpenAI from "openai";
-import { gptPrompt } from "../configs/gptPrompt";
 import { geocodeAddress } from "../configs/geocoder";
 import { PipelineStage, Types } from "mongoose";
 import { ERole, IUser, User } from "../schemas/User";
@@ -1041,41 +1039,26 @@ export const religiousCommunityService = {
   },
 
   getCommunityById: async (
-    id: string
+    id: string,
+    options?: { approvedOnly?: boolean }
   ): Promise<ApiResponseType<IReligiousCommunity | string>> => {
     try {
       const religiousCommunity = await ReligiousCommunity.findById(id);
 
-      if (!religiousCommunity) {
+      // A ficha pública só expõe registros aprovados no censo.
+      if (
+        !religiousCommunity ||
+        (options?.approvedOnly &&
+          religiousCommunity.censusStep !== ECensusStep.APPROVED)
+      ) {
         return {
           error: "Religious Community not found",
           status: false,
         };
       }
 
-      if (!religiousCommunity.bio) {
-        console.log("[✔] Generated bio");
-
-        const gptClient = new OpenAI({
-          apiKey: process.env.GPT_API_KEY as string,
-        });
-
-        const gptResponse = await gptClient.chat.completions.create({
-          model: "gpt-3.5-turbo-1106",
-          messages: [
-            {
-              role: "user",
-              content: gptPrompt("bio", religiousCommunity),
-            },
-          ],
-        });
-
-        religiousCommunity.bio =
-          gptResponse.choices[0].message?.content ??
-          "Não há uma bio para essa comunidade";
-        await religiousCommunity.save();
-      }
-
+      // A ficha pública nunca gera conteúdo sob demanda: sem bio, a resposta
+      // devolve `undefined` e a interface mostra "não informado no censo".
       const aggregateReligiousCommunity: any =
         await ReligiousCommunity.aggregate([
           {
@@ -1096,8 +1079,9 @@ export const religiousCommunityService = {
           },
         ]);
 
+      // O aggregate devolve uma lista; a ficha pública expõe um único registro.
       return {
-        data: aggregateReligiousCommunity,
+        data: aggregateReligiousCommunity[0],
         status: true,
       };
     } catch (error: any) {

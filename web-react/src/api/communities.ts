@@ -23,34 +23,41 @@ export interface CommunitySearchParams {
 }
 
 /**
- * Extrai o payload do envelope da API (`{ data: { status, data } }`) e
- * valida o status. Aceita também o payload direto (mocks e respostas já
- * desembrulhadas) para manter o contrato tolerante.
+ * Extrai o payload do envelope da API (`{ data: { status, data } }`).
+ *
+ * Percorre até três níveis de `data`, valida `status` e rejeita respostas de
+ * erro — a API devolve `status: false` com HTTP 200 (ex.: id inexistente),
+ * e sem essa checagem o objeto de erro seria tratado como registro.
+ * Aceita também o payload direto (mocks e respostas já desembrulhadas).
  */
 function unwrapPayload<T>(response: unknown): T | null {
-  if (response === null || response === undefined) return null;
+  let current: unknown = response;
 
-  if (typeof response !== "object" || Array.isArray(response)) {
-    return response as T;
-  }
-
-  if (!("data" in response)) return response as T;
-
-  const inner = (response as { data?: unknown }).data;
-  if (
-    inner !== null &&
-    typeof inner === "object" &&
-    !Array.isArray(inner) &&
-    "data" in inner
-  ) {
-    const wrapped = inner as { status?: boolean; data?: T };
-    if (wrapped.status === false) {
-      throw new Error("A API recusou a consulta de estatísticas");
+  for (let depth = 0; depth < 3; depth += 1) {
+    if (current === null || current === undefined) return null;
+    if (typeof current !== "object" || Array.isArray(current)) {
+      return current as T;
     }
-    return wrapped.data ?? null;
+
+    const record = current as {
+      data?: unknown;
+      status?: unknown;
+      error?: unknown;
+    };
+
+    if (record.status === false) {
+      throw new Error(
+        typeof record.error === "string"
+          ? record.error
+          : "A API recusou a consulta",
+      );
+    }
+
+    if (!("data" in record)) return current as T;
+    current = record.data;
   }
 
-  return (inner as T | undefined) ?? null;
+  return (current as T | undefined) ?? null;
 }
 
 async function fetchStats<T>(endpoint: string): Promise<T | null> {
@@ -75,8 +82,12 @@ export async function listCommunities(
 
 export async function getCommunityById(id: string): Promise<ReligiousCommunity | null> {
   const response = await client.get(`${URL}/public/${id}`);
-  const data = unwrapPayload<ReligiousCommunity | string>(response);
+  const data = unwrapPayload<ReligiousCommunity | ReligiousCommunity[] | string>(
+    response,
+  );
   if (data === null || typeof data === "string") return null;
+  // A API já devolve um único registro; listas são aceitas por tolerância.
+  if (Array.isArray(data)) return data[0] ?? null;
   return data;
 }
 

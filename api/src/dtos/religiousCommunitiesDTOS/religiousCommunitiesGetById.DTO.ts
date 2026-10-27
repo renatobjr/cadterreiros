@@ -1,4 +1,5 @@
 import { Expose, Transform, Type } from "class-transformer";
+import slugify from "slugify";
 
 class LeaderContactDTO {
   @Expose()
@@ -11,7 +12,22 @@ class LeaderContactDTO {
   email?: string | undefined;
 }
 
+/**
+ * Ficha pública de uma comunidade (`GET /public/:id`).
+ *
+ * Mantém o contrato do mock: identidade (`id`, `slugify`), localização
+ * (`communityAddress` achatado em `neighborhood`/`city`), ficha do censo
+ * (nação, idioma, tipo, fundação) e coordenadas para o mapa.
+ */
 export class ReligiousCommunitiesGetByIdDTO {
+  @Expose()
+  @Transform((value) => value.obj._id)
+  id!: string;
+
+  @Expose()
+  @Transform((value) => slugify(value.obj.religiousSpaceName, { lower: true }))
+  slugify!: string;
+
   @Expose()
   @Transform((value) => {
     return value.obj.religiousSpaceName
@@ -23,38 +39,53 @@ export class ReligiousCommunitiesGetByIdDTO {
   religiousSpaceName!: string;
 
   @Expose()
-  @Transform((value) => value.obj.communityGoogleApiLocalization.lat)
-  lat!: number;
+  @Transform((value) => value.obj.communityGoogleApiLocalization?.lat ?? null)
+  lat!: number | null;
 
   @Expose()
-  @Transform((value) => value.obj.communityGoogleApiLocalization.long)
-  long!: number;
+  @Transform((value) => value.obj.communityGoogleApiLocalization?.long ?? null)
+  long!: number | null;
 
   @Expose()
   religiousSpaceYearFoundation!: number;
 
   @Expose()
-  communityType!: number;
+  @Transform((value) => value.obj.communityType ?? null)
+  communityType!: string | null;
 
   @Expose()
   religiousSpaceNation!: string;
 
+  @Expose()
+  religiousSpacePraticalLanguages?: string;
+
+  @Expose()
+  @Transform((value) => value.obj.communityAddress?.neighborhood ?? null)
+  neighborhood!: string | null;
+
+  @Expose()
+  @Transform((value) => value.obj.communityAddress?.city ?? null)
+  city!: string | null;
+
+  @Expose()
+  @Transform((value) => value.obj.communityAddress?.fullAddress ?? null)
+  fullAddress!: string | null;
+
   @Expose({ name: "leaderContacts" })
   @Type(() => LeaderContactDTO)
-  leaderContacts!: LeaderContactDTO;
+  leaderContacts?: LeaderContactDTO;
 
   @Expose()
-  religiousSpaceMainPicture!: string;
+  @Transform((value) => value.obj.religiousSpaceMainPicture ?? null)
+  religiousSpaceMainPicture?: string | null;
 
   @Expose()
-  @Transform((value) => value.obj.bio)
-  bio!: string;
+  @Transform((value) => value.obj.bio ?? null)
+  bio!: string | null;
 
   @Expose()
-  @Transform((value) => {
-    return value.obj.censusTaker?.fullname ?? "não informado";
-  })
-  censusTaker!: string;
+  @Transform((value) => value.obj.censusTaker?.fullname ?? null)
+  censusTaker!: string | null;
 
   @Expose()
   createdAt!: Date;

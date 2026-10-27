@@ -542,7 +542,9 @@
   border-radius: var(--r);
   border: 1px solid var(--border);
   aspect-ratio: 4 / 3;
-  object-fit: contain;
+  /* A foto preenche todo o frame; o recorte fica centralizado. */
+  object-fit: cover;
+  object-position: center;
   background: var(--surface);
 }
 .deflist {
@@ -580,6 +582,13 @@
   font-weight: 400;
   color: var(--muted);
   font-style: italic;
+}
+/* Valor composto (ex.: ponto da nação + nome) continua alinhado à direita. */
+.deflist__value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
 }
 
 /* ---------- toolbar / filters ---------- */

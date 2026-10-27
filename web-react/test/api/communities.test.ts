@@ -164,7 +164,7 @@ describe("communities api · public stats", () => {
     getMock.mockResolvedValue(envelope([], false));
 
     await expect(communitiesApi.statsByNation()).rejects.toThrow(
-      "A API recusou a consulta de estatísticas",
+      "A API recusou a consulta",
     );
   });
 
@@ -174,5 +174,29 @@ describe("communities api · public stats", () => {
     });
 
     await expect(communitiesApi.statsByCity()).rejects.toThrow("network down");
+  });
+  it("desembrulha a ficha pública de uma comunidade", async () => {
+    getMock.mockResolvedValue(envelope({ id: "abc", religiousSpaceName: "X" }));
+
+    await expect(communitiesApi.getById("abc")).resolves.toEqual({
+      id: "abc",
+      religiousSpaceName: "X",
+    });
+  });
+
+  it("aceita lista na ficha e devolve o primeiro registro", async () => {
+    getMock.mockResolvedValue(envelope([{ id: "abc" }, { id: "def" }]));
+
+    await expect(communitiesApi.getById("abc")).resolves.toEqual({ id: "abc" });
+  });
+
+  it("rejeita ficha quando a API responde status false", async () => {
+    getMock.mockResolvedValue({
+      data: { status: false, error: "Religious Community not found" },
+    });
+
+    await expect(communitiesApi.getById("ausente")).rejects.toThrow(
+      "Religious Community not found",
+    );
   });
 });

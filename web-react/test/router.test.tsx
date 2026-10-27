@@ -120,7 +120,12 @@ describe("router", () => {
   it("redireciona o endereço legado /:id/:slug para /terreiro/:slug", async () => {
     renderRoute("/12/terreiro-legado");
 
-    expect(await screen.findByText("Não encontrado.")).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", {
+        level: 1,
+        name: "Terreiro não encontrado",
+      }),
+    ).toBeInTheDocument();
   });
 
   it.each([
