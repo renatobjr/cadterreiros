@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import cadLogo from "../../assets/img/logos/cad.logo.svg";
 
 interface NavLink {
@@ -19,6 +20,7 @@ const enterLink: NavLink = { label: "Entrar", href: "/entrar" };
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
 
   return (
     <header className="nav">
@@ -32,11 +34,14 @@ export function Nav() {
         </a>
 
         <nav className="nav__links" aria-label="Navegação principal">
-          {links.map((l) => (
-            <a key={l.href} className="nav__link" href={l.href}>
-              {l.label}
-            </a>
-          ))}
+          {links.map((l) => {
+            const active = location.pathname === l.href;
+            return (
+              <a key={l.href} className="nav__link" href={l.href} aria-current={active ? "page" : undefined}>
+                {l.label}
+              </a>
+            );
+          })}
           <a className="nav__link nav__login" href={enterLink.href}>
             {enterLink.label}
           </a>
@@ -59,7 +64,7 @@ export function Nav() {
       {open && (
         <nav className="nav__drawer" id="nav-drawer" aria-label="Navegação móvel">
           {links.map((l) => (
-            <a key={l.href} className="nav__link" href={l.href} onClick={() => setOpen(false)}>
+            <a key={l.href} className="nav__link" href={l.href} aria-current={location.pathname === l.href ? "page" : undefined} onClick={() => setOpen(false)}>
               {l.label}
             </a>
           ))}
