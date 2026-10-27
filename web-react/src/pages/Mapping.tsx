@@ -3,7 +3,8 @@ import { communitiesApi } from "../api/communities";
 import Button from "../components/ui/Button";
 import EmptyState from "../components/composed/EmptyState";
 import MappingCharts from "../features/metrics/components/MappingCharts";
-import CommunityMap from "../features/metrics/components/CommunityMap";
+import LeafletMap from "../features/metrics/components/LeafletMap";
+
 import type { MappingStats, ReligiousCommunity } from "../domain/types";
 
 const EMPTY_STATS: MappingStats = {
@@ -126,7 +127,7 @@ export function Mapping() {
       </div>
 
       {!loading && !error && !empty ? (
-        <CommunityMap communities={communities} />
+        <LeafletMap communities={communities} height={420} />
       ) : null}
 
       {loading ? (
