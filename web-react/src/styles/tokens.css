@@ -54,6 +54,16 @@
   --map-coast: oklch(62% 0.07 225); /* linha de costa | group:support */
   --map-river: oklch(64% 0.075 220); /* rio Paraíba | group:support */
 
+  /* Nações */
+  --n-umbanda: oklch(48% 0.075 145); /* Umbanda | group:nation */
+  --n-nago: oklch(50% 0.085 78); /* Nagô | group:nation */
+  --n-ketu: oklch(48% 0.095 38); /* Ketu | group:nation */
+  --n-outros: oklch(50% 0.05 60); /* Outros | group:nation */
+  --n-angola: oklch(45% 0.075 152); /* Angola | group:nation */
+  --n-jeje: oklch(47% 0.08 242); /* Jeje | group:nation */
+  --n-ekiti-efon: oklch(46% 0.08 310); /* Ekiti Efon | group:nation */
+  --n-quimbanda: oklch(45% 0.09 25); /* Quimbanda | group:nation */
+
   /* Famílias */
   --font-display: 'Newsreader', 'Iowan Old Style', Charter, Georgia, serif; /* família tipográfica | group:font */
   --font-body: 'Nunito Sans', sans-serif; /* família tipográfica | group:font */
