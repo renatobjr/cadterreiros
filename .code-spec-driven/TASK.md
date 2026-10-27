@@ -37,7 +37,7 @@
 | T27 | pages/Login | ✅ Done | renderiza | Quick | commit b45a2c9; build ✓; lint ✓; 1 teste (Login.test.tsx) |
 | T28 | pages/OTP | ✅ Done | renderiza; submit OTP | Quick | commit b45a2c9; build ✓; lint ✓; 1 teste (OTP.test.tsx) | submit OTP | Quick | 
 | T29 | pages/SetPassword | ✅ Done | renderiza | Quick | commit 96d56b9; build ✓; lint ✓; 1 teste (SetPassword.test.tsx) | renderiza | Quick | 
-| T30 | pages/FirstAccess | ✅ Done | renderiza | Quick | commit pendente; build ✓; lint ✓; 3 testes (FirstAccess.test.tsx) | renderiza | Quick | 
+| T30 | pages/FirstAccess | ✅ Done | renderiza | Quick | commit ff61bb3; build ✓; lint ✓; 3 testes (FirstAccess.test.tsx) | renderiza | Quick | 
 | T31 | pages/ForgotPassword | ⬜ Pending | renderiza | Quick | 
 | T32 | Auth Context | ⬜ Pending | login/logout funciona | Quick | 
 | T33 | Schema registeredVoluntarily + censusTaker opcional | ⬜ Pending | campo presente; censusTaker optional | Build | 
