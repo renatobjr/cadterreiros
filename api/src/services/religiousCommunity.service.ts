@@ -23,6 +23,78 @@ interface SearchCondition {
   [key: string]: any;
 }
 
+export interface NationStats {
+  nation: string;
+  count: number;
+}
+
+export interface CityStats {
+  city: string;
+  count: number;
+}
+
+export interface DecadeStats {
+  decade: string;
+  count: number;
+}
+
+export interface TypeByNationStats {
+  nation: string;
+  african: number;
+  traditional: number;
+}
+
+export interface TypeStats {
+  type: string;
+  count: number;
+}
+
+export interface GenderStats {
+  gender: string;
+  count: number;
+}
+
+export interface EthnicityStats {
+  ethnicity: string;
+  count: number;
+}
+
+export interface LanguageStats {
+  language: string;
+  count: number;
+}
+
+export interface NeighborhoodStats {
+  neighborhood: string;
+  count: number;
+}
+
+export interface PhotoCoverageStats {
+  withPhoto: number;
+  withoutPhoto: number;
+  total: number;
+}
+
+type AggregatedCount = {
+  _id: unknown;
+  count: number;
+};
+
+/** Filtro base de todos os stats públicos: apenas censo aprovado. */
+const approvedMatch: PipelineStage = {
+  $match: { censusStep: ECensusStep.APPROVED },
+};
+
+const TOP_NEIGHBORHOODS = 10;
+
+/** Pipeline padrão de contagem por um único campo, sem buckets vazios. */
+const groupCountByField = (field: string): PipelineStage[] => [
+  approvedMatch,
+  { $group: { _id: `$${field}`, count: { $sum: 1 } } },
+  { $match: { _id: { $nin: [null, ""] } } },
+  { $sort: { count: -1, _id: 1 } },
+];
+
 export const religiousCommunityService = {
   createReligiousCommunity: async (
     religiousCommunity: Partial<IReligiousCommunity>,
@@ -405,6 +477,328 @@ export const religiousCommunityService = {
       };
     } catch (error: any) {
       console.log(error);
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /** Contagem de comunidades aprovadas por nação. */
+  getStatsByNation: async (): Promise<ApiResponseType<NationStats[]>> => {
+    try {
+      const rows = (await ReligiousCommunity.aggregate(
+        groupCountByField("religiousSpaceNation")
+      )) as AggregatedCount[];
+
+      return {
+        data: rows.map((row) => ({
+          nation: String(row._id),
+          count: row.count ?? 0,
+        })),
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /** Contagem de comunidades aprovadas por cidade. */
+  getStatsByCity: async (): Promise<ApiResponseType<CityStats[]>> => {
+    try {
+      const rows = (await ReligiousCommunity.aggregate(
+        groupCountByField("communityAddress.city")
+      )) as AggregatedCount[];
+
+      return {
+        data: rows.map((row) => ({
+          city: String(row._id),
+          count: row.count ?? 0,
+        })),
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /**
+   * Contagem de comunidades aprovadas por década de fundação.
+   * Anos implausíveis (< 1000 ou > 2100) ficam fora, como no mapeamento público.
+   */
+  getStatsByDecade: async (): Promise<ApiResponseType<DecadeStats[]>> => {
+    try {
+      const rows = (await ReligiousCommunity.aggregate([
+        {
+          $match: {
+            censusStep: ECensusStep.APPROVED,
+            religiousSpaceYearFoundation: { $gte: 1000, $lte: 2100 },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              $multiply: [
+                { $floor: { $divide: ["$religiousSpaceYearFoundation", 10] } },
+                10,
+              ],
+            },
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ])) as AggregatedCount[];
+
+      return {
+        data: rows.map((row) => ({
+          decade: `${Number(row._id)}s`,
+          count: row.count ?? 0,
+        })),
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /** Contagem de comunidades aprovadas por tipo × nação. */
+  getStatsByTypeAndNation: async (): Promise<
+    ApiResponseType<TypeByNationStats[]>
+  > => {
+    try {
+      const rows = (await ReligiousCommunity.aggregate([
+        approvedMatch,
+        {
+          $group: {
+            _id: "$religiousSpaceNation",
+            african: {
+              $sum: {
+                $cond: [{ $eq: ["$communityType", "matriz africana"] }, 1, 0],
+              },
+            },
+            traditional: {
+              $sum: {
+                $cond: [
+                  { $eq: ["$communityType", "comunidade de terreiro"] },
+                  1,
+                  0,
+                ],
+              },
+            },
+            total: { $sum: 1 },
+          },
+        },
+        { $match: { _id: { $nin: [null, ""] } } },
+        { $sort: { total: -1, _id: 1 } },
+      ])) as Array<AggregatedCount & { african: number; traditional: number }>;
+
+      return {
+        data: rows.map((row) => ({
+          nation: String(row._id),
+          african: row.african ?? 0,
+          traditional: row.traditional ?? 0,
+        })),
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /** Contagem de comunidades aprovadas por tipo de comunidade. */
+  getStatsByType: async (): Promise<ApiResponseType<TypeStats[]>> => {
+    try {
+      const rows = (await ReligiousCommunity.aggregate(
+        groupCountByField("communityType")
+      )) as AggregatedCount[];
+
+      return {
+        data: rows.map((row) => ({
+          type: String(row._id),
+          count: row.count ?? 0,
+        })),
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /** Contagem de comunidades aprovadas por gênero do líder. */
+  getStatsByLeaderGender: async (): Promise<ApiResponseType<GenderStats[]>> => {
+    try {
+      const rows = (await ReligiousCommunity.aggregate(
+        groupCountByField("leaderGender")
+      )) as AggregatedCount[];
+
+      return {
+        data: rows.map((row) => ({
+          gender: String(row._id),
+          count: row.count ?? 0,
+        })),
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /** Contagem de comunidades aprovadas por etnia do líder. */
+  getStatsByLeaderEthnicity: async (): Promise<
+    ApiResponseType<EthnicityStats[]>
+  > => {
+    try {
+      const rows = (await ReligiousCommunity.aggregate(
+        groupCountByField("leaderEthnicity")
+      )) as AggregatedCount[];
+
+      return {
+        data: rows.map((row) => ({
+          ethnicity: String(row._id),
+          count: row.count ?? 0,
+        })),
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /** Contagem de comunidades aprovadas por idioma praticado. */
+  getStatsByLanguage: async (): Promise<ApiResponseType<LanguageStats[]>> => {
+    try {
+      const rows = (await ReligiousCommunity.aggregate(
+        groupCountByField("religiousSpacePraticalLanguages")
+      )) as AggregatedCount[];
+
+      return {
+        data: rows.map((row) => ({
+          language: String(row._id),
+          count: row.count ?? 0,
+        })),
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /**
+   * Top 10 bairros por número de comunidades aprovadas.
+   * O excedente é somado em um único bucket `outros`.
+   */
+  getStatsByNeighborhood: async (): Promise<
+    ApiResponseType<NeighborhoodStats[]>
+  > => {
+    try {
+      const rows = (await ReligiousCommunity.aggregate(
+        groupCountByField("communityAddress.neighborhood")
+      )) as AggregatedCount[];
+
+      const data: NeighborhoodStats[] = rows
+        .slice(0, TOP_NEIGHBORHOODS)
+        .map((row) => ({
+          neighborhood: String(row._id),
+          count: row.count ?? 0,
+        }));
+
+      const remaining = rows.slice(TOP_NEIGHBORHOODS);
+
+      if (remaining.length > 0) {
+        data.push({
+          neighborhood: "outros",
+          count: remaining.reduce((total, row) => total + (row.count ?? 0), 0),
+        });
+      }
+
+      return {
+        data,
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /** Cobertura fotográfica das comunidades aprovadas. */
+  getStatsByPhotoCoverage: async (): Promise<
+    ApiResponseType<PhotoCoverageStats>
+  > => {
+    try {
+      const rows = await ReligiousCommunity.aggregate([
+        approvedMatch,
+        {
+          $group: {
+            _id: null,
+            withPhoto: {
+              $sum: {
+                $cond: [
+                  {
+                    $eq: [
+                      { $ifNull: ["$religiousSpaceMainPicture", ""] },
+                      "",
+                    ],
+                  },
+                  0,
+                  1,
+                ],
+              },
+            },
+            withoutPhoto: {
+              $sum: {
+                $cond: [
+                  {
+                    $eq: [
+                      { $ifNull: ["$religiousSpaceMainPicture", ""] },
+                      "",
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+            total: { $sum: 1 },
+          },
+        },
+      ]);
+
+      return {
+        data: {
+          withPhoto: rows[0]?.withPhoto ?? 0,
+          withoutPhoto: rows[0]?.withoutPhoto ?? 0,
+          total: rows[0]?.total ?? 0,
+        },
+        status: true,
+      };
+    } catch (error: any) {
       return {
         error: error,
         status: false,

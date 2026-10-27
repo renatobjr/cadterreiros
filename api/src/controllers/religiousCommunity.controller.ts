@@ -71,6 +71,123 @@ export const religiousCommunityController = {
     });
   },
 
+  getStatsByNation: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByNation();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByCity: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByCity();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByDecade: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByDecade();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByTypeAndNation: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response =
+      await religiousCommunityService.getStatsByTypeAndNation();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByType: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByType();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByLeaderGender: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByLeaderGender();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByLeaderEthnicity: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response =
+      await religiousCommunityService.getStatsByLeaderEthnicity();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByLanguage: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByLanguage();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByNeighborhood: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByNeighborhood();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByPhotoCoverage: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByPhotoCoverage();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
   getPublicCommunityById: async (
     req: Request,
     res: Response

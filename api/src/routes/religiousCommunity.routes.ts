@@ -34,6 +34,46 @@ router.get(
   religiousCommunityController.getStatsSummary
 );
 router.get(
+  `${path}/public/stats/by-nation`,
+  religiousCommunityController.getStatsByNation
+);
+router.get(
+  `${path}/public/stats/by-city`,
+  religiousCommunityController.getStatsByCity
+);
+router.get(
+  `${path}/public/stats/by-decade`,
+  religiousCommunityController.getStatsByDecade
+);
+router.get(
+  `${path}/public/stats/by-type-and-nation`,
+  religiousCommunityController.getStatsByTypeAndNation
+);
+router.get(
+  `${path}/public/stats/by-type`,
+  religiousCommunityController.getStatsByType
+);
+router.get(
+  `${path}/public/stats/by-leader-gender`,
+  religiousCommunityController.getStatsByLeaderGender
+);
+router.get(
+  `${path}/public/stats/by-leader-ethnicity`,
+  religiousCommunityController.getStatsByLeaderEthnicity
+);
+router.get(
+  `${path}/public/stats/by-language`,
+  religiousCommunityController.getStatsByLanguage
+);
+router.get(
+  `${path}/public/stats/by-neighborhood`,
+  religiousCommunityController.getStatsByNeighborhood
+);
+router.get(
+  `${path}/public/stats/photo-coverage`,
+  religiousCommunityController.getStatsByPhotoCoverage
+);
+router.get(
   `${path}/public/:id`,
   religiousCommunityController.getPublicCommunityById
 );
