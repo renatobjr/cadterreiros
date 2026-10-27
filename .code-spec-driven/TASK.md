@@ -7,7 +7,7 @@
 
 | Task | Título | Status | Done When | Gate | Evidência |
 |------|--------|--------|-----------|------|-----------|
-| T0 | Atualizar .artifacts com prototype.css + tokens de nação | ✅ Done | prototype.css copiado; 8 tokens de nação adicionados; brand-spec atualizado | Build | prototype.css 3.046 linhas; tokens 71 (8 nação); build-tokens ✓ |
+| T0 | Atualizar .artifacts com prototype.css + tokens de nação | ✅ Done | prototype.css copiado; 8 tokens de nação adicionados; brand-spec atualizado | Build | commit ea96b4f; prototype.css 3.046 linhas; tokens 71 (8 nação); build-tokens ✓ |
 | T1 | Scaffold Vite + React 18 + TS + ESLint + Vitest | ✅ Done | build/lint/smoke passam | Build | commit e18cdab; build ✓; lint ✓; smoke 1/1 |
 | T2 | Portar tokens.mjs + build-tokens | ✅ Done | tokens.css gerado; verify-tokens passa | Quick | commit 78165a3; tokens.css idêntico (63 tokens); build ✓ |
 | T3 | Portar CSS de referência | ✅ Done | arquivos presentes; verify-classes passa | Quick | commit 8f14a34; 4 CSS idênticos (base/components/pages/design-system); build ✓ |
@@ -26,16 +26,16 @@
 | T16 | features/auth/LoginForm | ✅ Done | submit chama API | Quick | commit f299499; build ✓; lint ✓; 2 testes (LoginForm.test.tsx) |
 | T17 | pages/Home | ✅ Done | renderiza dados reais | Full | commit 437d21d; build ✓; lint ✓; 1 teste (Home.test.tsx) |
 | T18 | pages/Search | ✅ Done | filtra SPA | Full | commit 39019ea; build ✓; lint ✓; 1 teste (Search.test.tsx) |
-| T19 | pages/Community | ✅ Done | renderiza | Full | build ✓; lint ✓; 1 teste (Community.test.tsx) |
-| T20 | pages/Mapping | ✅ Done | renderiza 10 gráficos | Full | build ✓; lint ✓; 1 teste (Mapping.test.tsx) |
-| T21 | pages/AboutProject | ✅ Done | renderiza | Quick | build ✓; lint ✓; 1 teste (AboutProject.test.tsx) |
-| T22 | pages/CommunityRegister | ✅ Done | submit chama /public/create | Full | build ✓; lint ✓; 1 teste (CommunityRegister.test.tsx) |
-| T23 | Router + redirects | ✅ Done | todas rotas; redirects funcionam | Full | build ✓; lint ✓; react-router-dom; redirects legados + 404 |
-| T24 | features/metrics/MappingCharts | ✅ Done | renderiza | Full | build ✓; lint ✓; 1 teste (MappingCharts.test.tsx) |build ✓; lint ✓; 1 teste (MappingCharts.test.tsx) | renderiza | Full | 
-| T25 | composed/Pagination | ✅ Done | navega páginas | Quick | build ✓; lint ✓; 7 testes (Pagination.test.tsx) |
-| T26 | composed/EmptyState | ✅ Done | renderiza | Quick | build ✓; lint ✓; 3 testes (EmptyState.test.tsx) |
-| T27 | pages/Login | ✅ Done | renderiza | Quick | build ✓; lint ✓; 1 teste (Login.test.tsx) |
-| T28 | pages/OTP | ⬜ Pending | submit OTP | Quick | 
+| T19 | pages/Community | ✅ Done | renderiza | Full | commit 7fcf550; build ✓; lint ✓; 1 teste (Community.test.tsx) |
+| T20 | pages/Mapping | ✅ Done | renderiza 10 gráficos | Full | commit 0b84a45; build ✓; lint ✓; 1 teste (Mapping.test.tsx) |
+| T21 | pages/AboutProject | ✅ Done | renderiza | Quick | commit 04a7ee4; build ✓; lint ✓; 1 teste (AboutProject.test.tsx) |
+| T22 | pages/CommunityRegister | ✅ Done | submit chama /public/create | Full | commit 259714b; build ✓; lint ✓; 1 teste (CommunityRegister.test.tsx) |
+| T23 | Router + redirects | ✅ Done | todas rotas; redirects funcionam | Full | commit 7fcf550; build ✓; lint ✓; react-router-dom; redirects legados + 404 |
+| T24 | features/metrics/MappingCharts | ✅ Done | renderiza | Full | commit 6e14c00; build ✓; lint ✓; 1 teste (MappingCharts.test.tsx) |build ✓; lint ✓; 1 teste (MappingCharts.test.tsx) | renderiza | Full | 
+| T25 | composed/Pagination | ✅ Done | navega páginas | Quick | commit b010237; build ✓; lint ✓; 7 testes (Pagination.test.tsx) |
+| T26 | composed/EmptyState | ✅ Done | renderiza | Quick | commit e5cb520; build ✓; lint ✓; 3 testes (EmptyState.test.tsx) |
+| T27 | pages/Login | ✅ Done | renderiza | Quick | commit 21f7e8e (docs); código pendente commit |
+| T28 | pages/OTP | ✅ Done | renderiza; submit OTP | Quick | commit pendente (código não commitado) | submit OTP | Quick | 
 | T29 | pages/SetPassword | ⬜ Pending | renderiza | Quick | 
 | T30 | pages/FirstAccess | ⬜ Pending | renderiza | Quick | 
 | T31 | pages/ForgotPassword | ⬜ Pending | renderiza | Quick | 
