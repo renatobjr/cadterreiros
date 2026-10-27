@@ -1,85 +1,124 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Button from "../components/ui/Button";
-import TextInput from "../components/ui/TextInput";
+import { useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import AuthShell from "../features/auth/components/AuthShell";
+import AuthSteps from "../features/auth/components/AuthSteps";
 import { authApi } from "../api/auth";
+import { isRefusal, readEnvelope } from "../api/envelope";
 
-interface GenerateUserTokenResponse {
-  status?: boolean;
-  data?: unknown;
-}
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/** Recuperação de senha (mock: `renderAuthRecovery`, contexto `forget`). */
 export function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [fieldError, setFieldError] = useState("");
+  const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const value = email.trim();
+
     if (!value) {
-      setError("Informe o e-mail cadastrado.");
+      setFieldError("Informe o e-mail cadastrado.");
+      return;
+    }
+    if (!EMAIL_PATTERN.test(value)) {
+      setFieldError("Informe um e-mail válido.");
       return;
     }
 
-    setError(null);
+    setFieldError("");
+    setError("");
     setSubmitting(true);
     try {
-      const response = (await authApi.generateUserToken(
-        value,
-        true,
-      )) as GenerateUserTokenResponse;
+      const response = await authApi.generateUserToken(value, true);
+      const envelope = readEnvelope<string>(response);
 
-      if (response?.status === false) {
+      // A API responde igual para e-mail cadastrado ou não (proteção contra
+      // enumeração de usuários): só falhas de servidor/rede interrompem o fluxo.
+      if (isRefusal(envelope)) {
         setError(
-          "Não foi possível enviar o e-mail de recuperação. Verifique o e-mail informado.",
+          "Não foi possível enviar o código agora. Tente novamente em instantes.",
         );
         return;
       }
 
-      navigate(`/otp/${String(response?.data)}/${encodeURIComponent(value)}`, {
+      navigate(`/otp/${String(envelope?.data)}/${encodeURIComponent(value)}`, {
         state: { isFromForget: true },
       });
     } catch {
-      setError("Não foi possível enviar o e-mail de recuperação. Tente novamente.");
+      setError(
+        "Não foi possível enviar o código agora. Tente novamente em instantes.",
+      );
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <main className="authwrap">
-      <div className="auth">
-        <div className="auth__box">
-          <h1>Recuperar senha</h1>
-          <p>
-            Informe o e-mail cadastrado para iniciar o processo de recuperação
-            da senha.
-          </p>
+    <AuthShell>
+      <p className="eyebrow">Recuperação</p>
+      <h1 className="display-2">Recuperar senha</h1>
+      <p className="lede">
+        Informe seu e-mail para receber um código de verificação e criar uma
+        nova senha.
+      </p>
 
-          <form onSubmit={handleSubmit} noValidate>
-            <TextInput
-              label="E-mail"
-              type="email"
-              name="email"
-              autoComplete="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              disabled={submitting}
-            />
-            {error && (
-              <p className="auth__err" role="alert">
-                {error}
-              </p>
-            )}
-            <Button type="submit" loading={submitting} disabled={!email.trim()}>
-              Recuperar senha
-            </Button>
-          </form>
+      <AuthSteps current={1} />
+
+      <form className="auth-form" onSubmit={handleSubmit} noValidate>
+        {error ? (
+          <p className="auth-alert" role="alert">
+            {error}
+          </p>
+        ) : null}
+
+        <div className="field">
+          <label htmlFor="auth-recovery-email">
+            E-mail{" "}
+            <span className="req" aria-hidden="true">
+              *
+            </span>
+          </label>
+          <input
+            className="input"
+            id="auth-recovery-email"
+            name="email"
+            type="email"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              setFieldError("");
+            }}
+            autoComplete="email"
+            aria-required="true"
+            aria-invalid={fieldError ? true : undefined}
+            aria-describedby={
+              fieldError ? "auth-recovery-email-error" : undefined
+            }
+            disabled={submitting}
+          />
+          {fieldError ? (
+            <p className="field__error" id="auth-recovery-email-error">
+              {fieldError}
+            </p>
+          ) : null}
         </div>
+
+        <button
+          className="btn btn--primary auth-submit"
+          type="submit"
+          disabled={submitting}
+        >
+          {submitting ? "Enviando…" : "Enviar código"}
+        </button>
+      </form>
+
+      <div className="auth-links">
+        <Link to="/entrar">Voltar ao login</Link>
       </div>
-    </main>
+    </AuthShell>
   );
 }
 

@@ -222,11 +222,18 @@ export const religiousCommunityService = {
         };
       });
 
-      mailUtils.sendMail({
-        to: mappedAdmins,
-        subject: "Nova comunidade cadastrada",
-        html: html,
-      });
+      void mailUtils
+        .sendMail({
+          to: mappedAdmins,
+          subject: "Nova comunidade cadastrada",
+          html: html,
+        })
+        .catch((error: any) => {
+          console.error(
+            "[✖] Falha ao enviar e-mail:",
+            error?.message ?? error
+          );
+        });
 
       return {
         data: createdCommunity,
@@ -318,11 +325,18 @@ export const religiousCommunityService = {
         };
       });
 
-      mailUtils.sendMail({
-        to: mappedAdmins,
-        subject: "Comunidade atualizada",
-        html: html,
-      });
+      void mailUtils
+        .sendMail({
+          to: mappedAdmins,
+          subject: "Comunidade atualizada",
+          html: html,
+        })
+        .catch((error: any) => {
+          console.error(
+            "[✖] Falha ao enviar e-mail:",
+            error?.message ?? error
+          );
+        });
 
       return {
         data: community,
@@ -1228,11 +1242,18 @@ export const religiousCommunityService = {
         },
       });
 
-      mailUtils.sendMail({
-        to: userData?.email,
-        subject: "Responsável pela Atualização",
-        html: html,
-      });
+      void mailUtils
+        .sendMail({
+          to: userData?.email,
+          subject: "Responsável pela Atualização",
+          html: html,
+        })
+        .catch((error: any) => {
+          console.error(
+            "[✖] Falha ao enviar e-mail:",
+            error?.message ?? error
+          );
+        });
 
       return {
         data: true,
@@ -1351,11 +1372,18 @@ export const religiousCommunityService = {
         },
       });
 
-      mailUtils.sendMail({
-        to: userData?.email,
-        subject: "Solictaçào de correção",
-        html: html,
-      });
+      void mailUtils
+        .sendMail({
+          to: userData?.email,
+          subject: "Solictaçào de correção",
+          html: html,
+        })
+        .catch((error: any) => {
+          console.error(
+            "[✖] Falha ao enviar e-mail:",
+            error?.message ?? error
+          );
+        });
 
       return {
         data: true,

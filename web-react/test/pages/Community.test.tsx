@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import Community from "../../src/pages/Community";
@@ -109,9 +109,11 @@ describe("Community", () => {
       }),
     ).toBeInTheDocument();
 
-    expect(screen.getByText("Terreiro · ketu")).toBeInTheDocument();
     expect(
-      screen.getByText("Centro, João Pessoa · Comunidade de terreiro · Desde 1950"),
+      document.querySelector(".detail__head .eyebrow"),
+    ).toHaveTextContent("Comunidade de terreiro");
+    expect(
+      screen.getByText("Centro, João Pessoa · Desde 1950"),
     ).toBeInTheDocument();
     expect(screen.getByText("Fundação em 1950")).toBeInTheDocument();
     expect(
@@ -177,6 +179,32 @@ describe("Community", () => {
         screen.getByRole("heading", { name: "Terreiro não encontrado" }),
       ).toBeInTheDocument(),
     );
+  });
+
+  it("copia o link da ficha e confirma na tela", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    renderWithId();
+
+    const button = await screen.findByRole("button", {
+      name: "Copiar link da ficha",
+    });
+    fireEvent.click(button);
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Link copiado" }),
+      ).toBeInTheDocument(),
+    );
+    expect(writeText).toHaveBeenCalledWith(
+      `${window.location.origin}/terreiro/terreiro-ile-axe`,
+    );
+    expect(
+      screen.getByText("Link copiado para a área de transferência."),
+    ).toBeInTheDocument();
   });
 
   it("usa fallback quando a comunidade não tem bio", async () => {

@@ -1,35 +1,17 @@
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { authApi, type LoginPayload } from "../../api/auth";
+import { isRefusal, readEnvelope } from "../../api/envelope";
 import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
-import { authApi, type LoginPayload, type LoginResponse } from "../../api/auth";
+  ANONYMOUS_USER,
+  AuthContext,
+  SESSION_TOKEN_KEY,
+  type AuthContextValue,
+  type AuthUser,
+} from "./context";
 
-const SESSION_TOKEN_KEY = "SESSION_TOKEN";
-
-export interface AuthUser {
-  id: string | null;
-  email: string | null;
-  fullname: string | null;
+export interface AuthProviderProps {
+  children: ReactNode;
 }
-
-export interface AuthContextValue {
-  user: AuthUser;
-  isAuth: boolean;
-  login: (payload: LoginPayload) => Promise<LoginResponse>;
-  logout: () => void;
-}
-
-const ANONYMOUS_USER: AuthUser = {
-  id: null,
-  email: null,
-  fullname: null,
-};
-
-const AuthContext = createContext<AuthContextValue | null>(null);
 
 type SessionRecord = Record<string, unknown>;
 
@@ -61,10 +43,7 @@ function readUser(value: unknown): AuthUser {
   return { id, email, fullname };
 }
 
-export interface AuthProviderProps {
-  children: ReactNode;
-}
-
+/** Provê a sessão da curadoria (token em `localStorage` + usuário logado). */
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<AuthUser>(ANONYMOUS_USER);
   const [token, setToken] = useState<string | null>(() =>
@@ -91,24 +70,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.removeItem(SESSION_TOKEN_KEY);
   }, []);
 
+  // Ao recarregar, o token vem do localStorage mas a identidade se perde:
+  // validamos a sessão para recuperar nome/e-mail (ou descartar token inválido).
+  useEffect(() => {
+    const stored = localStorage.getItem(SESSION_TOKEN_KEY);
+    if (!stored) return;
+
+    let active = true;
+    authApi
+      .validateToken(stored)
+      .then((response) => {
+        if (!active) return;
+        const envelope = readEnvelope<{ user?: unknown }>(response);
+        if (isRefusal(envelope)) {
+          logout();
+          return;
+        }
+        const payload = envelope?.data ?? (response as { user?: unknown });
+        setUser(readUser(payload?.user ?? payload));
+        setToken(stored);
+      })
+      .catch(() => {
+        if (active) logout();
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [logout]);
+
   const value = useMemo<AuthContextValue>(
     () => ({ user, isAuth: token !== null, login, logout }),
     [user, token, login, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-// Hook é o par público do provider; manter no mesmo módulo preserva a coesão do contexto.
-// eslint-disable-next-line react-refresh/only-export-components
-export function useAuth(): AuthContextValue {
-  const context = useContext(AuthContext);
-
-  if (context === null) {
-    throw new Error("useAuth deve ser usado dentro de AuthProvider");
-  }
-
-  return context;
 }
 
 export default AuthProvider;

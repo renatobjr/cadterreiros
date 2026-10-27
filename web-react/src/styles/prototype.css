@@ -750,6 +750,12 @@ a.article-card {
 .detail__actions .btn {
   width: 100%;
 }
+/* Ação principal da ficha: vermelho em repouso, dourado no hover. */
+.detail__actions .btn--primary:hover:not(:disabled) {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--on-gold);
+}
 .figure-caption {
   margin-top: var(--s3);
 }
@@ -2888,38 +2894,6 @@ a.article-card {
   font-size: 13px;
   line-height: 1.5;
   color: var(--muted);
-}
-
-.auth-demo {
-  margin-top: var(--s5);
-  padding: var(--s4);
-  background: var(--surface-sunk);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--r);
-}
-.auth-demo .eyebrow {
-  margin: 0 0 var(--s2);
-}
-.auth-demo p:not(.eyebrow) {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--muted);
-}
-.auth-demo code {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--fg);
-  background: var(--surface);
-  border: 1px solid var(--border-soft);
-  border-radius: 3px;
-  padding: 1px 5px;
-}
-.auth-demo__button {
-  width: 100%;
-  margin-top: var(--s3);
-  padding-block: 10px;
-  font-size: 14px;
 }
 
 .auth-steps {

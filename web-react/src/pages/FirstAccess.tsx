@@ -1,104 +1,127 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Button from "../components/ui/Button";
-import TextInput from "../components/ui/TextInput";
+import { useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import AuthShell from "../features/auth/components/AuthShell";
+import AuthSteps from "../features/auth/components/AuthSteps";
 import { authApi } from "../api/auth";
+import { isRefusal, readEnvelope } from "../api/envelope";
 
-const STEPS = ["E-mail", "Código", "Senha"] as const;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-interface GenerateUserTokenResponse {
-  status?: boolean;
-  data?: unknown;
-}
-
+/**
+ * Primeiro acesso da curadoria (mock: `renderAuthRecovery` com contexto
+ * `first`): a pessoa informa o e-mail de cadastro e recebe um código para
+ * criar a senha.
+ */
 export function FirstAccess() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [fieldError, setFieldError] = useState("");
+  const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const value = email.trim();
+
     if (!value) {
-      setError("Informe o e-mail de cadastro.");
+      setFieldError("Informe o e-mail de cadastro.");
+      return;
+    }
+    if (!EMAIL_PATTERN.test(value)) {
+      setFieldError("Informe um e-mail válido.");
       return;
     }
 
-    setError(null);
+    setFieldError("");
+    setError("");
     setSubmitting(true);
     try {
-      const response = (await authApi.generateUserToken(
-        value,
-        false,
-      )) as GenerateUserTokenResponse;
+      const response = await authApi.generateUserToken(value, false);
+      const envelope = readEnvelope<string>(response);
 
-      if (response?.status === false) {
+      // Mesma resposta para e-mail cadastrado ou não — evita enumeração.
+      if (isRefusal(envelope)) {
         setError(
-          "Não foi possível iniciar o primeiro acesso. Verifique o e-mail informado.",
+          "Não foi possível iniciar o primeiro acesso agora. Tente novamente em instantes.",
         );
         return;
       }
 
-      navigate(`/otp/${String(response?.data)}/${encodeURIComponent(value)}`, {
+      navigate(`/otp/${String(envelope?.data)}/${encodeURIComponent(value)}`, {
         state: { isFromForget: false },
       });
     } catch {
-      setError("Não foi possível iniciar o primeiro acesso. Tente novamente.");
+      setError(
+        "Não foi possível iniciar o primeiro acesso agora. Tente novamente em instantes.",
+      );
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <main className="authwrap">
-      <div className="auth">
-        <div className="auth__box">
-          <h1>Primeiro acesso</h1>
-          <p>
-            Informe o e-mail de cadastro para iniciar a configuração da sua
-            senha.
+    <AuthShell>
+      <p className="eyebrow">Primeiro acesso</p>
+      <h1 className="display-2">Configurar acesso</h1>
+      <p className="lede">
+        Informe o e-mail de cadastro para receber um código de verificação e
+        criar sua senha.
+      </p>
+
+      <AuthSteps current={1} />
+
+      <form className="auth-form" onSubmit={handleSubmit} noValidate>
+        {error ? (
+          <p className="auth-alert" role="alert">
+            {error}
           </p>
+        ) : null}
 
-          <ol className="steps" aria-label="Etapas do primeiro acesso">
-            {STEPS.map((step, index) => (
-              <li
-                key={step}
-                className="step"
-                aria-current={index === 0 ? "step" : undefined}
-              >
-                <span className="step__num">{index + 1}</span>
-                {step}
-              </li>
-            ))}
-          </ol>
-
-          <form onSubmit={handleSubmit} noValidate>
-            <TextInput
-              label="E-mail"
-              type="email"
-              name="email"
-              autoComplete="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              disabled={submitting}
-            />
-            {error && (
-              <p className="auth__err" role="alert">
-                {error}
-              </p>
-            )}
-            <Button
-              type="submit"
-              loading={submitting}
-              disabled={!email.trim()}
-            >
-              Continuar
-            </Button>
-          </form>
+        <div className="field">
+          <label htmlFor="auth-recovery-email">
+            E-mail{" "}
+            <span className="req" aria-hidden="true">
+              *
+            </span>
+          </label>
+          <input
+            className="input"
+            id="auth-recovery-email"
+            name="email"
+            type="email"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              setFieldError("");
+            }}
+            autoComplete="email"
+            aria-required="true"
+            aria-invalid={fieldError ? true : undefined}
+            aria-describedby={
+              fieldError ? "auth-recovery-email-error" : undefined
+            }
+            disabled={submitting}
+          />
+          {fieldError ? (
+            <p className="field__error" id="auth-recovery-email-error">
+              {fieldError}
+            </p>
+          ) : null}
         </div>
+
+        <button
+          className="btn btn--primary auth-submit"
+          type="submit"
+          disabled={submitting}
+        >
+          {submitting ? "Enviando…" : "Continuar"}
+        </button>
+      </form>
+
+      <div className="auth-links">
+        <Link to="/entrar">Voltar ao login</Link>
       </div>
-    </main>
+    </AuthShell>
   );
 }
 

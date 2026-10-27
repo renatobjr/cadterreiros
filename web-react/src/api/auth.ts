@@ -5,6 +5,8 @@ const URL = "auth";
 export interface LoginPayload {
   email: string;
   password: string;
+  /** `web` restringe o acesso a administradores da curadoria. */
+  origin?: string;
 }
 
 export interface LoginResponse {

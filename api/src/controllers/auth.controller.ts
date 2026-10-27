@@ -50,7 +50,10 @@ const verifyOTP: Handler = async (req: Request, res: Response) => {
     const response = await authService.verifyOTP(token, otp);
     res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
-      data: response.data,
+      // `AuthLoginDTO` remove o hash da senha e devolve `{ user, token }`.
+      data: plainToInstance(AuthLoginDTO, response.data, {
+        excludeExtraneousValues: true,
+      }),
       status: response.status,
     });
   } catch (error) {

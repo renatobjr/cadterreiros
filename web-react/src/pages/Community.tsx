@@ -6,6 +6,7 @@ import type { ReligiousCommunity } from "../domain/types";
 import ArrowIcon from "../components/ui/ArrowIcon";
 import CommunityCard from "../features/communities/components/CommunityCard";
 import LeafletMap from "../features/metrics/components/LeafletMap";
+import { copyToClipboard } from "../utils/clipboard";
 import {
   capitalize,
   communityPhotoUrl,
@@ -180,12 +181,7 @@ export function Community({ id, slug }: CommunityProps = {}) {
   const copyLink = useCallback(async () => {
     if (!community) return;
     const url = `${window.location.origin}/terreiro/${community.slugify ?? community.id}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopyState("copied");
-    } catch {
-      setCopyState("failed");
-    }
+    setCopyState((await copyToClipboard(url)) ? "copied" : "failed");
   }, [community]);
 
   useEffect(() => {
@@ -274,10 +270,10 @@ export function Community({ id, slug }: CommunityProps = {}) {
         </nav>
 
         <header className="detail__head">
-          <p className="eyebrow">Terreiro · {community.religiousSpaceNation}</p>
+          <p className="eyebrow">{typeLabel(community.communityType)}</p>
           <h1 className="display-1">{name}</h1>
           <p className="lede detail__place">
-            {placeLabel(community)} · {typeLabel(community.communityType)}
+            {placeLabel(community)}
             {founded ? ` · Desde ${year}` : ""}
           </p>
           <div className="detail__tags">
@@ -375,20 +371,22 @@ export function Community({ id, slug }: CommunityProps = {}) {
               <p className="eyebrow">Compartilhar</p>
               <div className="detail__actions">
                 <button
-                  className="btn btn--ghost"
+                  className="btn btn--primary"
                   type="button"
                   onClick={copyLink}
                 >
                   {copyState === "copied" ? "Link copiado" : "Copiar link da ficha"}
                 </button>
-                <Link className="btn btn--quiet" to="/buscar">
+                <Link className="btn btn--ghost" to="/buscar">
                   Voltar à busca
                 </Link>
               </div>
               <p className="meta" role="status" aria-live="polite">
                 {copyState === "failed"
                   ? "Não foi possível copiar. Use a barra de endereço do navegador."
-                  : ""}
+                  : copyState === "copied"
+                    ? "Link copiado para a área de transferência."
+                    : ""}
               </p>
             </div>
           </aside>

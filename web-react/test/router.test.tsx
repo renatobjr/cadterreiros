@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import { routes } from "../src/router";
+import { AuthProvider } from "../src/features/auth/AuthProvider";
 
 // As páginas de busca e de terreiro consultam a API no mount; o teste de
 // roteamento não deve depender de rede.
@@ -20,7 +21,11 @@ vi.mock("../src/api/communities", () => {
 
 function renderRoute(path: string) {
   const router = createMemoryRouter(routes, { initialEntries: [path] });
-  return render(<RouterProvider router={router} />);
+  return render(
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>,
+  );
 }
 
 describe("router", () => {
@@ -64,11 +69,11 @@ describe("router", () => {
   });
 
   it.each([
-    ["/entrar", /^Login$/],
+    ["/entrar", /Entrar no painel/],
     ["/esqueci-minha-senha", /Recuperar senha/],
-    ["/primeiro-acesso", /Primeiro acesso/],
-    ["/otp/token-123/email%40teste.com", /Verifique seu email/],
-    ["/set-password/token-123", /Definir senha/],
+    ["/primeiro-acesso", /Configurar acesso/],
+    ["/otp/token-123/email%40teste.com", /Confira seu e-mail/],
+    ["/set-password/token-123", /Criar nova senha/],
   ])("renderiza a página real de auth em %s", (path, heading) => {
     renderRoute(path);
 
@@ -113,7 +118,7 @@ describe("router", () => {
     renderRoute("/login");
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "Login" }),
+      screen.getByRole("heading", { level: 1, name: "Entrar no painel" }),
     ).toBeInTheDocument();
   });
 
