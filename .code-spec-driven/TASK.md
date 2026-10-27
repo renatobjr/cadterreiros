@@ -21,11 +21,11 @@
 | T11 | api/client.ts | ✅ Done | client configurado | Quick | commit 9d3807f; build ✓; lint ✓; 3 testes (client.test.ts → test/api/) |
 | T12 | api/communities.ts | ✅ Done | chamadas tipadas | Quick | 
 | T13 | api/auth.ts | ✅ Done | chamadas tipadas | Quick | 
-| T14 | features/communities/CommunityCard | ✅ Done | renderiza com dados | Quick | 
-| T15 | features/communities/SearchFilters | ✅ Done | filtra sem reload | Quick | 
-| T16 | features/auth/LoginForm | ✅ Done | submit chama API | Quick | 
-| T17 | pages/Home | ✅ Done | renderiza dados reais | Full | 
-| T18 | pages/Search | ⬜ Pending | filtra SPA | Full | 
+| T14 | features/communities/CommunityCard | ✅ Done | renderiza com dados | Quick | commit c1c5d14; build ✓; lint ✓; 2 testes (CommunityCard.test.tsx) |
+| T15 | features/communities/SearchFilters | ✅ Done | filtra sem reload | Quick | commit 39019ea; build ✓; lint ✓; 2 testes (SearchFilters.test.tsx) |
+| T16 | features/auth/LoginForm | ✅ Done | submit chama API | Quick | commit f299499; build ✓; lint ✓; 2 testes (LoginForm.test.tsx) |
+| T17 | pages/Home | ✅ Done | renderiza dados reais | Full | commit 437d21d; build ✓; lint ✓; 1 teste (Home.test.tsx) |
+| T18 | pages/Search | ✅ Done | filtra SPA | Full | commit 39019ea; build ✓; lint ✓; 1 teste (Search.test.tsx) |
 | T19 | pages/Community | ⬜ Pending | renderiza | Full | 
 | T20 | pages/Mapping | ⬜ Pending | renderiza 10 gráficos | Full | 
 | T21 | pages/AboutProject | ⬜ Pending | renderiza | Quick | 
