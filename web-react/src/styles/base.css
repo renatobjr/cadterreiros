@@ -511,3 +511,12 @@ table.data tbody tr:hover {
 .foot__list a {
   min-height: 0;
 }
+
+
+/* Mapa: cria stacking context próprio para os z-index internos do Leaflet
+   (panes 400+) não sobreporem o nav sticky. */
+.mapbox {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+}

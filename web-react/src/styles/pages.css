@@ -173,6 +173,7 @@
 .toc li {
   counter-increment: toc;
   display: flex;
+  align-items: center;
   gap: var(--s2);
   font-size: 13.5px;
   line-height: 1.45;
@@ -183,8 +184,20 @@
   font-family: var(--font-mono);
   font-size: 10.5px;
   color: var(--accent);
-  padding-top: 4px;
   flex: none;
+}
+/* O protótipo usa botões no sumário; aqui os links assumem a mesma área
+   de toque para manter o espaçamento e a acessibilidade. */
+.toc a {
+  min-width: 0;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+@media (pointer: coarse) {
+  .toc a {
+    min-height: 44px;
+  }
 }
 
 /* ---------- register: passos ---------- */

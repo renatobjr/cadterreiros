@@ -492,6 +492,19 @@
 .article a:hover {
   color: var(--accent-hover);
 }
+/* CTAs no corpo do artigo preservam as cores e a ausência de sublinhado
+   do componente de botão; sem isto o rótulo fica invisível no primário. */
+.article .btn {
+  color: var(--fg);
+  text-decoration: none;
+}
+.article .btn--primary,
+.article .btn--primary:hover {
+  color: #fff;
+}
+.article .btn--ghost:hover {
+  color: var(--accent);
+}
 
 /* ---------- pull quote ---------- */
 .quote {

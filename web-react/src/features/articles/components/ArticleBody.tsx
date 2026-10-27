@@ -109,6 +109,9 @@ export function ArticleBody({ sections, references }: ArticleBodyProps) {
               }
 
               if (block.type === "h3") {
+                // O protótipo usa esse subtítulo como marcador do fim do
+                // corpo; a seção de referências logo abaixo já cumpre o papel.
+                if (/^referências/i.test(block.text)) return null;
                 return <h3 key={key}>{block.text}</h3>;
               }
 
