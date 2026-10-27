@@ -33,9 +33,8 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T16",
+    "current_task": "T18",
     "completed_tasks": [
-      "T0",
       "T1",
       "T2",
       "T3",
@@ -50,10 +49,12 @@
       "T12",
       "T13",
       "T14",
-      "T15"
+      "T15",
+      "T16",
+      "T17"
     ],
     "uncommitted_files": [],
-    "next_step": "T0 concluída (artefatos atualizados com prototype.css + tokens de nação). Aguardando decisão para T16 (features/auth/LoginForm).",
+    "next_step": "T17 concluída (Home + test). Aguardando decisão para T18 (pages/Search).",
     "blockers": [],
     "branch": null,
     "completed_at": null,

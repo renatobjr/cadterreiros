@@ -24,7 +24,7 @@
 | T14 | features/communities/CommunityCard | ✅ Done | renderiza com dados | Quick | 
 | T15 | features/communities/SearchFilters | ✅ Done | filtra sem reload | Quick | 
 | T16 | features/auth/LoginForm | ✅ Done | submit chama API | Quick | 
-| T17 | pages/Home | ⬜ Pending | renderiza dados reais | Full | 
+| T17 | pages/Home | ✅ Done | renderiza dados reais | Full | 
 | T18 | pages/Search | ⬜ Pending | filtra SPA | Full | 
 | T19 | pages/Community | ⬜ Pending | renderiza | Full | 
 | T20 | pages/Mapping | ⬜ Pending | renderiza 10 gráficos | Full | 
