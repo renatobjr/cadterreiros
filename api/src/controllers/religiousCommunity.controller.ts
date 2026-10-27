@@ -57,6 +57,20 @@ export const religiousCommunityController = {
     });
   },
 
+  getStatsSummary: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsSummary();
+
+    res.apiResponse<{
+      totalReligiousCommunities: number;
+      totalCities: number;
+      totalNeighborhoods: number;
+    }>(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
   getPublicCommunityById: async (
     req: Request,
     res: Response

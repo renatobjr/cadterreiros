@@ -30,6 +30,10 @@ router.get(
   religiousCommunityController.getDataFromMaping
 );
 router.get(
+  `${path}/public/stats/summary`,
+  religiousCommunityController.getStatsSummary
+);
+router.get(
   `${path}/public/:id`,
   religiousCommunityController.getPublicCommunityById
 );

@@ -7,7 +7,7 @@ import {
 import { ApiResponseType } from "@/api/@types/responsesTypes";
 import OpenAI from "openai";
 import { gptPrompt } from "../configs/gptPrompt";
-import { Types } from "mongoose";
+import { PipelineStage, Types } from "mongoose";
 import { ERole, IUser, User } from "../schemas/User";
 import fileUtils from "../utils/file.utils";
 import fs from "fs";
@@ -351,6 +351,67 @@ export const religiousCommunityService = {
       };
     }
   },
+
+  /**
+   * Totais públicos do mapeamento (substitui `/public/mapping`).
+   * Conta apenas comunidades com censo aprovado.
+   */
+  getStatsSummary: async (): Promise<
+    ApiResponseType<{
+      totalReligiousCommunities: number;
+      totalCities: number;
+      totalNeighborhoods: number;
+    }>
+  > => {
+    try {
+      const countApproved = async (field?: string): Promise<number> => {
+        const match: Record<string, unknown> = {
+          censusStep: ECensusStep.APPROVED,
+        };
+
+        if (field) {
+          match[field] = { $nin: [null, ""] };
+        }
+
+        const pipeline: PipelineStage[] = [
+          { $match: match } as PipelineStage,
+        ];
+
+        if (field) {
+          pipeline.push({ $group: { _id: `$${field}` } });
+        }
+
+        pipeline.push({ $count: "total" });
+
+        const result = await ReligiousCommunity.aggregate(pipeline);
+
+        return result[0]?.total ?? 0;
+      };
+
+      const [totalReligiousCommunities, totalCities, totalNeighborhoods] =
+        await Promise.all([
+          countApproved(),
+          countApproved("communityAddress.city"),
+          countApproved("communityAddress.neighborhood"),
+        ]);
+
+      return {
+        data: {
+          totalReligiousCommunities,
+          totalCities,
+          totalNeighborhoods,
+        },
+        status: true,
+      };
+    } catch (error: any) {
+      console.log(error);
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
   getCommunityById: async (
     id: string
   ): Promise<ApiResponseType<IReligiousCommunity | string>> => {
