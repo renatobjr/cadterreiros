@@ -35,6 +35,7 @@
     "task_id": null,
     "current_task": "T16",
     "completed_tasks": [
+      "T0",
       "T1",
       "T2",
       "T3",
@@ -52,7 +53,7 @@
       "T15"
     ],
     "uncommitted_files": [],
-    "next_step": "T15 concluída (SearchFilters + 2 testes). Aguardando decisão para T16 (features/auth/LoginForm).",
+    "next_step": "T0 concluída (artefatos atualizados com prototype.css + tokens de nação). Aguardando decisão para T16 (features/auth/LoginForm).",
     "blockers": [],
     "branch": null,
     "completed_at": null,

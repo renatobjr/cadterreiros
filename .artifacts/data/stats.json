@@ -1,0 +1,73 @@
+{
+ "total": 214,
+ "cities": 5,
+ "neighborhoods": 90,
+ "withPhoto": 199,
+ "withFounded": 212,
+ "earliest": 1951,
+ "latest": 2025,
+ "byNation": [
+  [
+   "Umbanda",
+   56
+  ],
+  [
+   "Nagô",
+   47
+  ],
+  [
+   "Ketu",
+   44
+  ],
+  [
+   "Outros",
+   28
+  ],
+  [
+   "Angola",
+   20
+  ],
+  [
+   "Jeje",
+   13
+  ],
+  [
+   "Ekiti Efon",
+   3
+  ],
+  [
+   "Quimbanda",
+   3
+  ]
+ ],
+ "byCity": [
+  [
+   "João Pessoa",
+   144
+  ],
+  [
+   "Bayeux",
+   29
+  ],
+  [
+   "Santa Rita",
+   26
+  ],
+  [
+   "Cabedelo",
+   8
+  ],
+  [
+   "Conde",
+   6
+  ]
+ ],
+ "byType": {
+  "traditional": 137,
+  "african": 77
+ },
+ "knownIssues": [
+  "fundação inválida \"0\" → não informado",
+  "fundação inválida \"20\" → não informado"
+ ]
+}

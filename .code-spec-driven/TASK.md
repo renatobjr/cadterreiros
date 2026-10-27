@@ -7,6 +7,7 @@
 
 | Task | Título | Status | Done When | Gate | Evidência |
 |------|--------|--------|-----------|------|-----------|
+| T0 | Atualizar .artifacts com prototype.css + tokens de nação | ✅ Done | prototype.css copiado; 8 tokens de nação adicionados; brand-spec atualizado | Build | prototype.css 3.046 linhas; tokens 71 (8 nação); build-tokens ✓ |
 | T1 | Scaffold Vite + React 18 + TS + ESLint + Vitest | ✅ Done | build/lint/smoke passam | Build | commit e18cdab; build ✓; lint ✓; smoke 1/1 |
 | T2 | Portar tokens.mjs + build-tokens | ✅ Done | tokens.css gerado; verify-tokens passa | Quick | commit 78165a3; tokens.css idêntico (63 tokens); build ✓ |
 | T3 | Portar CSS de referência | ✅ Done | arquivos presentes; verify-classes passa | Quick | commit 8f14a34; 4 CSS idênticos (base/components/pages/design-system); build ✓ |
@@ -22,7 +23,7 @@
 | T13 | api/auth.ts | ✅ Done | chamadas tipadas | Quick | 
 | T14 | features/communities/CommunityCard | ✅ Done | renderiza com dados | Quick | 
 | T15 | features/communities/SearchFilters | ✅ Done | filtra sem reload | Quick | 
-| T16 | features/auth/LoginForm | ⬜ Pending | submit chama API | Quick | 
+| T16 | features/auth/LoginForm | ✅ Done | submit chama API | Quick | 
 | T17 | pages/Home | ⬜ Pending | renderiza dados reais | Full | 
 | T18 | pages/Search | ⬜ Pending | filtra SPA | Full | 
 | T19 | pages/Community | ⬜ Pending | renderiza | Full | 
