@@ -1,0 +1,433 @@
+/* Cadterreiros · estilos específicos de tela */
+
+/* ---------- home: destaque dos recenseados ---------- */
+.feature {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s6);
+}
+@media (max-width: 900px) {
+  .feature {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .feature {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- home: números por nação ---------- */
+/* ---------- manifesto strip ---------- */
+.manifesto {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(24px, 3vw, 40px);
+}
+.manifesto h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 var(--s3);
+}
+.manifesto p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--on-deep);
+}
+@media (max-width: 800px) {
+  .manifesto {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- login ---------- */
+.authwrap {
+  min-height: calc(100vh - var(--nav-h) - 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: clamp(40px, 6vw, 80px);
+}
+.auth {
+  width: 100%;
+  max-width: 440px;
+}
+.auth__box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: clamp(24px, 3.4vw, 36px);
+}
+.auth__note {
+  margin-top: var(--s5);
+  padding: var(--s4);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--warn);
+  border-radius: 0 var(--r) var(--r) 0;
+  background: var(--surface);
+  font-size: 14px;
+  color: var(--muted);
+}
+.auth__err {
+  margin-top: var(--s4);
+  padding: var(--s3) var(--s4);
+  border: 1px solid var(--danger);
+  border-radius: var(--r);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 600;
+}
+./* ---------- registration form ---------- */
+.form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s5) var(--s4);
+}
+.form__full {
+  grid-column: 1 / -1;
+}
+@media (max-width: 700px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+}
+.form__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: var(--s3);
+  flex-wrap: wrap;
+  padding-top: var(--s2);
+}
+
+/* ---------- about page ---------- */
+.about__hero {
+  background: var(--accent-deep);
+  color: #fff;
+  padding-block: clamp(48px, 6vw, 80px);
+}
+.about__hero h1 {
+  color: #fff;
+  max-width: 20ch;
+}
+.about__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s6);
+  margin-top: var(--s7);
+  padding-top: var(--s5);
+  border-top: 1px solid var(--border-on-deep);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--on-deep-soft);
+}
+.about__media {
+  width: 100%;
+  border-radius: var(--r);
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+.about__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: clamp(32px, 4vw, 64px);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .about__layout {
+    grid-template-columns: 1fr;
+  }
+}
+.toc {
+  position: sticky;
+  top: calc(var(--nav-h) + var(--s5));
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface);
+  padding: var(--s5);
+}
+.toc h2 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 var(--s3);
+}
+.toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: toc;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.toc li {
+  counter-increment: toc;
+  display: flex;
+  gap: var(--s2);
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.toc li::before {
+  content: counter(toc, decimal-leading-zero);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--accent);
+  padding-top: 4px;
+  flex: none;
+}
+
+/* ---------- register: passos ---------- */
+.steps {
+  display: flex;
+  gap: 0;
+  margin-bottom: var(--s6);
+  flex-wrap: wrap;
+}
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s4) var(--s2) 0;
+  margin-right: var(--s4);
+  border-bottom: 2px solid var(--border);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.step__num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  flex: none;
+}
+.step[aria-current='step'] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.step[data-done='true'] {
+  color: var(--ok);
+  border-bottom-color: var(--ok);
+}
+
+/* ---------- admin ---------- */
+.adminbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s6);
+  flex-wrap: wrap;
+}
+
+/* botão de ação em linha de tabela: cabeçalhos e alvos de toque mantidos */
+.act {
+  min-height: 40px;
+  padding: 8px 14px;
+  font-size: 13.5px;
+}
+@media (pointer: fine) {
+  .act {
+    min-height: 36px;
+  }
+}
+
+.btn--danger {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+}
+.btn--danger:hover:not(:disabled) {
+  background: var(--danger-hover);
+  border-color: var(--danger-hover);
+  color: #fff;
+}
+
+/* ---------- diálogo ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: oklch(20% 0.02 30 / 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s5);
+}
+.modal__panel {
+  width: 100%;
+  max-width: 560px;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: clamp(22px, 3vw, 32px);
+  outline: none;
+}
+.modal__body {
+  margin-top: var(--s5);
+}
+.modal__actions {
+  display: flex;
+  gap: var(--s3);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: var(--s6);
+}
+
+/* ---------- aviso flutuante ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--s6);
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+  background: var(--accent-deep);
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: var(--r);
+  font-size: 14.5px;
+  max-width: min(560px, calc(100vw - 40px));
+  text-align: center;
+}
+
+/* ---------- histogram de décadas ---------- */
+.histo {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s2);
+  height: 190px;
+}
+.histo__col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s2);
+  height: 100%;
+}
+.histo__n {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.histo__track {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  background: var(--surface-sunk);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.histo__fill {
+  width: 100%;
+  background: var(--accent);
+  border-radius: 1px 1px 0 0;
+  min-height: 2px;
+}
+.histo__label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+
+/* ---------- barra empilhada: tipo por nação ---------- */
+.stackbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+.stackbar__row {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s3);
+}
+.stackbar__name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fg-soft);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stackbar__track {
+  display: flex;
+  height: 22px;
+  background: var(--surface-sunk);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+/* Cada segmento rotula o próprio número: a cor não é o único canal de
+   leitura, e quem não distingue as duas cores ainda lê os valores. */
+.stackbar__seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-variant-numeric: lining-nums tabular-nums;
+  min-width: 0;
+  transition: filter var(--motion-fast);
+}
+.stackbar__seg:hover {
+  filter: brightness(1.12);
+}
+.stackbar__seg--african {
+  background: var(--accent);
+  color: #fff;
+}
+.stackbar__seg--traditional {
+  background: var(--accent-deep);
+  color: #fff;
+}
+@media (max-width: 520px) {
+  .stackbar__row {
+    grid-template-columns: 74px minmax(0, 1fr);
+  }
+  .stackbar__seg {
+    font-size: 10.5px;
+  }
+}
+
+/* legenda de duas séries */
+.stackbar__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s5);
+  margin-top: var(--s5);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--border-soft);
+}
+.stackbar__key {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.stackbar__swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  flex: none;
+}

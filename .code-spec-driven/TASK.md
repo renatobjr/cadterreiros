@@ -9,7 +9,7 @@
 |------|--------|--------|-----------|------|
 | T1 | Scaffold Vite + React 18 + TS + ESLint + Vitest | ✅ Done | build/lint/smoke passam | Build |
 | T2 | Portar tokens.mjs + build-tokens | ✅ Done | tokens.css gerado; verify-tokens passa | Quick |
-| T3 | Portar CSS de referência | ⬜ Pending | arquivos presentes; verify-classes passa | Quick |
+| T3 | Portar CSS de referência | ✅ Done | arquivos presentes; verify-classes passa | Quick |
 | T4 | Copiar fontes auto-hospedadas | ⬜ Pending | 19 woff2 presentes; verify-paths passa | Full |
 | T5 | Portar gates | ⬜ Pending | gates executáveis | Full |
 | T6 | ui/Button | ⬜ Pending | renderiza variantes; a11y ok | Quick |
