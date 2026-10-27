@@ -63,11 +63,11 @@
 | T51 | Importar CSS no main.tsx (tokens/base/components/pages/design-system/prototype) | ✅ Done | bundle CSS inclui design system; classes aplicadas | Build | commit 0f9ed11; CSS 1,79 kB → 80,97 kB; fontes importadas; 2 erros CSS corrigidos; 96 testes |
 | T52 | Expandir ReligiousCommunityCreateDTO com todos os campos obrigatórios do schema | ✅ Done | DTO cobre todos os campos required; cadastro real no Mongo passa | Full | commit 73e65cf; 51 testes; 17 campos required; validação real do schema |
 | T53 | Integrar Mapping.tsx aos endpoints /public/stats/* | ✅ Done | mapa + 10 gráficos consomem API real; testes de integração | Full | commit d1cdb25; 108 testes (30 files); 11 endpoints; loading/error/empty |
-| T54 | Layout: App com Nav + Footer + Outlet | ✅ Done | todas as páginas têm nav/footer | Build | 111 testes; Nav 7 links; Footer 3 colunas |
-| T55 | Home completa (hero, 4 stats, 9 cards, mapeamento em números, pilares, artigos) | ✅ Done | renderiza igual ao mock (index.pdf) | Full | 119 testes; 7 seções; screenshot validado no browser |
-| T56 | Página Artigos (/artigos + /artigos/:slug) | ✅ Done | lista + artigo individual | Full | 129 testes; 3 artigos; conteúdo 1:1 do pages.js; screenshot validado |
+| T54 | Layout: App com Nav + Footer + Outlet | ✅ Done | todas as páginas têm nav/footer | Build | commit df62f08; 111 testes; Nav 7 links; Footer 3 colunas |
+| T55 | Home completa (hero, 4 stats, 9 cards, mapeamento em números, pilares, artigos) | ✅ Done | renderiza igual ao mock (index.pdf) | Full | commit df62f08; 119 testes; 7 seções; screenshot validado |
+| T56 | Página Artigos (/artigos + /artigos/:slug) | ✅ Done | lista + artigo individual | Full | commit df62f08; 129 testes; 3 artigos; conteúdo 1:1 do pages.js; screenshot validado |
 | T57 | 4 FAQs (sobre-a-cciao, linguagens, nações, comunidades) | ✅ Done | coberta por T56 (artigos) + aliases em T58 | Quick | conteúdo 1:1 já em T56; rotas antigas redirecionam para /artigos/:slug |
-| T58 | Ajustar router (rotas de auth, aliases, layout) | ✅ Done | todas as rotas do AGENT.md | Full | 145 testes; rotas completas; aliases; 404 |
+| T58 | Ajustar router (rotas de auth, aliases, layout) | ✅ Done | todas as rotas do AGENT.md | Full | commit df62f08; 145 testes; rotas completas; aliases; 404 |
 
 ## Gate Commands
 
