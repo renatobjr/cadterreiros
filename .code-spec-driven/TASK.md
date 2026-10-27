@@ -47,7 +47,7 @@
 | T37 | GET /public/stats/summary | ⬜ Pending | retorna totais | Full | 
 | T38 | GET /public/stats/by-* (10) | ⬜ Pending | 10 endpoints retornam | Full | 
 | T39 | GET /stats/* admin (6) | ⬜ Pending | 6 endpoints retornam | Full | 
-| T40 | rate-limit + header x-cadterreiros-api | ✅ Done | 403 sem header; 429 após 5 req | Full | commit pendente; build ✓; 10 testes (4 T40 + 6 anteriores) | 403 sem header; 429 após 5 req | Full | 
+| T40 | rate-limit + header x-cadterreiros-api | ✅ Done | 403 sem header; 429 após 5 req | Full | commit 3beb80d; build ✓; 10 testes (4 T40 + 6 anteriores) | 403 sem header; 429 após 5 req | Full | 
 | T41 | class-validator strict | ⬜ Pending | 400 com erros | Full | 
 | T42 | Remover /public/random + /public/mapping | ⬜ Pending | endpoints não existem | Full | 
 | T43 | Vitest setup | ⬜ Pending | npm run test roda | Full | 
