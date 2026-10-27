@@ -33,17 +33,18 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T7",
+    "current_task": "T8",
     "completed_tasks": [
       "T1",
       "T2",
       "T3",
       "T4",
       "T5",
-      "T6"
+      "T6",
+      "T7"
     ],
     "uncommitted_files": [],
-    "next_step": "T6 concluída (Button component + 13 testes). Aguardando decisão para T7 (ui/TextInput).",
+    "next_step": "T7 concluída (TextInput + 4 testes). Aguardando decisão para T8 (Nav + Footer).",
     "blockers": [],
     "branch": null,
     "completed_at": null,
