@@ -28,7 +28,7 @@
 | T18 | pages/Search | ✅ Done | filtra SPA | Full | commit 39019ea; build ✓; lint ✓; 1 teste (Search.test.tsx) |
 | T19 | pages/Community | ✅ Done | renderiza | Full | 
 | T20 | pages/Mapping | ✅ Done | renderiza 10 gráficos | Full | 
-| T21 | pages/AboutProject | ⬜ Pending | renderiza | Quick | 
+| T21 | pages/AboutProject | ✅ Done | renderiza | Quick | 
 | T22 | pages/CommunityRegister | ⬜ Pending | submit chama /public/create | Full | 
 | T23 | Router + redirects | ⬜ Pending | todas rotas; redirects funcionam | Full | 
 | T24 | features/metrics/MappingCharts | ⬜ Pending | renderiza | Full | 
