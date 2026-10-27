@@ -7,7 +7,10 @@ export interface CommunityCardProps {
 
 export function CommunityCard({ community, onClick }: CommunityCardProps) {
   const photo = community.religiousSpaceMainPicture;
-  const place = `${community.communityAddress.city}, ${community.communityAddress.state}`;
+  const address = community.communityAddress;
+  const place = address
+    ? `${address.city}, ${address.state}`
+    : (community.fullAddress ?? "");
 
   return (
     <button
@@ -30,7 +33,7 @@ export function CommunityCard({ community, onClick }: CommunityCardProps) {
         <p className="tcard__place">{place}</p>
         <div className="tcard__tags">
           <span>{community.religiousSpaceNation}</span>
-          <span>{community.communityType}</span>
+          {community.communityType ? <span>{community.communityType}</span> : null}
         </div>
         <div className="tcard__foot">
           {community.religiousSpaceYearFoundation

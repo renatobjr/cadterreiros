@@ -1,33 +1,65 @@
+interface FooterLink {
+  label: string;
+  href: string;
+}
+
+const navigateLinks: FooterLink[] = [
+  { label: "Início", href: "/" },
+  { label: "Buscar um terreiro", href: "/buscar" },
+  { label: "Mapeamento", href: "/mapeamento" },
+  { label: "Artigos", href: "/artigos" },
+  { label: "Cadastro voluntário", href: "/cadastro-voluntario" },
+];
+
+const projectLinks: FooterLink[] = [
+  { label: "Sobre o projeto", href: "/sobre-o-projeto" },
+  { label: "Entrar na curadoria", href: "/entrar" },
+];
+
 export function Footer() {
   return (
     <footer className="foot">
       <div className="shell">
         <div className="foot__grid">
-          <div>
-            <h3 className="foot__title">Cadterreiros</h3>
-            <p>Mapeamento de terreiros de matriz africana.</p>
+          <div className="foot__brand">
+            <h2 className="foot__title">Cadterreiros</h2>
+            <p>
+              Organização sem fins lucrativos dedicada a promover o conhecimento
+              e a preservação da cultura afro-brasileira, a igualdade racial e o
+              patrimônio cultural imaterial.
+            </p>
           </div>
+
           <div>
-            <h3 className="foot__title">Links</h3>
+            <p className="foot__title">Navegar</p>
             <ul className="foot__list">
-              <li>
-                <a href="/">Início</a>
-              </li>
-              <li>
-                <a href="/search">Buscar</a>
-              </li>
+              {navigateLinks.map((l) => (
+                <li key={l.href}>
+                  <a href={l.href}>{l.label}</a>
+                </li>
+              ))}
             </ul>
           </div>
+
           <div>
-            <h3 className="foot__title">Contato</h3>
+            <p className="foot__title">Projeto</p>
             <ul className="foot__list">
-              <li>
-                <a href="mailto:contato@cadterreiros.org">contato@cadterreiros.org</a>
-              </li>
+              {projectLinks.map((l) => (
+                <li key={l.href}>
+                  <a href={l.href}>{l.label}</a>
+                </li>
+              ))}
+              <li>Processo Seletivo nº 01/2018</li>
+              <li>Projeto BRA/15/010</li>
+              <li>FUNJOPE/PB · PNUD</li>
             </ul>
           </div>
         </div>
-        <div className="foot__bottom">© Cadterreiros</div>
+
+        <div className="foot__bottom">
+          <span>© 2026 Casa de Cultura Ilê Asé D&apos;Osoguian</span>
+          <span>Recenseamento · snapshot de 01/10/2026</span>
+        </div>
       </div>
     </footer>
   );

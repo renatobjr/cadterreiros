@@ -63,6 +63,11 @@
 | T51 | Importar CSS no main.tsx (tokens/base/components/pages/design-system/prototype) | ✅ Done | bundle CSS inclui design system; classes aplicadas | Build | commit 0f9ed11; CSS 1,79 kB → 80,97 kB; fontes importadas; 2 erros CSS corrigidos; 96 testes |
 | T52 | Expandir ReligiousCommunityCreateDTO com todos os campos obrigatórios do schema | ✅ Done | DTO cobre todos os campos required; cadastro real no Mongo passa | Full | commit 73e65cf; 51 testes; 17 campos required; validação real do schema |
 | T53 | Integrar Mapping.tsx aos endpoints /public/stats/* | ✅ Done | mapa + 10 gráficos consomem API real; testes de integração | Full | commit d1cdb25; 108 testes (30 files); 11 endpoints; loading/error/empty |
+| T54 | Layout: App com Nav + Footer + Outlet | ✅ Done | todas as páginas têm nav/footer | Build | 111 testes; Nav 7 links; Footer 3 colunas |
+| T55 | Home completa (hero, 4 stats, 9 cards, mapeamento em números, pilares, artigos) | ✅ Done | renderiza igual ao mock (index.pdf) | Full | 119 testes; 7 seções; screenshot validado no browser |
+| T56 | Página Artigos (/artigos + /artigos/:slug) | ✅ Done | lista + artigo individual | Full | 129 testes; 3 artigos; conteúdo 1:1 do pages.js; screenshot validado |
+| T57 | 4 FAQs (sobre-a-cciao, linguagens, nações, comunidades) | ✅ Done | coberta por T56 (artigos) + aliases em T58 | Quick | conteúdo 1:1 já em T56; rotas antigas redirecionam para /artigos/:slug |
+| T58 | Ajustar router (rotas de auth, aliases, layout) | ✅ Done | todas as rotas do AGENT.md | Full | 145 testes; rotas completas; aliases; 404 |
 
 ## Gate Commands
 
@@ -664,4 +669,98 @@ Aprovado para execução?
   - [ ] Gate check passes: `npm run test` + `npm run build`
 
 - **Tests:** integration
+- **Gate:** Full
+
+
+### T54 — Layout: App com Nav + Footer + Outlet
+
+- **What:** Criar Layout.tsx com Nav (topo) + Outlet (conteúdo) + Footer (rodapé); usar no router.
+- **Where:** `web-react/src/components/layout/Layout.tsx`, `web-react/src/router.tsx`
+- **Depends on:** T8
+- **Reuses:** `Nav.tsx`, `Footer.tsx`
+- **Requirement:** MIG-02
+
+- **Done when:**
+  - [ ] Todas as páginas renderizam dentro de Nav/Footer
+  - [ ] Nav tem links: Início, Buscar, Mapeamento, Artigos, Sobre, Cadastro voluntário, Entrar
+  - [ ] Footer tem 3 colunas (marca, navegar, projeto)
+  - [ ] Gate check passes: `npm run build`
+
+- **Tests:** unit (Layout renderiza Nav + Footer)
+- **Gate:** Build
+
+---
+
+### T55 — Home completa
+
+- **What:** Completar Home.tsx com: hero (imagem, eyebrow, título display, lede, CTAs, meta), 4 stats (214/199/90/5), "Conheça alguns dos terreiros" (9), "Mapeamento em números" (nações + mapa), "O que move o projeto" (3 pilares), "Artigos" (3 cards).
+- **Where:** `web-react/src/pages/Home.tsx`
+- **Depends on:** T54, T53
+- **Reuses:** `assets/img/hero.jpg`, `stats/summary`, `stats/by-nation`, `oldest`
+- **Requirement:** MIG-03
+
+- **Done when:**
+  - [ ] Hero completo (imagem, eyebrow, título, lede, 2 CTAs, meta)
+  - [ ] 4 stats com dados reais da API
+  - [ ] 9 cards dos mais antigos
+  - [ ] Mapeamento em números (nações + link para /mapeamento)
+  - [ ] 3 pilares (Visibilidade, Memória, Direito)
+  - [ ] 3 cards de artigos
+  - [ ] Gate check passes: `npm run test` + `npm run build`
+
+- **Tests:** integration (Home.test.tsx)
+- **Gate:** Full
+
+---
+
+### T56 — Página Artigos
+
+- **What:** Criar Articles.tsx (lista) e Article.tsx (detalhe) com conteúdo do mock.
+- **Where:** `web-react/src/pages/Articles.tsx`, `web-react/src/pages/Article.tsx`
+- **Depends on:** T54
+- **Reuses:** CSS `articles-grid`, `article-card`, `article`
+- **Requirement:** MIG-03
+
+- **Done when:**
+  - [ ] `/artigos` lista os 4 artigos
+  - [ ] `/artigos/:slug` renderiza o artigo individual
+  - [ ] Gate check passes: `npm run build`
+
+- **Tests:** unit (render)
+- **Gate:** Quick
+
+---
+
+### T57 — 4 FAQs
+
+- **What:** Criar 4 páginas de FAQ: sobre-a-cciao, linguagens, nações, comunidades tradicionais.
+- **Where:** `web-react/src/pages/faq/`
+- **Depends on:** T54
+- **Reuses:** CSS `article`, `article-layout`, `toc`
+- **Requirement:** MIG-03
+
+- **Done when:**
+  - [ ] 4 páginas renderizam com conteúdo do mock
+  - [ ] Gate check passes: `npm run build`
+
+- **Tests:** unit (render)
+- **Gate:** Quick
+
+---
+
+### T58 — Ajustar router
+
+- **What:** Atualizar rotas: Layout wrapper, /artigos, /artigos/:slug, 4 FAQs, auth (Login, OTP, SetPassword, FirstAccess, ForgotPassword), aliases.
+- **Where:** `web-react/src/router.tsx`
+- **Depends on:** T54, T55, T56, T57
+- **Reuses:** AGENT.md §3
+- **Requirement:** MIG-04
+
+- **Done when:**
+  - [ ] Todas as rotas do AGENT.md §3 existem
+  - [ ] Layout aplicado em todas as rotas
+  - [ ] Redirects legados funcionam
+  - [ ] Gate check passes: `npm run build`
+
+- **Tests:** router tests
 - **Gate:** Full

@@ -363,7 +363,7 @@ export const religiousCommunityService = {
           },
         },
         {
-          $unwind: "$censusTaker",
+          $unwind: { path: "$censusTaker", preserveNullAndEmptyArrays: true },
         },
       ]);
 
@@ -1039,7 +1039,7 @@ export const religiousCommunityService = {
             },
           },
           {
-            $unwind: "$censusTaker",
+            $unwind: { path: "$censusTaker", preserveNullAndEmptyArrays: true },
           },
         ]);
 

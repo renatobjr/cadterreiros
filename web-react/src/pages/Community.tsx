@@ -41,7 +41,7 @@ export function Community({ id = "1" }: CommunityProps = {}) {
           ) : null}
         </div>
         <div className="detail__main">
-          <p>{community.communityAddress.fullAddress}</p>
+          <p>{community.communityAddress?.fullAddress ?? community.fullAddress ?? "não informado"}</p>
           <p>{community.religiousSpaceLeaderName}</p>
         </div>
         <aside className="detail__aside">

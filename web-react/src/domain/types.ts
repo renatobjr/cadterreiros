@@ -43,7 +43,11 @@ export interface ReligiousCommunity {
   id: string;
   authorization: boolean;
   communityGoogleApiLocalization: GeoLocation;
-  communityAddress: CommunityAddress;
+  communityAddress?: CommunityAddress;
+  fullAddress?: string;
+  slugify?: string;
+  lat?: number;
+  long?: number;
   communityType: CommunityType;
   religiousSpaceYearFoundation: number;
   religiousSpaceLeaderFoundation: string;

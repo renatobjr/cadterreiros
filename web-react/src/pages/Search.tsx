@@ -12,13 +12,15 @@ export function Search() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
 
+  const [all, setAll] = useState<ReligiousCommunity[]>([]);
+
   useEffect(() => {
     let active = true;
     setLoading(true);
     communitiesApi
-      .list(filters as Record<string, unknown>)
+      .list()
       .then((data) => {
-        if (active) setResults(data);
+        if (active) setAll(data);
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -26,7 +28,24 @@ export function Search() {
     return () => {
       active = false;
     };
-  }, [filters]);
+  }, []);
+
+  useEffect(() => {
+    const term = (filters.query ?? "").toLowerCase().trim();
+    const filtered = all.filter((c) => {
+      const matchesTerm =
+        !term ||
+        c.religiousSpaceName?.toLowerCase().includes(term) ||
+        c.communityAddress?.neighborhood?.toLowerCase().includes(term) ||
+        c.communityAddress?.city?.toLowerCase().includes(term) ||
+        c.religiousSpaceNation?.toLowerCase().includes(term);
+      const matchesNation = !filters.nation || c.religiousSpaceNation === filters.nation;
+      const matchesCity = !filters.city || c.communityAddress?.city === filters.city;
+      const matchesType = !filters.type || c.communityType === filters.type;
+      return matchesTerm && matchesNation && matchesCity && matchesType;
+    });
+    setResults(filtered);
+  }, [all, filters]);
 
   const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);

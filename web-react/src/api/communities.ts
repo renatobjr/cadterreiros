@@ -66,30 +66,34 @@ async function fetchStatsList<T>(endpoint: string): Promise<T[]> {
 export async function listCommunities(
   options?: CommunitySearchParams,
 ): Promise<ReligiousCommunity[]> {
-  const response = (await client.get(`${URL}/public/list`, {
+  const response = await client.get(`${URL}/public/list`, {
     params: { search: options, censusStep: "approved" },
-  })) as ReligiousCommunity[];
-  return Array.isArray(response) ? response : [];
+  });
+  const data = unwrapPayload<ReligiousCommunity[]>(response);
+  return Array.isArray(data) ? data : [];
 }
 
 export async function getCommunityById(id: string): Promise<ReligiousCommunity | null> {
-  const response = (await client.get(`${URL}/public/${id}`)) as ReligiousCommunity | string;
-  if (typeof response === "string") return null;
-  return (response as ReligiousCommunity) ?? null;
+  const response = await client.get(`${URL}/public/${id}`);
+  const data = unwrapPayload<ReligiousCommunity | string>(response);
+  if (data === null || typeof data === "string") return null;
+  return data;
 }
 
 export async function searchCommunities(
   options?: CommunitySearchParams,
 ): Promise<ReligiousCommunity[]> {
-  const response = (await client.get(`${URL}/public/list`, {
+  const response = await client.get(`${URL}/public/list`, {
     params: { search: options, censusStep: "approved" },
-  })) as ReligiousCommunity[];
-  return Array.isArray(response) ? response : [];
+  });
+  const data = unwrapPayload<ReligiousCommunity[]>(response);
+  return Array.isArray(data) ? data : [];
 }
 
 export async function getOldestCommunities(): Promise<ReligiousCommunity[]> {
-  const response = (await client.get(`${URL}/public/oldest`)) as ReligiousCommunity[];
-  return Array.isArray(response) ? response : [];
+  const response = await client.get(`${URL}/public/oldest`);
+  const data = unwrapPayload<ReligiousCommunity[]>(response);
+  return Array.isArray(data) ? data : [];
 }
 
 /** Totais públicos do mapeamento (apenas censo aprovado). */

@@ -3,7 +3,8 @@ import { communitiesApi } from "../api/communities";
 import Button from "../components/ui/Button";
 import EmptyState from "../components/composed/EmptyState";
 import MappingCharts from "../features/metrics/components/MappingCharts";
-import type { MappingStats } from "../domain/types";
+import CommunityMap from "../features/metrics/components/CommunityMap";
+import type { MappingStats, ReligiousCommunity } from "../domain/types";
 
 const EMPTY_STATS: MappingStats = {
   summary: {
@@ -41,6 +42,7 @@ export function Mapping() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
+  const [communities, setCommunities] = useState<ReligiousCommunity[]>([]);
 
   useEffect(() => {
     let active = true;
@@ -49,6 +51,7 @@ export function Mapping() {
     setError(null);
 
     Promise.all([
+      communitiesApi.list(),
       communitiesApi.statsSummary(),
       communitiesApi.statsByNation(),
       communitiesApi.statsByCity(),
@@ -63,6 +66,7 @@ export function Mapping() {
     ])
       .then(
         ([
+          list,
           summary,
           byNation,
           byCity,
@@ -76,6 +80,7 @@ export function Mapping() {
           byPhotoCoverage,
         ]) => {
           if (!active) return;
+          setCommunities(list);
           setStats({
             summary,
             byNation,
@@ -120,9 +125,9 @@ export function Mapping() {
         ) : null}
       </div>
 
-      <section className="mapbox" aria-label="Mapa">
-        <div className="mapbox__grid" />
-      </section>
+      {!loading && !error && !empty ? (
+        <CommunityMap communities={communities} />
+      ) : null}
 
       {loading ? (
         <p className="muted" role="status" aria-live="polite">

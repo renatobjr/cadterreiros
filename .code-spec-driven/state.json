@@ -82,14 +82,19 @@
       "T45",
       "T51",
       "T52",
-      "T53"
+      "T53",
+      "T54",
+      "T55",
+      "T56",
+      "T57",
+      "T58"
     ],
     "uncommitted_files": [],
-    "next_step": "T52 concluída (17 campos required, 51 testes). Aguardando decisão para T49 (CookieBanner).",
+    "next_step": "T58 concluída (router completo). Site alinhado ao mock. Aguardando T49 (CookieBanner).",
     "blockers": [],
     "branch": null,
     "completed_at": null,
-    "total_tasks": 53,
+    "total_tasks": 58,
     "cutover_plan": "Após testes em sandbox, último commit migrando web-react/ para web/ (substituindo Vue 3)"
   }
 }

@@ -93,11 +93,11 @@ describe("Fluxo de mapeamento", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Mapeamento" }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("region", { name: "Mapa" })).toBeInTheDocument();
 
     await waitFor(() =>
       expect(screen.getAllByTestId("chart-card")).toHaveLength(10),
     );
+    expect(screen.getByRole("region", { name: "Mapa" })).toBeInTheDocument();
 
     expect(
       screen.getByText("214 terreiros · 5 cidades · 90 bairros"),
@@ -138,9 +138,11 @@ describe("Fluxo de mapeamento", () => {
 
     const requested = getMock.mock.calls
       .slice(firstCall)
-      .map(([url]) =>
-        String(url).replace("religious-communities/public/stats/", ""),
-      );
+      .map(([url]) => {
+        const u = String(url);
+        if (u.includes("/public/list")) return "list";
+        return u.replace("religious-communities/public/stats/", "");
+      });
     expect(requested.sort()).toEqual(
       [
         "summary",
@@ -154,6 +156,7 @@ describe("Fluxo de mapeamento", () => {
         "by-language",
         "by-neighborhood",
         "photo-coverage",
+        "list",
       ].sort(),
     );
   });

@@ -57,12 +57,7 @@ const sampleCommunities = [
 describe("Fluxo de busca", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(communitiesApi.list).mockImplementation(async (options) => {
-      const query = String(options?.query ?? "").toLowerCase();
-      return sampleCommunities.filter((item) =>
-        item.religiousSpaceName.toLowerCase().includes(query),
-      );
-    });
+    vi.mocked(communitiesApi.list).mockResolvedValue(sampleCommunities);
   });
 
   it("carrega e renderiza os resultados da API", async () => {
@@ -75,10 +70,10 @@ describe("Fluxo de busca", () => {
     expect(
       screen.getByRole("button", { name: "Casa de Nagô" }),
     ).toBeInTheDocument();
-    expect(communitiesApi.list).toHaveBeenCalledWith({});
+    expect(communitiesApi.list).toHaveBeenCalled();
   });
 
-  it("reenvia a busca à API quando o filtro de texto muda", async () => {
+  it("filtra localmente quando o filtro de texto muda", async () => {
     render(<Search />);
     await screen.findByText("2 encontrados");
 
@@ -87,9 +82,8 @@ describe("Fluxo de busca", () => {
     });
 
     await waitFor(() => {
-      expect(communitiesApi.list).toHaveBeenLastCalledWith({ query: "nagô" });
+      expect(screen.getByText("1 encontrados")).toBeInTheDocument();
     });
-    expect(await screen.findByText("1 encontrados")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Casa de Nagô" }),
     ).toBeInTheDocument();
