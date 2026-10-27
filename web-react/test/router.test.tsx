@@ -9,6 +9,11 @@ vi.mock("../src/api/communities", () => {
   const communitiesApi = {
     list: vi.fn().mockResolvedValue([]),
     getById: vi.fn().mockResolvedValue(null),
+    statsSummary: vi.fn().mockResolvedValue({
+      totalReligiousCommunities: 1,
+      totalCities: 1,
+      totalNeighborhoods: 1,
+    }),
   };
   return { communitiesApi, default: communitiesApi };
 });
@@ -100,7 +105,7 @@ describe("router", () => {
     renderRoute("/busca");
 
     expect(
-      await screen.findByRole("heading", { name: "Resultados" }),
+      await screen.findByRole("heading", { level: 1, name: "Buscar um terreiro" }),
     ).toBeInTheDocument();
   });
 

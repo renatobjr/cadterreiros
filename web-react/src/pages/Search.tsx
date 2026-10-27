@@ -1,26 +1,96 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { communitiesApi } from "../api/communities";
 import SearchFilters, { type SearchFiltersValue } from "../features/communities/components/SearchFilters";
 import CommunityCard from "../features/communities/components/CommunityCard";
-import type { ReligiousCommunity } from "../domain/types";
+import type { CommunityAddress, ReligiousCommunity } from "../domain/types";
 
-const PAGE_SIZE = 9;
+/** Extrai bairro e cidade, tolerando o DTO achatado (apenas `fullAddress`). */
+function communityPlace(community: ReligiousCommunity): {
+  neighborhood: string;
+  city: string;
+  label: string;
+} {
+  const address = community.communityAddress;
+  if (address?.neighborhood || address?.city) {
+    const neighborhood = address.neighborhood ?? "";
+    const city = address.city ?? "";
+    return { neighborhood, city, label: [neighborhood, city].filter(Boolean).join(", ") };
+  }
+  const parts = (community.fullAddress ?? "")
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+  // Formato esperado: `Bairro, Cidade, UF`.
+  const neighborhood = parts.length >= 2 ? parts[0] : "";
+  const city = parts.length >= 2 ? parts[1] : parts[0] ?? "";
+  return { neighborhood, city, label: [neighborhood, city].filter(Boolean).join(", ") };
+}
+
+const PAGE_SIZE = 12;
+
+const SORT_OPTIONS: Array<{ value: SortKey; label: string }> = [
+  { value: "name-asc", label: "Nome (A–Z)" },
+  { value: "nation-asc", label: "Nação" },
+  { value: "founded-asc", label: "Ano" },
+];
+
+type SortKey = "name-asc" | "nation-asc" | "founded-asc";
+
+function compareName(a: ReligiousCommunity, b: ReligiousCommunity): number {
+  const na = a.religiousSpaceName ?? "";
+  const nb = b.religiousSpaceName ?? "";
+  return na.localeCompare(nb, "pt-BR", { sensitivity: "base" });
+}
+
+function sortCommunities(list: ReligiousCommunity[], sort: SortKey): ReligiousCommunity[] {
+  const copy = list.slice();
+  if (sort === "nation-asc") {
+    copy.sort(
+      (a, b) =>
+        (a.religiousSpaceNation ?? "").localeCompare(b.religiousSpaceNation ?? "", "pt-BR", {
+          sensitivity: "base",
+        }) || compareName(a, b),
+    );
+  } else if (sort === "founded-asc") {
+    copy.sort(
+      (a, b) =>
+        (a.religiousSpaceYearFoundation ?? 9999) - (b.religiousSpaceYearFoundation ?? 9999) ||
+        compareName(a, b),
+    );
+  } else {
+    copy.sort(compareName);
+  }
+  return copy;
+}
+
+/** Janela de até 5 páginas numeradas centrada na página atual. */
+function pageWindow(page: number, pages: number): number[] {
+  let start = Math.max(1, page - 2);
+  const end = Math.min(pages, start + 4);
+  start = Math.max(1, end - 4);
+  const out: number[] = [];
+  for (let i = start; i <= end; i += 1) out.push(i);
+  return out;
+}
 
 export function Search() {
   const [filters, setFilters] = useState<SearchFiltersValue>({});
-  const [results, setResults] = useState<ReligiousCommunity[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-
   const [all, setAll] = useState<ReligiousCommunity[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [sort, setSort] = useState<SortKey>("name-asc");
+  const [view, setView] = useState<"grid" | "table">("grid");
 
   useEffect(() => {
     let active = true;
     setLoading(true);
-    communitiesApi
-      .list()
-      .then((data) => {
-        if (active) setAll(data);
+    Promise.all([communitiesApi.list(), communitiesApi.statsSummary()])
+      .then(([list, summary]) => {
+        if (!active) return;
+        setAll(list);
+        setTotal(summary.totalReligiousCommunities || list.length);
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -30,55 +100,215 @@ export function Search() {
     };
   }, []);
 
-  useEffect(() => {
+  const filtered = useMemo(() => {
     const term = (filters.query ?? "").toLowerCase().trim();
-    const filtered = all.filter((c) => {
+    return all.filter((c) => {
+      const address: Partial<CommunityAddress> | undefined = c.communityAddress;
+      const place = communityPlace(c);
       const matchesTerm =
         !term ||
         c.religiousSpaceName?.toLowerCase().includes(term) ||
-        c.communityAddress?.neighborhood?.toLowerCase().includes(term) ||
-        c.communityAddress?.city?.toLowerCase().includes(term) ||
+        address?.neighborhood?.toLowerCase().includes(term) ||
+        place.neighborhood.toLowerCase().includes(term) ||
+        place.city.toLowerCase().includes(term) ||
         c.religiousSpaceNation?.toLowerCase().includes(term);
       const matchesNation = !filters.nation || c.religiousSpaceNation === filters.nation;
-      const matchesCity = !filters.city || c.communityAddress?.city === filters.city;
+      const matchesCity = !filters.city || place.city === filters.city || address?.city === filters.city;
       const matchesType = !filters.type || c.communityType === filters.type;
       return matchesTerm && matchesNation && matchesCity && matchesType;
     });
-    setResults(filtered);
   }, [all, filters]);
 
-  const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
-  const safePage = Math.min(page, totalPages);
-  const pageItems = results.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const sorted = useMemo(() => sortCommunities(filtered, sort), [filtered, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const pageItems = sorted.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const rangeStart = sorted.length ? (safePage - 1) * PAGE_SIZE + 1 : 0;
+  const rangeEnd = Math.min(safePage * PAGE_SIZE, sorted.length);
+  const hasFilters =
+    Boolean(filters.query?.trim()) || Boolean(filters.nation) || Boolean(filters.city) || Boolean(filters.type);
 
   return (
-    <main className="shell">
-      <section className="page-body">
-        <SearchFilters value={filters} onChange={(next) => { setFilters(next); setPage(1); }} />
-        <div className="results-head">
-          <h2>Resultados</h2>
-          <span>{results.length} encontrados</span>
+    <>
+      <section className="page-head">
+        <div className="shell">
+          <p className="eyebrow">Acervo público</p>
+          <h1 className="display-1">Buscar um terreiro</h1>
+          <p className="lede">
+            Pesquise por nome, bairro ou cidade e combine com nação, cidade e tipo de comunidade. Os{" "}
+            {total} registros do censo estão disponíveis.
+          </p>
         </div>
-        <div className="cardgrid">
+      </section>
+      <div className="shell page-body">
+        <SearchFilters value={filters} onChange={(next) => { setFilters(next); setPage(1); }} />
+
+        <h2 className="skip-vis">Resultados da busca</h2>
+        <div className="results-head">
+          <div className="results-head__main">
+            <p className="results-head__count" aria-live="polite">
+              {filtered.length === 1 ? "1 terreiro encontrado" : `${filtered.length} terreiros encontrados`}
+            </p>
+            <p className="meta results-head__sub">
+              {filtered.length
+                ? `Mostrando ${rangeStart}–${rangeEnd} de ${filtered.length}`
+                : "Ajuste a busca ou limpe os filtros."}
+            </p>
+          </div>
+          <div className="results-tools">
+            <div className="field sortfield">
+              <label htmlFor="sort">Ordenar por</label>
+              <select
+                id="sort"
+                className="select"
+                value={sort}
+                onChange={(e) => {
+                  setSort(e.target.value as SortKey);
+                  setPage(1);
+                }}
+              >
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="viewtoggle" role="group" aria-label="Formato dos resultados">
+              <button type="button" data-view="grid" aria-pressed={view === "grid"} onClick={() => setView("grid")}>
+                Grade
+              </button>
+              <button type="button" data-view="table" aria-pressed={view === "table"} onClick={() => setView("table")}>
+                Tabela
+              </button>
+            </div>
+            <Link className="btn btn--quiet" to="/mapeamento">
+              Ver no mapa
+            </Link>
+            {hasFilters ? (
+              <button
+                type="button"
+                className="btn btn--quiet"
+                onClick={() => {
+                  setFilters({});
+                  setPage(1);
+                }}
+              >
+                Limpar filtros
+              </button>
+            ) : null}
+          </div>
+        </div>
+
+        <div id="results-body">
           {loading ? (
             <p>Carregando…</p>
-          ) : pageItems.length === 0 ? (
-            <p>Nenhum resultado.</p>
+          ) : filtered.length === 0 ? (
+            <div className="empty">
+              <p className="eyebrow">Nenhum resultado</p>
+              <p>Não encontramos terreiros com esses filtros. Tente outro nome, bairro ou nação.</p>
+              <div className="empty__actions">
+                <button
+                  type="button"
+                  className="btn btn--primary"
+                  onClick={() => {
+                    setFilters({});
+                    setPage(1);
+                  }}
+                >
+                  Limpar filtros
+                </button>
+                <Link className="btn btn--ghost" to="/cadastro-voluntario">
+                  Cadastrar um terreiro
+                </Link>
+              </div>
+            </div>
+          ) : view === "table" ? (
+            <div className="tablewrap">
+              <table className="data">
+                <thead>
+                  <tr>
+                    <th>Nome do espaço</th>
+                    <th>Tipo</th>
+                    <th>Fundação</th>
+                    <th>Nação</th>
+                    <th>Bairro</th>
+                    <th>Cidade</th>
+                    <th>
+                      <span className="skip-vis">Ação</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pageItems.map((c) => {
+                    const place = communityPlace(c);
+                    return (
+                      <tr key={c.id}>
+                        <td>{c.religiousSpaceName}</td>
+                        <td>{c.communityType}</td>
+                        <td>{c.religiousSpaceYearFoundation || "não informado"}</td>
+                        <td>{c.religiousSpaceNation}</td>
+                        <td>{place.neighborhood || "não informado"}</td>
+                        <td>{place.city || "não informado"}</td>
+                        <td>
+                          <Link className="btn btn--quiet act" to={`/terreiro/${c.slugify ?? c.id}`}>
+                            Ver ficha
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           ) : (
-            pageItems.map((c) => <CommunityCard key={c.id} community={c} />)
+            <div className="cardgrid">
+              {pageItems.map((c) => (
+                <CommunityCard key={c.id} community={c} href={`/terreiro/${c.slugify ?? c.id}`} />
+              ))}
+            </div>
           )}
         </div>
-        <nav className="pagination" aria-label="Paginação">
-          <button type="button" disabled={safePage <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
-            Anterior
-          </button>
-          <span>{safePage} / {totalPages}</span>
-          <button type="button" disabled={safePage >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>
-            Próxima
-          </button>
-        </nav>
-      </section>
-    </main>
+
+        {totalPages > 1 ? (
+          <nav className="pager" aria-label="Paginação">
+            <p className="meta">
+              Página {safePage} de {totalPages}
+            </p>
+            <div className="pager__btns">
+              <button
+                type="button"
+                className="pager__btn"
+                disabled={safePage <= 1}
+                onClick={() => setPage(Math.max(1, safePage - 1))}
+              >
+                Anterior
+              </button>
+              {pageWindow(safePage, totalPages).map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  className="pager__btn"
+                  aria-current={p === safePage ? "page" : undefined}
+                  onClick={() => setPage(p)}
+                >
+                  {p}
+                </button>
+              ))}
+              <button
+                type="button"
+                className="pager__btn"
+                disabled={safePage >= totalPages}
+                onClick={() => setPage(Math.min(totalPages, safePage + 1))}
+              >
+                Próxima
+              </button>
+            </div>
+          </nav>
+        ) : null}
+      </div>
+    </>
   );
 }
 

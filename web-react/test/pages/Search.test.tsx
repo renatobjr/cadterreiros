@@ -1,4 +1,5 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import Search from "../../src/pages/Search";
 import { communitiesApi } from "../../src/api/communities";
@@ -30,8 +31,11 @@ vi.mock("../../src/api/communities", () => {
     updatedAt: "2020-01-01",
   };
   return {
-    communitiesApi: { list: vi.fn().mockResolvedValue([sample]) },
-    default: { list: vi.fn().mockResolvedValue([sample]) },
+    communitiesApi: {
+      list: vi.fn().mockResolvedValue([sample]),
+      statsSummary: vi.fn().mockResolvedValue({ totalReligiousCommunities: 1, totalCities: 1, totalNeighborhoods: 1 }),
+    },
+    default: { list: vi.fn() },
   };
 });
 
@@ -39,7 +43,11 @@ describe("Search", () => {
   beforeEach(() => vi.clearAllMocks());
 
   it("filtra SPA", async () => {
-    render(<Search />);
+    render(
+      <MemoryRouter>
+        <Search />
+      </MemoryRouter>,
+    );
     await waitFor(() => expect(screen.getByText("Terreiro X")).toBeInTheDocument());
     const input = screen.getByLabelText(/busca/i);
     fireEvent.change(input, { target: { value: "abc" } });

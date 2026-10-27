@@ -43,8 +43,8 @@ export function SearchFilters({
   return (
     <div className="toolbar" role="search">
       <TextInput
-        label="Busca"
-        placeholder="Buscar comunidade"
+        label="Buscar"
+        placeholder="Nome, bairro ou cidade"
         value={current.query ?? ""}
         onChange={(e) => emit({ ...current, query: e.target.value })}
       />
@@ -81,7 +81,7 @@ export function SearchFilters({
         </select>
       </div>
       <div className="field">
-        <label htmlFor="filter-type">Tipo</label>
+        <label htmlFor="filter-type">Tipo de comunidade</label>
         <select
           id="filter-type"
           className="select"

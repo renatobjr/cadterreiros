@@ -41,7 +41,7 @@ describe("CommunityCard", () => {
   it("renderiza com dados", () => {
     render(<CommunityCard community={community} />);
     expect(screen.getByText("Terreiro X")).toBeInTheDocument();
-    expect(screen.getByText(/João Pessoa, PB/)).toBeInTheDocument();
+    expect(screen.getByText(/Bairro, João Pessoa/)).toBeInTheDocument();
   });
 
   it("chama onClick ao clicar", () => {
