@@ -1,10 +1,12 @@
 import { Type } from "class-transformer";
 import {
   IsBoolean,
+  IsDateString,
   IsIn,
   IsInt,
   IsNotEmpty,
   IsNotEmptyObject,
+  IsNumber,
   IsObject,
   IsString,
   Max,
@@ -31,7 +33,25 @@ export const RELIGIOUS_SPACE_NATIONS = [
   "outros",
 ] as const;
 
+/** Valores aceitos por `religiousSpacePraticalLanguages` no schema. */
+export const RELIGIOUS_SPACE_PRATICAL_LANGUAGES = [
+  "yoruba",
+  "quicongo",
+  "umbundo",
+  "ewe fon",
+  "outros",
+] as const;
+
 const CURRENT_YEAR = new Date().getFullYear();
+
+/** Localização obtida via Google API (`IGeoLocation` no schema). */
+export class CommunityGeoLocationDTO {
+  @IsNumber()
+  lat!: number;
+
+  @IsNumber()
+  long!: number;
+}
 
 export class CommunityAddressDTO {
   @IsString()
@@ -82,6 +102,10 @@ export class ReligiousCommunityCreateDTO {
   @IsIn(RELIGIOUS_SPACE_NATIONS)
   religiousSpaceNation!: string;
 
+  @IsString()
+  @IsIn(RELIGIOUS_SPACE_PRATICAL_LANGUAGES)
+  religiousSpacePraticalLanguages!: string;
+
   @Type(() => Number)
   @IsInt()
   @Min(1500)
@@ -91,6 +115,42 @@ export class ReligiousCommunityCreateDTO {
   @IsString()
   @IsNotEmpty()
   religiousSpaceLeaderName!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  religiousSpaceLeaderFoundation!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  religiousSpacePositionName!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  religiousSpaceStartedBy!: string;
+
+  @IsDateString()
+  religiousSpaceNameDateStartedBy!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  leaderEthnicity!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  leaderGender!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  leaderEducationalLevel!: string;
+
+  @IsBoolean()
+  leaderSufferedRacism!: boolean;
+
+  @IsObject()
+  @IsNotEmptyObject()
+  @ValidateNested()
+  @Type(() => CommunityGeoLocationDTO)
+  communityGoogleApiLocalization!: CommunityGeoLocationDTO;
 
   @IsObject()
   @IsNotEmptyObject()

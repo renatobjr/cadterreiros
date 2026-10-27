@@ -33,7 +33,7 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T46",
+    "current_task": "T49",
     "completed_tasks": [
       "T1",
       "T2",
@@ -81,10 +81,11 @@
       "T44",
       "T45",
       "T51",
+      "T52",
       "T53"
     ],
     "uncommitted_files": [],
-    "next_step": "T53 concluída (Mapping integrado, 108 testes). verify-tokens: 2 problemas (tokens em SVG inline). verify-classes: 8 classes. Aguardando.",
+    "next_step": "T52 concluída (17 campos required, 51 testes). Aguardando decisão para T49 (CookieBanner).",
     "blockers": [],
     "branch": null,
     "completed_at": null,

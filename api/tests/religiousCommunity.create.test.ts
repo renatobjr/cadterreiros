@@ -21,8 +21,18 @@ const validPayload = {
   religiousSpaceName: "Ilê Axé Teste",
   communityType: "matriz africana",
   religiousSpaceNation: "ketu",
+  religiousSpacePraticalLanguages: "yoruba",
   religiousSpaceYearFoundation: 1980,
   religiousSpaceLeaderName: "Mãe Teste",
+  religiousSpaceLeaderFoundation: "Mãe Teste",
+  religiousSpacePositionName: "Ialorixá",
+  religiousSpaceStartedBy: "Mãe Teste",
+  religiousSpaceNameDateStartedBy: "1980-03-15T00:00:00.000Z",
+  leaderEthnicity: "negra",
+  leaderGender: "feminino",
+  leaderEducationalLevel: "ensino médio",
+  leaderSufferedRacism: false,
+  communityGoogleApiLocalization: { lat: -7.115, long: -34.864 },
   communityAddress: {
     fullAddress: "Rua Teste, 1, Centro, João Pessoa - PB, 58000-000",
     street: "Rua Teste",
@@ -58,11 +68,22 @@ const postAuthorized = (body: unknown = validPayload) =>
 before(async () => {
   process.env.CADTERREIROS_API_KEY = API_KEY;
 
+  // Sem Mongo disponível no ambiente de teste, o `create` é substituído por
+  // uma versão que executa a validação real do schema (`validateSync`) antes
+  // de devolver o documento — nenhum campo required pode ser omitido.
   (ReligiousCommunity as any).create = async (
     payload: Partial<IReligiousCommunity>
   ) => {
     createdPayload = payload;
-    return new ReligiousCommunity(payload);
+
+    const community = new ReligiousCommunity(payload);
+    const validationError = community.validateSync();
+
+    if (validationError) {
+      throw validationError;
+    }
+
+    return community;
   };
 
   const app = express();
@@ -113,6 +134,54 @@ test("POST /public/create cria com censusStep PENDING, registeredVoluntarily tru
   assert.equal(body.data.data.censusStep, ECensusStep.PENDING);
   assert.equal(body.data.data.registeredVoluntarily, true);
   assert.equal(body.data.data.censusTaker, null);
+});
+
+test("POST /public/create com payload completo satisfaz a validação do schema", async () => {
+  const response = await postAuthorized();
+
+  assert.equal(response.status, 201);
+  assert.ok(createdPayload, "payload deve ser enviado ao schema");
+
+  for (const field of [
+    "communityGoogleApiLocalization",
+    "religiousSpaceLeaderFoundation",
+    "religiousSpacePraticalLanguages",
+    "religiousSpacePositionName",
+    "religiousSpaceStartedBy",
+    "religiousSpaceNameDateStartedBy",
+    "leaderEthnicity",
+    "leaderGender",
+    "leaderEducationalLevel",
+    "leaderSufferedRacism",
+  ]) {
+    assert.ok(field in createdPayload, `payload deve conter ${field}`);
+  }
+
+  const community = new ReligiousCommunity(createdPayload);
+  assert.equal(
+    community.validateSync(),
+    undefined,
+    "payload completo deve passar na validação do schema"
+  );
+  assert.ok(
+    community.religiousSpaceNameDateStartedBy instanceof Date,
+    "religiousSpaceNameDateStartedBy deve ser convertido para Date"
+  );
+});
+
+test("POST /public/create sem campo obrigatório novo retorna 400 e não cria", async () => {
+  const { leaderSufferedRacism: _omitted, ...withoutRacism } = validPayload;
+  const response = await postAuthorized(withoutRacism);
+  const body = await response.json();
+
+  assert.equal(response.status, 400);
+  assert.ok(
+    (body.data.errors ?? []).some(
+      (error: { field: string }) => error.field === "leaderSufferedRacism"
+    ),
+    "deve apontar leaderSufferedRacism como obrigatório"
+  );
+  assert.equal(createdPayload, undefined, "não deve criar sem campo obrigatório");
 });
 
 test("POST /public/create sem header x-cadterreiros-api retorna 403", async () => {
