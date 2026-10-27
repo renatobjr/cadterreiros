@@ -12,7 +12,7 @@
 | T3 | Portar CSS de referência | ✅ Done | arquivos presentes; verify-classes passa | Quick |
 | T4 | Copiar fontes auto-hospedadas | ✅ Done | 19 woff2 presentes; verify-paths passa | Full |
 | T5 | Portar gates | ✅ Done | gates executáveis | Full |
-| T6 | ui/Button | ⬜ Pending | renderiza variantes; a11y ok | Quick |
+| T6 | ui/Button | ✅ Done | renderiza variantes; a11y ok | Quick |
 | T7 | ui/TextInput | ⬜ Pending | renderiza; erro ligado | Quick |
 | T8 | layout/Nav + Footer | ⬜ Pending | renderiza; navegação ok | Quick |
 | T9 | domain/types.ts | ⬜ Pending | compila strict; sem any | Build |
