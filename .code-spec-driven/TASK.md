@@ -37,7 +37,7 @@
 | T27 | pages/Login | ✅ Done | renderiza | Quick | commit b45a2c9; build ✓; lint ✓; 1 teste (Login.test.tsx) |
 | T28 | pages/OTP | ✅ Done | renderiza; submit OTP | Quick | commit b45a2c9; build ✓; lint ✓; 1 teste (OTP.test.tsx) | submit OTP | Quick | 
 | T29 | pages/SetPassword | ✅ Done | renderiza | Quick | commit 96d56b9; build ✓; lint ✓; 1 teste (SetPassword.test.tsx) | renderiza | Quick | 
-| T30 | pages/FirstAccess | ⬜ Pending | renderiza | Quick | 
+| T30 | pages/FirstAccess | ✅ Done | renderiza | Quick | commit pendente; build ✓; lint ✓; 3 testes (FirstAccess.test.tsx) | renderiza | Quick | 
 | T31 | pages/ForgotPassword | ⬜ Pending | renderiza | Quick | 
 | T32 | Auth Context | ⬜ Pending | login/logout funciona | Quick | 
 | T33 | Schema registeredVoluntarily + censusTaker opcional | ⬜ Pending | campo presente; censusTaker optional | Build | 
@@ -58,6 +58,7 @@
 | T48 | verify-paths + build | ⬜ Pending | verde + build limpo | Build | 
 | T49 | CookieBanner component | ⬜ Pending | renderiza; persiste; integra gtag | Full | 
 | T50 | CookieBanner tests | ⬜ Pending | render/accept/reject/persist | Full | 
+| T51 | Importar CSS no main.tsx (tokens/base/components/pages/design-system/prototype) | ⬜ Pending | bundle CSS inclui design system; classes aplicadas | Build | |
 
 ## Gate Commands
 
@@ -142,9 +143,10 @@
 - T47: verify-classes (MIG-10)
 - T48: verify-paths + build (MIG-10)
 
-### Fase 7 — Consentimento de cookies (T49–T50)
+### Fase 7 — Consentimento + integração CSS (T49–T51)
 - T49: CookieBanner component (composed) (MIG-11)
 - T50: CookieBanner tests (Vitest) (MIG-11)
+- T51: Importar CSS no main.tsx (tokens/base/components/pages/design-system/prototype) (MIG-02)
 ## Tasks
 
 ### T1 — Scaffold Vite + React 18 + TS + ESLint + Vitest
@@ -603,3 +605,20 @@
 3. Co-location: cada task tem testes + gate — OK.
 4. Total de tasks: 50 (T1–T50) — OK.
 Aprovado para execução?
+
+### T51 — Importar CSS no main.tsx
+
+- **What:** Importar tokens.css, base.css, components.css, pages.css, design-system.css e prototype.css no main.tsx (ou App.tsx), para que o bundle CSS inclua o design system.
+- **Where:** `web-react/src/main.tsx`
+- **Depends on:** T2, T3, T4
+- **Reuses:** `src/styles/*.css`
+- **Requirement:** MIG-02
+
+- **Done when:**
+  - [ ] `main.tsx` importa todos os CSS de `src/styles/`
+  - [ ] bundle CSS contém as classes do design system (`npm run build` → CSS > 50 kB)
+  - [ ] classes aplicadas nas páginas (ex.: `.shell`, `.nav`, `.hero`)
+  - [ ] Gate check passes: `npm run build`
+
+- **Tests:** build (CSS bundle size)
+- **Gate:** Build
