@@ -4,7 +4,7 @@ import {
   sanitizeCity,
   sanitizeLanguage,
   normalizeCensusTaker,
-} from './sanitize';
+} from '../../src/domain/sanitize';
 
 describe('sanitizeYearFoundation', () => {
   it('returns null for 0', () => expect(sanitizeYearFoundation(0)).toBeNull());

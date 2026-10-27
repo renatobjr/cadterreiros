@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import Nav from "./Nav";
+import Nav from "../../../src/components/layout/Nav";
 
 describe("Nav", () => {
   it("renders brand and links", () => {

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import TextInput from "./TextInput";
+import TextInput from "../../../src/components/ui/TextInput";
 
 describe("TextInput", () => {
   it("renders label and input", () => {
