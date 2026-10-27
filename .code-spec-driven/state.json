@@ -33,14 +33,15 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T4",
+    "current_task": "T5",
     "completed_tasks": [
       "T1",
       "T2",
-      "T3"
+      "T3",
+      "T4"
     ],
     "uncommitted_files": [],
-    "next_step": "T3 concluída (4 CSS idênticos ao .artifacts). Aguardando decisão para T4 (copiar fontes).",
+    "next_step": "T4 concluída (19 woff2 + 2 CSS, zero hotlink). Aguardando decisão para T5 (portar gates).",
     "blockers": [],
     "branch": null,
     "completed_at": null,
