@@ -85,6 +85,22 @@ const SUPPORT = {
   'map-sea': ['oklch(88% 0.045 225)', 'faixa litorânea'],
   'map-coast': ['oklch(62% 0.07 225)', 'linha de costa'],
   'map-river': ['oklch(64% 0.075 220)', 'rio Paraíba'],
+
+
+}
+
+/* ---------- cor: nações ----------
+   Um ponto de cor dessaturado por nação. Cada tom recebe o mesmo orçamento
+   de croma e passa 4.6:1 com texto branco. Usado no mapa e na legenda. */
+const NATION = {
+  'n-umbanda': ['oklch(48% 0.075 145)', 'Umbanda'],
+  'n-nago': ['oklch(50% 0.085 78)', 'Nagô'],
+  'n-ketu': ['oklch(48% 0.095 38)', 'Ketu'],
+  'n-outros': ['oklch(50% 0.05 60)', 'Outros'],
+  'n-angola': ['oklch(45% 0.075 152)', 'Angola'],
+  'n-jeje': ['oklch(47% 0.08 242)', 'Jeje'],
+  'n-ekiti-efon': ['oklch(46% 0.08 310)', 'Ekiti Efon'],
+  'n-quimbanda': ['oklch(45% 0.09 25)', 'Quimbanda'],
 }
 
 /* ---------- tipografia ---------- */
@@ -155,7 +171,7 @@ const Z = { nav: '90', modal: '200', toast: '210' }
    Exportação
    ============================================================ */
 
-const COLOR_GROUPS = { surface: SURFACE, text: TEXT, border: BORDER, accent: ACCENT, status: STATUS, support: SUPPORT }
+const COLOR_GROUPS = { surface: SURFACE, text: TEXT, border: BORDER, accent: ACCENT, status: STATUS, support: SUPPORT, nation: NATION }
 
 /** Todos os tokens de cor, já com a descrição. */
 export const COLOR_TOKENS = Object.entries(COLOR_GROUPS).flatMap(([group, entries]) =>
@@ -222,6 +238,7 @@ export const GROUPS = [
   { id: 'accent', label: 'Acento' },
   { id: 'status', label: 'Estado' },
   { id: 'support', label: 'Apoio' },
+  { id: 'nation', label: 'Nações' },
   { id: 'font', label: 'Famílias' },
   { id: 'space', label: 'Espaço' },
   { id: 'shape', label: 'Forma' },
