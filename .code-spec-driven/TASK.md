@@ -30,12 +30,12 @@
 | T20 | pages/Mapping | ✅ Done | renderiza 10 gráficos | Full | commit 0b84a45; build ✓; lint ✓; 1 teste (Mapping.test.tsx) |
 | T21 | pages/AboutProject | ✅ Done | renderiza | Quick | commit 04a7ee4; build ✓; lint ✓; 1 teste (AboutProject.test.tsx) |
 | T22 | pages/CommunityRegister | ✅ Done | submit chama /public/create | Full | commit 259714b; build ✓; lint ✓; 1 teste (CommunityRegister.test.tsx) |
-| T23 | Router + redirects | ✅ Done | todas rotas; redirects funcionam | Full | commit 7fcf550; build ✓; lint ✓; react-router-dom; redirects legados + 404 |
+| T23 | Router + redirects | ✅ Done | todas rotas; redirects funcionam | Full | commit 6e14c00; build ✓; lint ✓; react-router-dom; redirects legados + 404 |
 | T24 | features/metrics/MappingCharts | ✅ Done | renderiza | Full | commit 6e14c00; build ✓; lint ✓; 1 teste (MappingCharts.test.tsx) |build ✓; lint ✓; 1 teste (MappingCharts.test.tsx) | renderiza | Full | 
 | T25 | composed/Pagination | ✅ Done | navega páginas | Quick | commit b010237; build ✓; lint ✓; 7 testes (Pagination.test.tsx) |
 | T26 | composed/EmptyState | ✅ Done | renderiza | Quick | commit e5cb520; build ✓; lint ✓; 3 testes (EmptyState.test.tsx) |
-| T27 | pages/Login | ✅ Done | renderiza | Quick | commit 21f7e8e (docs); código pendente commit |
-| T28 | pages/OTP | ✅ Done | renderiza; submit OTP | Quick | commit pendente (código não commitado) | submit OTP | Quick | 
+| T27 | pages/Login | ✅ Done | renderiza | Quick | commit b45a2c9; build ✓; lint ✓; 1 teste (Login.test.tsx) |
+| T28 | pages/OTP | ✅ Done | renderiza; submit OTP | Quick | commit b45a2c9; build ✓; lint ✓; 1 teste (OTP.test.tsx) | submit OTP | Quick | 
 | T29 | pages/SetPassword | ⬜ Pending | renderiza | Quick | 
 | T30 | pages/FirstAccess | ⬜ Pending | renderiza | Quick | 
 | T31 | pages/ForgotPassword | ⬜ Pending | renderiza | Quick | 
