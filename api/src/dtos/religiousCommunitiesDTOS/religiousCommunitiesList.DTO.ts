@@ -42,6 +42,9 @@ export class ReligiousCommunitiesListDTO {
   city!: string;
 
   @Expose()
+  religiousSpaceMainPicture?: string;
+
+  @Expose()
   censusStep!: string;
 
   @Expose()

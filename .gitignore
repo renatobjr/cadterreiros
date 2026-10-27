@@ -22,3 +22,4 @@
 # env (web-react)
 /web-react/.env
 /api/src/db/mongo-sandbox
+index.pdf
