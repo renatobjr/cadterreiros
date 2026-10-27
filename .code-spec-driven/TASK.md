@@ -31,7 +31,7 @@
 | T21 | pages/AboutProject | ✅ Done | renderiza | Quick | build ✓; lint ✓; 1 teste (AboutProject.test.tsx) |
 | T22 | pages/CommunityRegister | ✅ Done | submit chama /public/create | Full | build ✓; lint ✓; 1 teste (CommunityRegister.test.tsx) |
 | T23 | Router + redirects | ✅ Done | todas rotas; redirects funcionam | Full | build ✓; lint ✓; react-router-dom; redirects legados + 404 |
-| T24 | features/metrics/MappingCharts | ⬜ Pending | renderiza | Full | 
+| T24 | features/metrics/MappingCharts | ✅ Done | renderiza | Full | build ✓; lint ✓; 1 teste (MappingCharts.test.tsx) | renderiza | Full | 
 | T25 | composed/Pagination | ⬜ Pending | navega páginas | Quick | 
 | T26 | composed/EmptyState | ⬜ Pending | renderiza | Quick | 
 | T27 | pages/Login | ⬜ Pending | renderiza | Quick | 
