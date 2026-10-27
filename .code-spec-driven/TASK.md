@@ -20,7 +20,7 @@
 | T11 | api/client.ts | ✅ Done | client configurado | Quick | commit 9d3807f; build ✓; lint ✓; 3 testes (client.test.ts → test/api/) |
 | T12 | api/communities.ts | ✅ Done | chamadas tipadas | Quick | 
 | T13 | api/auth.ts | ✅ Done | chamadas tipadas | Quick | 
-| T14 | features/communities/CommunityCard | ⬜ Pending | renderiza com dados | Quick | 
+| T14 | features/communities/CommunityCard | ✅ Done | renderiza com dados | Quick | 
 | T15 | features/communities/SearchFilters | ⬜ Pending | filtra sem reload | Quick | 
 | T16 | features/auth/LoginForm | ⬜ Pending | submit chama API | Quick | 
 | T17 | pages/Home | ⬜ Pending | renderiza dados reais | Full | 
