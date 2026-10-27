@@ -3,6 +3,61 @@
 **Spec:** `.code-spec-driven/SPEC.md` | **Design:** `.code-spec-driven/DESIGN.md`
 **Auto-sizing:** Large | **Branch:** `feat/migracao-vue-para-react`
 
+## Tabela de Progresso (Done When)
+
+| Task | Título | Status | Done When | Gate |
+|------|--------|--------|-----------|------|
+| T1 | Scaffold Vite + React 18 + TS + ESLint + Vitest | ✅ Done | build/lint/smoke passam | Build |
+| T2 | Portar tokens.mjs + build-tokens | ⬜ Pending | tokens.css gerado; verify-tokens passa | Quick |
+| T3 | Portar CSS de referência | ⬜ Pending | arquivos presentes; verify-classes passa | Quick |
+| T4 | Copiar fontes auto-hospedadas | ⬜ Pending | 19 woff2 presentes; verify-paths passa | Full |
+| T5 | Portar gates | ⬜ Pending | gates executáveis | Full |
+| T6 | ui/Button | ⬜ Pending | renderiza variantes; a11y ok | Quick |
+| T7 | ui/TextInput | ⬜ Pending | renderiza; erro ligado | Quick |
+| T8 | layout/Nav + Footer | ⬜ Pending | renderiza; navegação ok | Quick |
+| T9 | domain/types.ts | ⬜ Pending | compila strict; sem any | Build |
+| T10 | domain/sanitize.ts | ⬜ Pending | testes de sanitize passam | Quick |
+| T11 | api/client.ts | ⬜ Pending | client configurado | Quick |
+| T12 | api/communities.ts | ⬜ Pending | chamadas tipadas | Quick |
+| T13 | api/auth.ts | ⬜ Pending | chamadas tipadas | Quick |
+| T14 | features/communities/CommunityCard | ⬜ Pending | renderiza com dados | Quick |
+| T15 | features/communities/SearchFilters | ⬜ Pending | filtra sem reload | Quick |
+| T16 | features/auth/LoginForm | ⬜ Pending | submit chama API | Quick |
+| T17 | pages/Home | ⬜ Pending | renderiza dados reais | Full |
+| T18 | pages/Search | ⬜ Pending | filtra SPA | Full |
+| T19 | pages/Community | ⬜ Pending | renderiza | Full |
+| T20 | pages/Mapping | ⬜ Pending | renderiza 10 gráficos | Full |
+| T21 | pages/AboutProject | ⬜ Pending | renderiza | Quick |
+| T22 | pages/CommunityRegister | ⬜ Pending | submit chama /public/create | Full |
+| T23 | Router + redirects | ⬜ Pending | todas rotas; redirects funcionam | Full |
+| T24 | features/metrics/MappingCharts | ⬜ Pending | renderiza | Full |
+| T25 | composed/Pagination | ⬜ Pending | navega páginas | Quick |
+| T26 | composed/EmptyState | ⬜ Pending | renderiza | Quick |
+| T27 | pages/Login | ⬜ Pending | renderiza | Quick |
+| T28 | pages/OTP | ⬜ Pending | submit OTP | Quick |
+| T29 | pages/SetPassword | ⬜ Pending | renderiza | Quick |
+| T30 | pages/FirstAccess | ⬜ Pending | renderiza | Quick |
+| T31 | pages/ForgotPassword | ⬜ Pending | renderiza | Quick |
+| T32 | Auth Context | ⬜ Pending | login/logout funciona | Quick |
+| T33 | Schema registeredVoluntarily + censusTaker opcional | ⬜ Pending | campo presente; censusTaker optional | Build |
+| T34 | GET /public/oldest | ⬜ Pending | retorna 9 ordenados | Full |
+| T35 | POST /public/create | ⬜ Pending | cria com PENDING, registeredVoluntarily true, censusTaker null; retorna id | Full |
+| T36 | POST /public/upload-main-picture/:id | ⬜ Pending | upload funciona | Full |
+| T37 | GET /public/stats/summary | ⬜ Pending | retorna totais | Full |
+| T38 | GET /public/stats/by-* (10) | ⬜ Pending | 10 endpoints retornam | Full |
+| T39 | GET /stats/* admin (6) | ⬜ Pending | 6 endpoints retornam | Full |
+| T40 | rate-limit + header x-cadterreiros-api | ⬜ Pending | 403 sem header; 429 após 5 req | Full |
+| T41 | class-validator strict | ⬜ Pending | 400 com erros | Full |
+| T42 | Remover /public/random + /public/mapping | ⬜ Pending | endpoints não existem | Full |
+| T43 | Vitest setup | ⬜ Pending | npm run test roda | Full |
+| T44 | Testes fluxos reais | ⬜ Pending | testes passam | Full |
+| T45 | verify-contrast | ⬜ Pending | verde | Full |
+| T46 | verify-tokens | ⬜ Pending | verde | Quick |
+| T47 | verify-classes | ⬜ Pending | verde | Quick |
+| T48 | verify-paths + build | ⬜ Pending | verde + build limpo | Build |
+| T49 | CookieBanner component | ⬜ Pending | renderiza; persiste; integra gtag | Full |
+| T50 | CookieBanner tests | ⬜ Pending | render/accept/reject/persist | Full |
+
 ## Gate Commands
 
 - Quick: `cd web-react && npm run lint && node scripts/verify-tokens.mjs && node scripts/verify-classes.mjs`
