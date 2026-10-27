@@ -12,18 +12,8 @@ function communityPlace(community: ReligiousCommunity): {
   label: string;
 } {
   const address = community.communityAddress;
-  if (address?.neighborhood || address?.city) {
-    const neighborhood = address.neighborhood ?? "";
-    const city = address.city ?? "";
-    return { neighborhood, city, label: [neighborhood, city].filter(Boolean).join(", ") };
-  }
-  const parts = (community.fullAddress ?? "")
-    .split(",")
-    .map((part) => part.trim())
-    .filter(Boolean);
-  // Formato esperado: `Bairro, Cidade, UF`.
-  const neighborhood = parts.length >= 2 ? parts[0] : "";
-  const city = parts.length >= 2 ? parts[1] : parts[0] ?? "";
+  const neighborhood = address?.neighborhood ?? "";
+  const city = address?.city ?? "";
   return { neighborhood, city, label: [neighborhood, city].filter(Boolean).join(", ") };
 }
 
@@ -82,6 +72,13 @@ export function Search() {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<SortKey>("name-asc");
   const [view, setView] = useState<"grid" | "table">("grid");
+
+  const capitalize = (value: string): string =>
+    value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+
+  const nations = useMemo(() => [...new Set(all.map((c) => c.religiousSpaceNation).filter(Boolean) as string[])].sort(), [all]);
+  const cities = useMemo(() => [...new Set(all.map((c) => (c.communityAddress?.city ?? c.city ?? "").trim()).filter(Boolean))].sort(), [all]);
+  const types = useMemo(() => [...new Set(all.map((c) => c.communityType).filter(Boolean) as string[])].sort(), [all]);
 
   useEffect(() => {
     let active = true;
@@ -142,7 +139,7 @@ export function Search() {
         </div>
       </section>
       <div className="shell page-body">
-        <SearchFilters value={filters} onChange={(next) => { setFilters(next); setPage(1); }} />
+        <SearchFilters value={filters} nations={nations} cities={cities} types={types} onChange={(next) => { setFilters(next); setPage(1); }} />
 
         <h2 className="skip-vis">Resultados da busca</h2>
         <div className="results-head">
@@ -246,9 +243,9 @@ export function Search() {
                     return (
                       <tr key={c.id}>
                         <td>{c.religiousSpaceName}</td>
-                        <td>{c.communityType}</td>
+                        <td>{capitalize(c.communityType ?? "")}</td>
                         <td>{c.religiousSpaceYearFoundation || "não informado"}</td>
-                        <td>{c.religiousSpaceNation}</td>
+                        <td>{capitalize(c.religiousSpaceNation ?? "")}</td>
                         <td>{place.neighborhood || "não informado"}</td>
                         <td>{place.city || "não informado"}</td>
                         <td>

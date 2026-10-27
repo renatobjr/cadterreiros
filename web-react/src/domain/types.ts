@@ -45,6 +45,8 @@ export interface ReligiousCommunity {
   communityGoogleApiLocalization: GeoLocation;
   communityAddress?: CommunityAddress;
   fullAddress?: string;
+  neighborhood?: string;
+  city?: string;
   slugify?: string;
   lat?: number;
   long?: number;
