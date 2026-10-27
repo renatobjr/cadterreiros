@@ -1,3 +1,5 @@
+import logoWhite from "../../assets/img/logos/logo_white.svg";
+
 interface FooterLink {
   label: string;
   href: string;
@@ -22,7 +24,12 @@ export function Footer() {
       <div className="shell">
         <div className="foot__grid">
           <div className="foot__brand">
-            <h2 className="foot__title">Cadterreiros</h2>
+            <img
+              src={logoWhite}
+              alt="Casa de Cultura Ilê Asé D'Osoguian"
+              width={170}
+              height={74}
+            />
             <p>
               Organização sem fins lucrativos dedicada a promover o conhecimento
               e a preservação da cultura afro-brasileira, a igualdade racial e o

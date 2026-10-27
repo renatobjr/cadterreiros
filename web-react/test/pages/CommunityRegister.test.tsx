@@ -110,7 +110,7 @@ describe("CommunityRegister", () => {
       );
     });
     expect(field("Bairro")).toHaveValue("Estados");
-    expect(field("Estado")).toHaveValue("PB");
+    expect(field("Estado")).toHaveTextContent("PB");
     expect(field("Cidade")).toHaveValue("João Pessoa");
   });
 

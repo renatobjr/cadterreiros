@@ -1,5 +1,6 @@
 import React from "react";
 import TextInput from "../../../components/ui/TextInput";
+import Select from "../../../components/ui/Select";
 
 export interface SearchFiltersValue {
   query?: string;
@@ -50,51 +51,33 @@ export function SearchFilters({
       />
       <div className="field">
         <label htmlFor="filter-nation">Nação</label>
-        <select
+        <Select
           id="filter-nation"
-          className="select"
           value={current.nation ?? ""}
-          onChange={(e) => emit({ ...current, nation: e.target.value })}
-        >
-          <option value="">Todas</option>
-          {nations.map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
-          ))}
-        </select>
+          onChange={(value) => emit({ ...current, nation: value })}
+          options={nations.map((n) => ({ value: n, label: n }))}
+          placeholder="Todas"
+        />
       </div>
       <div className="field">
         <label htmlFor="filter-city">Cidade</label>
-        <select
+        <Select
           id="filter-city"
-          className="select"
           value={current.city ?? ""}
-          onChange={(e) => emit({ ...current, city: e.target.value })}
-        >
-          <option value="">Todas</option>
-          {cities.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
+          onChange={(value) => emit({ ...current, city: value })}
+          options={cities.map((c) => ({ value: c, label: c }))}
+          placeholder="Todas"
+        />
       </div>
       <div className="field">
         <label htmlFor="filter-type">Tipo de comunidade</label>
-        <select
+        <Select
           id="filter-type"
-          className="select"
           value={current.type ?? ""}
-          onChange={(e) => emit({ ...current, type: e.target.value })}
-        >
-          <option value="">Todos</option>
-          {types.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
+          onChange={(value) => emit({ ...current, type: value })}
+          options={types.map((t) => ({ value: t, label: t }))}
+          placeholder="Todos"
+        />
       </div>
     </div>
   );

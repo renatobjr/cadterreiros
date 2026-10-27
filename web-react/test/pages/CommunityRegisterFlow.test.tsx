@@ -27,8 +27,28 @@ function field(label: string) {
   return screen.getByLabelText(label, { exact: false });
 }
 
+/**
+ * Preenche um campo. Textos usam `change`; selects usam o combobox do projeto
+ * (abre a lista e escolhe a opção pelo rótulo).
+ */
 function change(label: string, value: string) {
-  fireEvent.change(field(label), { target: { value } });
+  const control = field(label);
+
+  // Só o combobox customizado abre lista; inputs/textarea recebem `change`.
+  if (control.getAttribute("role") !== "combobox") {
+    fireEvent.change(control, { target: { value } });
+    return;
+  }
+
+  fireEvent.click(control);
+  const option = screen
+    .getAllByRole("option")
+    .find((item) => item.getAttribute("data-value") === value);
+
+  if (!option) {
+    throw new Error(`Opção "${value}" não encontrada no campo "${label}"`);
+  }
+  fireEvent.mouseDown(option);
 }
 
 const requiredValues: Record<string, string> = {
@@ -83,7 +103,7 @@ describe("Fluxo de cadastro voluntário", () => {
     expect(
       screen.getByText(/avaliado antes de entrar no acervo público/i),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Avaliação pela curadoria/i)).toBeInTheDocument();
+    expect(document.querySelector(".page-head__meta")).not.toBeInTheDocument();
 
     [
       "A comunidade",
@@ -101,7 +121,7 @@ describe("Fluxo de cadastro voluntário", () => {
       expect(field(label)).toBeInTheDocument();
     });
 
-    expect(field("Estado")).toHaveValue("PB");
+    expect(field("Estado")).toHaveTextContent("PB");
     expect(screen.getByText("Como funciona")).toBeInTheDocument();
     expect(screen.getByText("Privacidade")).toBeInTheDocument();
     expect(screen.getByText(/Campos com/i)).toBeInTheDocument();

@@ -304,6 +304,18 @@ b {
 }
 
 /* ---------- forms ---------- */
+/* Seleção de texto e realce de controles nativos na cor do projeto
+   (vermelho persimmon com texto branco — contraste AA). */
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+select option:checked,
+select option:hover {
+  background-color: var(--accent);
+  color: #fff;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -353,6 +365,45 @@ b {
     calc(100% - 14px) 21px;
   background-size: 5px 5px;
   background-repeat: no-repeat;
+}
+
+/* ---------- datepicker nativo no padrão do projeto ---------- */
+.input[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
+  color-scheme: light;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+/* Chrome/Edge: segmentos (dd/mm/aaaa) com a tipografia e cores do projeto. */
+.input[type="date"]::-webkit-datetime-edit {
+  color: var(--fg);
+  font-family: var(--font-body);
+}
+.input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+.input[type="date"]::-webkit-datetime-edit-text {
+  color: var(--muted);
+  padding: 0 2px;
+}
+/* Campo vazio continua lendo como "sem valor", igual ao placeholder. */
+.input[type="date"]:invalid::-webkit-datetime-edit {
+  color: var(--placeholder);
+}
+.input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  margin-left: 4px;
+  padding: 2px;
+  border-radius: 3px;
+  opacity: 0.75;
+  transition:
+    opacity var(--motion-fast),
+    background-color var(--motion-fast);
+}
+.input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  background-color: var(--accent-soft);
 }
 
 /* ---------- data table ---------- */

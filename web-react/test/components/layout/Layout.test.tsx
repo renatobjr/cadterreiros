@@ -45,7 +45,9 @@ describe("Layout", () => {
   it("renderiza as três colunas do Footer", () => {
     renderLayout();
     const footer = within(screen.getByRole("contentinfo"));
-    expect(footer.getByRole("heading", { name: "Cadterreiros" })).toBeInTheDocument();
+    expect(
+      footer.getByRole("img", { name: "Casa de Cultura Ilê Asé D'Osoguian" }),
+    ).toBeInTheDocument();
     expect(footer.getByText("Navegar")).toBeInTheDocument();
     expect(footer.getByText("Projeto")).toBeInTheDocument();
     expect(footer.getByRole("link", { name: "Sobre o projeto" })).toHaveAttribute(

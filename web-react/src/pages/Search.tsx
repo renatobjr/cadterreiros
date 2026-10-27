@@ -4,6 +4,7 @@ import { communitiesApi } from "../api/communities";
 import SearchFilters, { type SearchFiltersValue } from "../features/communities/components/SearchFilters";
 import CommunityCard from "../features/communities/components/CommunityCard";
 import type { CommunityAddress, ReligiousCommunity } from "../domain/types";
+import Select from "../components/ui/Select";
 
 /** Extrai bairro e cidade, tolerando o DTO achatado (apenas `fullAddress`). */
 function communityPlace(community: ReligiousCommunity): {
@@ -165,21 +166,16 @@ export function Search() {
           <div className="results-tools">
             <div className="field sortfield">
               <label htmlFor="sort">Ordenar por</label>
-              <select
+              <Select
                 id="sort"
-                className="select"
                 value={sort}
-                onChange={(e) => {
-                  setSort(e.target.value as SortKey);
+                onChange={(value) => {
+                  setSort(value as SortKey);
                   setPage(1);
                 }}
-              >
-                {SORT_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                options={SORT_OPTIONS}
+                placeholder="Ordenar por"
+              />
             </div>
             <div className="viewtoggle" role="group" aria-label="Formato dos resultados">
               <button type="button" data-view="grid" aria-pressed={view === "grid"} onClick={() => setView("grid")}>

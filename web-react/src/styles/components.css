@@ -470,6 +470,14 @@
 .article h2:first-child {
   margin-top: 0;
 }
+/* Cada seção do artigo começa com um h2 sem margem própria; o respiro vem do
+   espaço entre os blocos (e a primeira seção ganha mais ar depois da nota). */
+.article section + section {
+  margin-top: var(--s7);
+}
+.article .notice + section {
+  margin-top: var(--s8);
+}
 .article p + p {
   margin-top: var(--s4);
 }
@@ -519,6 +527,67 @@
   letter-spacing: -0.012em;
   color: var(--fg-soft);
   text-wrap: balance;
+}
+
+/* ---------- select customizado (paleta do projeto) ---------- */
+.cselect {
+  position: relative;
+  min-width: 0;
+}
+.cselect__button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  text-align: left;
+  font-family: var(--font-body);
+  color: var(--fg);
+}
+.cselect__button.is-placeholder .cselect__value {
+  color: var(--placeholder);
+}
+.cselect__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cselect__list {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 288px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r);
+  box-shadow: 0 14px 34px oklch(20% 0.02 40 / 0.16);
+}
+.cselect__option {
+  padding: 10px 12px;
+  border-radius: 4px;
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--fg);
+  cursor: pointer;
+}
+/* Hover/teclado no vermelho do projeto, com texto branco (contraste AA). */
+.cselect__option.is-active,
+.cselect__option:hover {
+  background: var(--accent);
+  color: #fff;
+}
+.cselect__option[aria-selected="true"] {
+  font-weight: 700;
+}
+.cselect__option[aria-selected="true"]:not(.is-active) {
+  background: var(--accent-soft);
+  color: var(--accent-deep);
 }
 
 /* ---------- detail page ---------- */

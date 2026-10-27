@@ -8,6 +8,7 @@ import {
 import { Link } from "react-router-dom";
 import client from "../api/client";
 import ArrowIcon from "../components/ui/ArrowIcon";
+import Select from "../components/ui/Select";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -578,24 +579,17 @@ function SelectField({
         )}
       </div>
       <div className="field__control">
-        <select
+        <Select
           id={inputId(name)}
-          name={inputId(name)}
-          className="select"
           value={value}
-          onChange={(event) => onChange(event.target.value)}
+          onChange={onChange}
+          options={options}
+          placeholder={placeholder}
           disabled={disabled}
-          aria-required={required || undefined}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={describedBy(name, error, hint)}
-        >
-          <option value="">{placeholder}</option>
-          {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+          required={required}
+          invalid={Boolean(error)}
+          describedBy={describedBy(name, error, hint)}
+        />
         {error && (
           <p className="field__error" id={errorId(name)}>
             {error}
@@ -960,11 +954,6 @@ export function CommunityRegister() {
             curadoria da CCIAO. O cadastro é avaliado antes de entrar no acervo
             público.
           </p>
-          <div className="page-head__meta meta">
-            <span>Avaliação pela curadoria</span>
-            <span>Dados do censo</span>
-            <span>Envio para a curadoria</span>
-          </div>
         </div>
       </div>
 
