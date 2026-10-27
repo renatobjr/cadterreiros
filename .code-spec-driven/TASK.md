@@ -44,7 +44,7 @@
 | T34 | GET /public/oldest | ✅ Done | retorna 9 ordenados | Full | commit 818a0b7; build ✓; 6 testes (3 T34 + 3 T33) | retorna 9 ordenados | Full | 
 | T35 | POST /public/create | ✅ Done | cria com PENDING, registeredVoluntarily true, censusTaker null; retorna id | Full | commit ade6504; build ✓; 20 testes (5 T35 + 15 anteriores) | cria com PENDING, registeredVoluntarily true, censusTaker null; retorna id | Full | 
 | T36 | POST /public/upload-main-picture/:id | ✅ Done | upload funciona | Full | commit 8ac9c08; build ✓; 25 testes (5 T36 + 20 anteriores) | upload funciona | Full | 
-| T37 | GET /public/stats/summary | ✅ Done | retorna totais | Full | commit pendente; build ✓; 27 testes (3 T37 + 24 anteriores) | retorna totais | Full | 
+| T37 | GET /public/stats/summary | ✅ Done | retorna totais | Full | commit b45369e; build ✓; 27 testes (3 T37 + 24 anteriores) | retorna totais | Full | 
 | T38 | GET /public/stats/by-* (10) | ⬜ Pending | 10 endpoints retornam | Full | 
 | T39 | GET /stats/* admin (6) | ⬜ Pending | 6 endpoints retornam | Full | 
 | T40 | rate-limit + header x-cadterreiros-api | ✅ Done | 403 sem header; 429 após 5 req | Full | commit 3beb80d; build ✓; 10 testes (4 T40 + 6 anteriores) | 403 sem header; 429 após 5 req | Full | 
