@@ -33,7 +33,7 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T10",
+    "current_task": "T11",
     "completed_tasks": [
       "T1",
       "T2",
@@ -43,10 +43,11 @@
       "T6",
       "T7",
       "T8",
-      "T9"
+      "T9",
+      "T10"
     ],
     "uncommitted_files": [],
-    "next_step": "T9 concluída (types.ts espelhando API, censusTaker opcional, registeredVoluntarily). Aguardando decisão para T10 (domain/sanitize.ts).",
+    "next_step": "T10 concluída (sanitize + 15 testes). Aguardando decisão para T11 (api/client.ts).",
     "blockers": [],
     "branch": null,
     "completed_at": null,

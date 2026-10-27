@@ -16,7 +16,7 @@
 | T7 | ui/TextInput | ✅ Done | renderiza; erro ligado | Quick | commit 7d4cec2; build ✓; lint ✓; 18 testes (3 files) |
 | T8 | layout/Nav + Footer | ✅ Done | renderiza; navegação ok | Quick | commit acd3b1a; build ✓; lint ✓; 20 testes (4 files) |
 | T9 | domain/types.ts | ✅ Done | compila strict; sem any | Build | 
-| T10 | domain/sanitize.ts | ⬜ Pending | testes de sanitize passam | Quick | 
+| T10 | domain/sanitize.ts | ✅ Done | testes de sanitize passam | Quick | 
 | T11 | api/client.ts | ⬜ Pending | client configurado | Quick | 
 | T12 | api/communities.ts | ⬜ Pending | chamadas tipadas | Quick | 
 | T13 | api/auth.ts | ⬜ Pending | chamadas tipadas | Quick | 
