@@ -137,6 +137,32 @@ router.put(
   isAuth,
   religiousCommunityController.rejectCensus
 );
+// Admin stats (todos os registros, sem filtro de censo)
+router.get(
+  `${path}/stats/by-census-step`,
+  isAuth,
+  religiousCommunityController.getStatsByCensusStep
+);
+router.get(
+  `${path}/stats/by-status`,
+  isAuth,
+  religiousCommunityController.getStatsByStatus
+);
+router.get(
+  `${path}/stats/by-educational-level`,
+  isAuth,
+  religiousCommunityController.getStatsByEducationalLevel
+);
+router.get(
+  `${path}/stats/bio-coverage`,
+  isAuth,
+  religiousCommunityController.getStatsBioCoverage
+);
+router.get(
+  `${path}/stats/voluntary-registrations`,
+  isAuth,
+  religiousCommunityController.getStatsVoluntaryRegistrations
+);
 // Get id
 router.get(
   `${path}/:id`,

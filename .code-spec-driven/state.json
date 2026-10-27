@@ -33,7 +33,7 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T39",
+    "current_task": "T42",
     "completed_tasks": [
       "T1",
       "T2",
@@ -73,11 +73,12 @@
       "T36",
       "T37",
       "T38",
+      "T39",
       "T40",
       "T41"
     ],
     "uncommitted_files": [],
-    "next_step": "T38 concluída (13 testes). Aguardando decisão para T39 (GET /stats/* admin 6 endpoints).",
+    "next_step": "T39 concluída (5 endpoints, 5 testes). Aguardando decisão para T42 (remover /public/random + /public/mapping).",
     "blockers": [],
     "branch": null,
     "completed_at": null,

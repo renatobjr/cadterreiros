@@ -1,5 +1,6 @@
 import {
   ECensusStep,
+  EReligiousSpaceStatus,
   ICommunityAddress,
   IReligiousCommunity,
   ReligiousCommunity,
@@ -75,6 +76,36 @@ export interface PhotoCoverageStats {
   total: number;
 }
 
+export interface CensusStepStats {
+  approved: number;
+  pending: number;
+  rejected: number;
+  total: number;
+}
+
+export interface SpaceStatusStats {
+  active: number;
+  inactive: number;
+  total: number;
+}
+
+export interface EducationalLevelStats {
+  educationalLevel: string;
+  count: number;
+}
+
+export interface BioCoverageStats {
+  withBio: number;
+  withoutBio: number;
+  total: number;
+}
+
+export interface VoluntaryRegistrationStats {
+  registeredVoluntarily: number;
+  notRegisteredVoluntarily: number;
+  total: number;
+}
+
 type AggregatedCount = {
   _id: unknown;
   count: number;
@@ -94,6 +125,21 @@ const groupCountByField = (field: string): PipelineStage[] => [
   { $match: { _id: { $nin: [null, ""] } } },
   { $sort: { count: -1, _id: 1 } },
 ];
+
+/**
+ * Contagem por campo considerando todos os registros (sem filtro de censo).
+ * Usada apenas pelas agregações administrativas.
+ */
+const groupCountAllByField = (field: string): PipelineStage[] => [
+  { $group: { _id: `$${field}`, count: { $sum: 1 } } },
+  { $match: { _id: { $nin: [null, ""] } } },
+  { $sort: { count: -1, _id: 1 } },
+];
+
+/** Situação do espaço com fallback para o default do schema (`active`). */
+const spaceStatusValue = {
+  $ifNull: ["$religiousSpaceStatus", EReligiousSpaceStatus.ACTIVE],
+};
 
 export const religiousCommunityService = {
   createReligiousCommunity: async (
@@ -794,6 +840,212 @@ export const religiousCommunityService = {
         data: {
           withPhoto: rows[0]?.withPhoto ?? 0,
           withoutPhoto: rows[0]?.withoutPhoto ?? 0,
+          total: rows[0]?.total ?? 0,
+        },
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /**
+   * Contagem administrativa por etapa do censo.
+   * Considera todos os registros (sem filtro de APPROVED).
+   */
+  getStatsByCensusStep: async (): Promise<ApiResponseType<CensusStepStats>> => {
+    try {
+      const rows = await ReligiousCommunity.aggregate([
+        {
+          $group: {
+            _id: null,
+            approved: {
+              $sum: {
+                $cond: [{ $eq: ["$censusStep", ECensusStep.APPROVED] }, 1, 0],
+              },
+            },
+            pending: {
+              $sum: {
+                $cond: [{ $eq: ["$censusStep", ECensusStep.PENDING] }, 1, 0],
+              },
+            },
+            rejected: {
+              $sum: {
+                $cond: [{ $eq: ["$censusStep", ECensusStep.REJECTED] }, 1, 0],
+              },
+            },
+            total: { $sum: 1 },
+          },
+        },
+      ]);
+
+      return {
+        data: {
+          approved: rows[0]?.approved ?? 0,
+          pending: rows[0]?.pending ?? 0,
+          rejected: rows[0]?.rejected ?? 0,
+          total: rows[0]?.total ?? 0,
+        },
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /**
+   * Contagem administrativa por situação do espaço religioso.
+   * Considera todos os registros (sem filtro de APPROVED).
+   */
+  getStatsByStatus: async (): Promise<ApiResponseType<SpaceStatusStats>> => {
+    try {
+      const rows = await ReligiousCommunity.aggregate([
+        {
+          $group: {
+            _id: null,
+            active: {
+              $sum: {
+                $cond: [
+                  { $eq: [spaceStatusValue, EReligiousSpaceStatus.ACTIVE] },
+                  1,
+                  0,
+                ],
+              },
+            },
+            inactive: {
+              $sum: {
+                $cond: [
+                  { $eq: [spaceStatusValue, EReligiousSpaceStatus.INACTIVE] },
+                  1,
+                  0,
+                ],
+              },
+            },
+            total: { $sum: 1 },
+          },
+        },
+      ]);
+
+      return {
+        data: {
+          active: rows[0]?.active ?? 0,
+          inactive: rows[0]?.inactive ?? 0,
+          total: rows[0]?.total ?? 0,
+        },
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /**
+   * Contagem administrativa por nível educacional do líder.
+   * Considera todos os registros (sem filtro de APPROVED).
+   */
+  getStatsByEducationalLevel: async (): Promise<
+    ApiResponseType<EducationalLevelStats[]>
+  > => {
+    try {
+      const rows = (await ReligiousCommunity.aggregate(
+        groupCountAllByField("leaderEducationalLevel")
+      )) as AggregatedCount[];
+
+      return {
+        data: rows.map((row) => ({
+          educationalLevel: String(row._id),
+          count: row.count ?? 0,
+        })),
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /**
+   * Cobertura de bio considerando todos os registros (sem filtro de APPROVED).
+   */
+  getStatsBioCoverage: async (): Promise<ApiResponseType<BioCoverageStats>> => {
+    try {
+      const rows = await ReligiousCommunity.aggregate([
+        {
+          $group: {
+            _id: null,
+            withBio: {
+              $sum: {
+                $cond: [{ $eq: [{ $ifNull: ["$bio", ""] }, ""] }, 0, 1],
+              },
+            },
+            withoutBio: {
+              $sum: {
+                $cond: [{ $eq: [{ $ifNull: ["$bio", ""] }, ""] }, 1, 0],
+              },
+            },
+            total: { $sum: 1 },
+          },
+        },
+      ]);
+
+      return {
+        data: {
+          withBio: rows[0]?.withBio ?? 0,
+          withoutBio: rows[0]?.withoutBio ?? 0,
+          total: rows[0]?.total ?? 0,
+        },
+        status: true,
+      };
+    } catch (error: any) {
+      return {
+        error: error,
+        status: false,
+      };
+    }
+  },
+
+  /**
+   * Contagem administrativa de cadastros voluntários.
+   * Considera todos os registros (sem filtro de APPROVED).
+   */
+  getStatsVoluntaryRegistrations: async (): Promise<
+    ApiResponseType<VoluntaryRegistrationStats>
+  > => {
+    try {
+      const rows = await ReligiousCommunity.aggregate([
+        {
+          $group: {
+            _id: null,
+            registeredVoluntarily: {
+              $sum: {
+                $cond: [{ $eq: ["$registeredVoluntarily", true] }, 1, 0],
+              },
+            },
+            notRegisteredVoluntarily: {
+              $sum: {
+                $cond: [{ $eq: ["$registeredVoluntarily", true] }, 0, 1],
+              },
+            },
+            total: { $sum: 1 },
+          },
+        },
+      ]);
+
+      return {
+        data: {
+          registeredVoluntarily: rows[0]?.registeredVoluntarily ?? 0,
+          notRegisteredVoluntarily: rows[0]?.notRegisteredVoluntarily ?? 0,
           total: rows[0]?.total ?? 0,
         },
         status: true,

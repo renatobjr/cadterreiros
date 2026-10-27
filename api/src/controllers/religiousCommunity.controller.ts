@@ -188,6 +188,70 @@ export const religiousCommunityController = {
     });
   },
 
+  getStatsByCensusStep: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByCensusStep();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByStatus: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByStatus();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByEducationalLevel: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response =
+      await religiousCommunityService.getStatsByEducationalLevel();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsBioCoverage: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response = await religiousCommunityService.getStatsBioCoverage();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsVoluntaryRegistrations: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response =
+      await religiousCommunityService.getStatsVoluntaryRegistrations();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
   getPublicCommunityById: async (
     req: Request,
     res: Response
