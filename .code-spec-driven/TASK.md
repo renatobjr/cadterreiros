@@ -3,6 +3,8 @@
 **Spec:** `.code-spec-driven/SPEC.md` | **Design:** `.code-spec-driven/DESIGN.md`
 **Auto-sizing:** Large | **Branch:** `feat/migracao-vue-para-react`
 
+> **Plano de cutover (após testes em sandbox):** último commit migrando `web-react/` → `web/` (substituindo o Vue 3).
+
 ## Tabela de Progresso (Done When)
 
 | Task | Título | Status | Done When | Gate | Evidência |
@@ -49,7 +51,7 @@
 | T39 | GET /stats/* admin (5) | ✅ Done | 5 endpoints retornam | Full | commit 38c8867; build ✓; 45 testes (5 T39 + 40 anteriores) | 6 endpoints retornam | Full | 
 | T40 | rate-limit + header x-cadterreiros-api | ✅ Done | 403 sem header; 429 após 5 req | Full | commit 3beb80d; build ✓; 10 testes (4 T40 + 6 anteriores) | 403 sem header; 429 após 5 req | Full | 
 | T41 | class-validator strict | ✅ Done | 400 com erros | Full | commit 8e5c114; build ✓; 15 testes (5 T41 + 10 anteriores) | 400 com erros | Full | 
-| T42 | Remover /public/random + /public/mapping | ✅ Done | endpoints não existem | Full | commit pendente; build ✓; 45 testes | endpoints não existem | Full | 
+| T42 | Remover /public/random + /public/mapping | ✅ Done | endpoints não existem | Full | commit 5fb8200; build ✓; 45 testes | endpoints não existem | Full | 
 | T43 | Vitest setup | ⬜ Pending | npm run test roda | Full | 
 | T44 | Testes fluxos reais | ⬜ Pending | testes passam | Full | 
 | T45 | verify-contrast | ⬜ Pending | verde | Full | 

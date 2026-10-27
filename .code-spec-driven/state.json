@@ -83,6 +83,7 @@
     "blockers": [],
     "branch": null,
     "completed_at": null,
-    "total_tasks": 52
+    "total_tasks": 52,
+    "cutover_plan": "Após testes em sandbox, último commit migrando web-react/ para web/ (substituindo Vue 3)"
   }
 }
