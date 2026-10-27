@@ -6,6 +6,9 @@ export interface MappingChartsProps {
   stats: MappingStats;
 }
 
+const cap = (value: string): string =>
+  value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+
 const toSeries = <T,>(
   rows: T[],
   labelOf: (row: T) => string,
@@ -15,15 +18,15 @@ const toSeries = <T,>(
 /** Os dez gráficos agregados do mapeamento, alimentados pela API pública. */
 export function MappingCharts({ stats }: MappingChartsProps) {
   const typeAndNation = stats.byTypeAndNation.flatMap((row) => [
-    { label: `${row.nation} — matriz africana`, value: row.african },
-    { label: `${row.nation} — comunidade de terreiro`, value: row.traditional },
+    { label: `${cap(row.nation)} — matriz africana`, value: row.african },
+    { label: `${cap(row.nation)} — comunidade de terreiro`, value: row.traditional },
   ]);
 
   return (
     <div className="chart-grid">
       <MetricBarChart
         title="Comunidades por nação"
-        data={toSeries(stats.byNation, (row) => row.nation, (row) => row.count)}
+        data={toSeries(stats.byNation, (row) => cap(row.nation), (row) => row.count)}
       />
       <MetricBarChart
         title="Comunidades por cidade"
@@ -36,11 +39,11 @@ export function MappingCharts({ stats }: MappingChartsProps) {
       <MetricBarChart title="Comunidades por tipo e nação" data={typeAndNation} />
       <MetricBarChart
         title="Comunidades por tipo"
-        data={toSeries(stats.byType, (row) => row.type, (row) => row.count)}
+        data={toSeries(stats.byType, (row) => cap(row.type), (row) => row.count)}
       />
       <MetricBarChart
         title="Lideranças por gênero"
-        data={toSeries(stats.byLeaderGender, (row) => row.gender, (row) => row.count)}
+        data={toSeries(stats.byLeaderGender, (row) => cap(row.gender), (row) => row.count)}
       />
       <MetricBarChart
         title="Lideranças por etnia"

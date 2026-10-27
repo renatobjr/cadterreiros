@@ -7,6 +7,7 @@ import Button from "../components/ui/Button";
 import EmptyState from "../components/composed/EmptyState";
 import ArticleCard from "../features/articles/components/ArticleCard";
 import CommunityCard from "../features/communities/components/CommunityCard";
+import LeafletMap from "../features/metrics/components/LeafletMap";
 import type {
   NationStats,
   PhotoCoverageStats,
@@ -24,6 +25,7 @@ interface HomeData {
   photoCoverage: PhotoCoverageStats;
   nations: NationStats[];
   oldest: ReligiousCommunity[];
+  all: ReligiousCommunity[];
 }
 
 const ARTICLES = [
@@ -63,6 +65,9 @@ const NATION_KEYS: Record<string, string> = {
   quimbanda: "quimbanda",
 };
 
+const capitalize = (value: string): string =>
+  value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+
 const nationKey = (nation: string): string =>
   NATION_KEYS[nation.trim().toLowerCase()] ?? "outros";
 
@@ -87,10 +92,11 @@ export function Home() {
       communitiesApi.statsByPhotoCoverage(),
       communitiesApi.statsByNation(),
       communitiesApi.oldest(),
+      communitiesApi.list(),
     ])
-      .then(([summary, photoCoverage, nations, oldest]) => {
+      .then(([summary, photoCoverage, nations, oldest, all]) => {
         if (!active) return;
-        setData({ summary, photoCoverage, nations, oldest });
+        setData({ summary, photoCoverage, nations, oldest, all });
       })
       .catch(() => {
         if (active) {
@@ -110,6 +116,7 @@ export function Home() {
   const photoCoverage = data?.photoCoverage;
   const nations = data?.nations ?? [];
   const oldest = (data?.oldest ?? []).slice(0, 9);
+  const allCommunities = data?.all ?? [];
   const total = summary?.totalReligiousCommunities ?? 0;
   const neighborhoods = summary?.totalNeighborhoods ?? 0;
   const cities = summary?.totalCities ?? 0;
@@ -309,7 +316,7 @@ export function Home() {
                           }
                           aria-hidden="true"
                         />{" "}
-                        {item.nation}
+                        {capitalize(item.nation)}
                       </span>
                       <span className="bar__value">{formatNumber(item.count)}</span>
                     </div>
@@ -351,6 +358,9 @@ export function Home() {
             <Link className="btn btn--ghost shead__link" to="/mapeamento">
               Abrir o mapa <ArrowIcon />
             </Link>
+          </div>
+          <div className="mt-6">
+            <LeafletMap communities={allCommunities} height={420} />
           </div>
         </div>
       </section>
