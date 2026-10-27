@@ -33,7 +33,7 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T20",
+    "current_task": "T21",
     "completed_tasks": [
       "T1",
       "T2",
@@ -53,10 +53,11 @@
       "T16",
       "T17",
       "T18",
-      "T19"
+      "T19",
+      "T20"
     ],
     "uncommitted_files": [],
-    "next_step": "T19 concluída (Community + test). Aguardando decisão para T20 (pages/Mapping).",
+    "next_step": "T20 concluída (Mapping + 10 gráficos). Aguardando decisão para T21 (pages/AboutProject).",
     "blockers": [],
     "branch": null,
     "completed_at": null,
