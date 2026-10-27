@@ -15,9 +15,9 @@
 | T6 | ui/Button | ✅ Done | renderiza variantes; a11y ok | Quick | commit 12322b9; build ✓; lint ✓; 14 testes (2 files) |
 | T7 | ui/TextInput | ✅ Done | renderiza; erro ligado | Quick | commit 7d4cec2; build ✓; lint ✓; 18 testes (3 files) |
 | T8 | layout/Nav + Footer | ✅ Done | renderiza; navegação ok | Quick | commit acd3b1a; build ✓; lint ✓; 20 testes (4 files) |
-| T9 | domain/types.ts | ✅ Done | compila strict; sem any | Build | 
-| T10 | domain/sanitize.ts | ✅ Done | testes de sanitize passam | Quick | 
-| T11 | api/client.ts | ⬜ Pending | client configurado | Quick | 
+| T9 | domain/types.ts | ✅ Done | compila strict; sem any | Build | commit 5b33229; build ✓; lint ✓; types.ts espelhando API |
+| T10 | domain/sanitize.ts | ✅ Done | testes de sanitize passam | Quick | commit 8b2e360; build ✓; lint ✓; 15 testes (sanitize.test.ts) |
+| T11 | api/client.ts | ✅ Done | client configurado | Quick | commit 9d3807f; build ✓; lint ✓; 3 testes (client.test.ts → test/api/) |
 | T12 | api/communities.ts | ⬜ Pending | chamadas tipadas | Quick | 
 | T13 | api/auth.ts | ⬜ Pending | chamadas tipadas | Quick | 
 | T14 | features/communities/CommunityCard | ⬜ Pending | renderiza com dados | Quick | 
