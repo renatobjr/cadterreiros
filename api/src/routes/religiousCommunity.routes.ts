@@ -24,11 +24,6 @@ router.post(
 );
 router.get(`${path}/public/list`, religiousCommunityController.list);
 router.get(`${path}/public/oldest`, religiousCommunityController.getOldest);
-router.get(`${path}/public/random`, religiousCommunityController.getRandom);
-router.get(
-  `${path}/public/mapping`,
-  religiousCommunityController.getDataFromMaping
-);
 router.get(
   `${path}/public/stats/summary`,
   religiousCommunityController.getStatsSummary

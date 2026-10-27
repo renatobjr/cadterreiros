@@ -23,18 +23,6 @@ export const religiousCommunityController = {
     });
   },
 
-  getRandom: async (req: Request, res: Response): Promise<void> => {
-    const response = await religiousCommunityService.getRandom();
-
-    res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
-      error: response?.error,
-      data: plainToInstance(ReligiousCommunitiesGetRamdomDTO, response.data, {
-        excludeExtraneousValues: true,
-      }),
-      status: response.status,
-    });
-  },
-
   getOldest: async (req: Request, res: Response): Promise<void> => {
     const response = await religiousCommunityService.getOldest();
 
@@ -43,16 +31,6 @@ export const religiousCommunityController = {
       data: plainToInstance(ReligiousCommunitiesGetRamdomDTO, response.data, {
         excludeExtraneousValues: true,
       }),
-      status: response.status,
-    });
-  },
-
-  getDataFromMaping: async (req: Request, res: Response): Promise<void> => {
-    const response = await religiousCommunityService.getDataFromMaping();
-
-    res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
-      error: response?.error,
-      data: response.data,
       status: response.status,
     });
   },

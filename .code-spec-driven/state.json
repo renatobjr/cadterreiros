@@ -33,7 +33,7 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T42",
+    "current_task": "T43",
     "completed_tasks": [
       "T1",
       "T2",
@@ -75,10 +75,11 @@
       "T38",
       "T39",
       "T40",
-      "T41"
+      "T41",
+      "T42"
     ],
     "uncommitted_files": [],
-    "next_step": "T39 concluída (5 endpoints, 5 testes). Aguardando decisão para T42 (remover /public/random + /public/mapping).",
+    "next_step": "T42 concluída (rotas removidas). Aguardando decisão para T43 (Vitest setup).",
     "blockers": [],
     "branch": null,
     "completed_at": null,

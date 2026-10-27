@@ -379,25 +379,6 @@ export const religiousCommunityService = {
     }
   },
 
-  getRandom: async (): Promise<ApiResponseType<IReligiousCommunity[]>> => {
-    try {
-      const getRamdomCommunities = await ReligiousCommunity.aggregate([
-        { $match: { censusStep: ECensusStep.APPROVED } },
-        { $sample: { size: 9 } },
-      ]);
-
-      return {
-        data: getRamdomCommunities,
-        status: true,
-      };
-    } catch (error: any) {
-      return {
-        error: error,
-        status: false,
-      };
-    }
-  },
-
   getOldest: async (): Promise<ApiResponseType<IReligiousCommunity[]>> => {
     try {
       const oldestCommunities = await ReligiousCommunity.aggregate([
@@ -418,60 +399,8 @@ export const religiousCommunityService = {
     }
   },
 
-  getDataFromMaping: async (): Promise<
-    ApiResponseType<{
-      totalReligiousCommunities: number;
-      totalCities: number;
-      totalNeighborhoods: number;
-    }>
-  > => {
-    try {
-      const totalReligiousCommunities =
-        await ReligiousCommunity.countDocuments();
-
-      const totalCities = await ReligiousCommunity.aggregate([
-        { $match: { censusStep: ECensusStep.APPROVED } },
-        {
-          $group: {
-            _id: "$communityAddress.city",
-          },
-        },
-        {
-          $count: "total",
-        },
-      ]);
-
-      const totalNeighborhoods = await ReligiousCommunity.aggregate([
-        { $match: { censusStep: ECensusStep.APPROVED } },
-        {
-          $group: {
-            _id: "$communityAddress.neighborhood",
-          },
-        },
-        {
-          $count: "total",
-        },
-      ]);
-
-      return {
-        data: {
-          totalReligiousCommunities,
-          totalCities: totalCities[0].total || 0,
-          totalNeighborhoods: totalNeighborhoods[0].total || 0,
-        },
-        status: true,
-      };
-    } catch (error: any) {
-      console.log(error);
-      return {
-        error: error,
-        status: false,
-      };
-    }
-  },
-
   /**
-   * Totais públicos do mapeamento (substitui `/public/mapping`).
+   * Totais públicos do mapeamento.
    * Conta apenas comunidades com censo aprovado.
    */
   getStatsSummary: async (): Promise<
