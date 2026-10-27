@@ -506,3 +506,8 @@ table.data tbody tr:hover {
   align-items: center;
   gap: 6px;
 }
+
+/* Footer: link compacto (min-height 44px do protótipo gerava gap visual grande) */
+.foot__list a {
+  min-height: 0;
+}

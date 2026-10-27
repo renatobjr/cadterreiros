@@ -110,7 +110,6 @@ a.article-card {
 .foot__list a {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
 }
 
 .page-head {
