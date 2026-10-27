@@ -468,3 +468,12 @@ table.data tbody tr:hover {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Ícones funcionais (setas, marcadores) — geometria limitada pelo token.
+   Sem esta regra o SVG assume o tamanho padrão e estoura o botão. */
+.od-icon {
+  display: inline-block;
+  inline-size: var(--od-icon-size, 1em);
+  block-size: var(--od-icon-size, 1em);
+  flex: none;
+}
