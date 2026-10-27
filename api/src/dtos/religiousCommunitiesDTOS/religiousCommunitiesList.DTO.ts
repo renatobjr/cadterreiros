@@ -45,6 +45,21 @@ export class ReligiousCommunitiesListDTO {
   religiousSpaceMainPicture?: string;
 
   @Expose()
+  leaderGender?: string;
+
+  @Expose()
+  leaderEthnicity?: string;
+
+  @Expose()
+  leaderEducationalLevel?: string;
+
+  @Expose()
+  religiousSpaceStatus?: string;
+
+  @Expose()
+  bio?: string;
+
+  @Expose()
   censusStep!: string;
 
   @Expose()

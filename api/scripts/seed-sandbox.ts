@@ -1,118 +1,101 @@
-/* Seed rápido para o sandbox: importa os 214 terreiros do
- * .artifacts/data/communities.json para o Mongo local.
- * Uso: npx ts-node --files scripts/seed-sandbox.ts
- * Não é usado em produção. */
+/* Seed do sandbox: usa os dados reais de produção (`initialData.ts`), que
+ * incluem leaderGender / leaderEthnicity / leaderEducationalLevel e as fotos
+ * originais. Copia as fotos de `mapped_files/` para `uploads/` e insere.
+ * Uso: npx ts-node --files scripts/seed-sandbox.ts */
 import mongoose from "mongoose";
 import fs from "node:fs";
 import path from "node:path";
+import { randomUUID } from "node:crypto";
 import {
   ECensusStep,
   EReligiousSpaceStatus,
   ReligiousCommunity,
 } from "../src/schemas/ReligiousCommunity";
+import { ReligiousCommunityInitialData } from "../src/db/data/initialData";
 
 const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017";
 const DB = process.env.MONGO_INITDB_DATABASE || "cadterreiros_stg";
 
-const jsonPath = path.resolve(
-  __dirname,
-  "../../.artifacts/data/communities.json",
-);
+const MAPPED_FILES = path.resolve(__dirname, "../src/db/mapped_files");
+const UPLOADS = path.resolve(__dirname, "../uploads/religiousCommunities");
+const COMMUNITIES_JSON = path.resolve(__dirname, "../../.artifacts/data/communities.json");
 
-type RawCommunity = {
-  id: string;
-  slug: string;
+type Snapshot = {
   name: string;
-  nation: string;
-  nationKey: string;
-  type: string;
-  typeKey: string;
-  founded: number;
-  languages: string;
-  neighborhood: string;
-  city: string;
-  place: string;
-  lat: number;
-  lng: number;
-  bio?: string;
-  censusTaker?: string;
-  surveyedAt?: string;
-  photo?: string;
+  neighborhood?: string;
+  city?: string;
+  place?: string;
 };
 
+function loadSnapshot(): Map<string, Snapshot> {
+  const raw = JSON.parse(fs.readFileSync(COMMUNITIES_JSON, "utf8")) as Snapshot[];
+  return new Map(raw.map((c) => [c.name.trim().toLowerCase(), c]));
+}
+
 async function main() {
-  const raw: RawCommunity[] = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
-  console.log(`[seed] ${raw.length} terreiros encontrados em ${jsonPath}`);
+  console.log(`[seed] ${ReligiousCommunityInitialData.length} registros reais`);
 
   await mongoose.connect(MONGO_URL, { dbName: DB });
   console.log(`[seed] conectado em ${MONGO_URL}/${DB}`);
 
-  await ReligiousCommunity.deleteMany({ registeredVoluntarily: false });
+  fs.mkdirSync(UPLOADS, { recursive: true });
+  const snapshot = loadSnapshot();
+
+  await ReligiousCommunity.deleteMany({});
   console.log("[seed] registros anteriores removidos");
 
-  console.log(`[seed] raw is array: ${Array.isArray(raw)}, length: ${raw.length}`);
-  const docs = raw.map((c) => {
-    const founded = Number(c.founded);
-    const validYear =
-      Number.isFinite(founded) && founded > 1000 && founded < 2100
-        ? founded
-        : null;
+  const docs = ReligiousCommunityInitialData.map((c) => {
+    // Foto: copia de mapped_files e guarda apenas o nome do arquivo.
+    let filename: string | undefined;
+    const source = c.religiousSpaceMainPicture
+      ? path.join(MAPPED_FILES, String(c.religiousSpaceMainPicture))
+      : null;
+    if (source && fs.existsSync(source)) {
+      const extension = path.extname(source);
+      filename = `${randomUUID()}${extension}`;
+      fs.copyFileSync(source, path.join(UPLOADS, filename));
+    }
+
     return {
-      authorization: true,
-      communityGoogleApiLocalization: { lat: c.lat, long: c.lng },
-      communityAddress: {
-        fullAddress: c.place || "",
-        street: "",
-        number: "",
-        neighborhood: c.neighborhood || "",
-        city: c.city || "",
-        state: "PB",
-        zipcode: "",
-      },
-      communityType: (c.type || "matriz africana").toLowerCase(),
-      religiousSpaceYearFoundation: validYear,
-      religiousSpaceLeaderFoundation: "não informado",
-      religiousSpaceNation: (c.nation || "outros").toLowerCase(),
-      religiousSpacePraticalLanguages: (c.languages || "outros").toLowerCase(),
-      religiousSpaceName: c.name,
-      religiousSpaceLeaderName: "não informado",
-      religiousSpacePositionName: "não informado",
-      religiousSpaceStartedBy: "não informado",
-      religiousSpaceNameDateStartedBy: validYear ? new Date(`${validYear}-01-01`) : new Date("1900-01-01"),
-      leaderContacts: {},
-      leaderEthnicity: "não informado",
-      leaderGender: "não informado",
-      leaderEducationalLevel: "não informado",
-      leaderSocialProgram: null,
-      leaderSufferedRacism: false,
-      religiousSpaceMainPicture: c.photo ? `/religiousCommunities/${c.photo.split("/").pop()}` : undefined,
-      religiousSpaceStatus: EReligiousSpaceStatus.ACTIVE,
-      bio: c.bio,
+      ...c,
+      authorization: Boolean(c.authorization),
+      communityAddress: (() => {
+        const snap = snapshot.get(String(c.religiousSpaceName ?? "").trim().toLowerCase());
+        return {
+          fullAddress: snap?.place ?? "não informado",
+          street: "",
+          number: "",
+          neighborhood: snap?.neighborhood ?? "",
+          city: snap?.city ?? "",
+          state: "PB",
+          zipcode: "",
+        };
+      })(),
+      religiousSpaceMainPicture: filename,
       censusStep: ECensusStep.APPROVED,
       censusTaker: null,
       registeredVoluntarily: false,
-      rejectedReason: undefined,
+      religiousSpaceStatus: EReligiousSpaceStatus.ACTIVE,
     };
   });
 
-  console.log(`[seed] docs prepared: ${docs.length}`);
-  console.log(`[seed] sample:`, JSON.stringify(docs[0]).slice(0, 300));
-  try {
-    const result: any = await ReligiousCommunity.insertMany(docs, { ordered: false, rawResult: true });
-    console.log(`[seed] insertedCount: ${result.insertedCount}`);
-    console.log(`[seed] count after: ${await ReligiousCommunity.countDocuments()}`);
-    if (result.writeErrors?.length) {
-      console.error(`[seed] writeErrors: ${result.writeErrors.length}`);
-      console.error(`[seed] primeiro: ${JSON.stringify(result.writeErrors[0]?.err).slice(0, 600)}`);
-    }
-  } catch (e: any) {
-    console.error("[seed] insertMany error:", e?.message?.slice(0, 800));
-    if (e?.writeErrors) {
-      console.error("[seed] writeErrors:", e.writeErrors.length);
-      console.error("[seed] primeiro erro:", JSON.stringify(e.writeErrors[0]?.err).slice(0, 800));
-    }
-    throw e;
-  }
+  const stats = {
+    gender: docs.reduce<Record<string, number>>((acc, d) => {
+      const k = (d as { leaderGender?: string }).leaderGender ?? "não informado";
+      acc[k] = (acc[k] ?? 0) + 1;
+      return acc;
+    }, {}),
+    ethnicity: docs.reduce<Record<string, number>>((acc, d) => {
+      const k = (d as { leaderEthnicity?: string }).leaderEthnicity ?? "não informado";
+      acc[k] = (acc[k] ?? 0) + 1;
+      return acc;
+    }, {}),
+  };
+
+  const result = await ReligiousCommunity.insertMany(docs, { ordered: false });
+  console.log(`[seed] ${result.length} registros inseridos`);
+  console.log("[seed] gênero:", stats.gender);
+  console.log("[seed] etnia:", stats.ethnicity);
 
   await mongoose.disconnect();
   console.log("[seed] concluído");

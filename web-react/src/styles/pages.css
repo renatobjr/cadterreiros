@@ -431,3 +431,18 @@
   border-radius: 2px;
   flex: none;
 }
+
+/* ---------- mapeamento: barra de filtros ---------- */
+/* O `SearchFilters` já traz o grid `.toolbar`; aqui ele divide a linha com
+   a ação "Limpar", como no protótipo. */
+.mapping-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s4);
+  margin-bottom: var(--s5);
+}
+.mapping-filters .toolbar {
+  flex: 1 1 720px;
+  margin-bottom: 0;
+}

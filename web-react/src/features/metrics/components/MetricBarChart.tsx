@@ -14,7 +14,7 @@ export function MetricBarChart({ title, data, note }: MetricBarChartProps) {
   const max = data.reduce((highest, item) => Math.max(highest, item.value), 0);
 
   return (
-    <article className="chart-card" data-testid="chart-card">
+    <article className="chart-card card card--pad" data-testid="chart-card">
       <h2>{title}</h2>
       {data.length === 0 ? (
         <p className="chart-note">Sem dados</p>
