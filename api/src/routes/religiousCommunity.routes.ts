@@ -1,7 +1,11 @@
 import { Router } from "express";
 import { religiousCommunityController } from "@/api/controllers/religiousCommunity.controller";
 import isAuth from "@/api/middlewares/isAuth";
-import { publicCreateRateLimit } from "@/api/middlewares/rateLimit";
+import {
+  publicCreateRateLimit,
+  publicUploadMainPictureRateLimit,
+} from "@/api/middlewares/rateLimit";
+import uploadMainPicture from "@/api/middlewares/upload";
 import requireApiKey from "@/api/middlewares/requireApiKey";
 import { validateDTO } from "@/api/middlewares/validateDTO";
 import { ReligiousCommunityCreateDTO } from "@/api/dtos/religiousCommunitiesDTOS/religiousCommunitiesCreate.DTO";
@@ -28,6 +32,13 @@ router.get(
 router.get(
   `${path}/public/:id`,
   religiousCommunityController.getPublicCommunityById
+);
+router.post(
+  `${path}/public/upload-main-picture/:id`,
+  publicUploadMainPictureRateLimit,
+  requireApiKey,
+  uploadMainPicture,
+  religiousCommunityController.postPublicUploadMainPicture
 );
 
 // Private routes

@@ -43,7 +43,7 @@
 | T33 | Schema registeredVoluntarily + censusTaker opcional | ✅ Done | campo presente; censusTaker optional | Build | commit 970637d; build ✓; 3 testes (schema test); 4 DTOs null-safe (censusTaker?._id / fullname ?? não informado) | campo presente; censusTaker optional | Build | 
 | T34 | GET /public/oldest | ✅ Done | retorna 9 ordenados | Full | commit 818a0b7; build ✓; 6 testes (3 T34 + 3 T33) | retorna 9 ordenados | Full | 
 | T35 | POST /public/create | ✅ Done | cria com PENDING, registeredVoluntarily true, censusTaker null; retorna id | Full | commit ade6504; build ✓; 20 testes (5 T35 + 15 anteriores) | cria com PENDING, registeredVoluntarily true, censusTaker null; retorna id | Full | 
-| T36 | POST /public/upload-main-picture/:id | ⬜ Pending | upload funciona | Full | 
+| T36 | POST /public/upload-main-picture/:id | ✅ Done | upload funciona | Full | commit pendente; build ✓; 25 testes (5 T36 + 20 anteriores) | upload funciona | Full | 
 | T37 | GET /public/stats/summary | ⬜ Pending | retorna totais | Full | 
 | T38 | GET /public/stats/by-* (10) | ⬜ Pending | 10 endpoints retornam | Full | 
 | T39 | GET /stats/* admin (6) | ⬜ Pending | 6 endpoints retornam | Full | 

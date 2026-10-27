@@ -24,4 +24,7 @@ export const createRateLimit = () =>
 /** Instância usada pelo `POST /public/create`. */
 export const publicCreateRateLimit = createRateLimit();
 
+/** Instância usada pelo `POST /public/upload-main-picture/:id`. */
+export const publicUploadMainPictureRateLimit = createRateLimit();
+
 export default publicCreateRateLimit;

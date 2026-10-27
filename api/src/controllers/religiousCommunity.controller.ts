@@ -206,6 +206,18 @@ export const religiousCommunityController = {
     });
   },
 
+  /** Upload público de foto: mesma regra do privado, sem exigir sessão. */
+  postPublicUploadMainPicture: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const files = req.files as Express.Multer.File[] | undefined;
+    if (!files?.length) {
+      return res.apiResponse(HttpStatusCode.BAD_REQUEST, "No files uploaded");
+    }
+    return religiousCommunityController.postUploadMainPicture(req, res);
+  },
+
   assignOwner: async (req: Request, res: Response): Promise<void> => {
     const { communityId, userId, keepStatus } = req.body;
 

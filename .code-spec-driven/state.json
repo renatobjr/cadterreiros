@@ -33,7 +33,7 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T36",
+    "current_task": "T37",
     "completed_tasks": [
       "T1",
       "T2",
@@ -70,11 +70,12 @@
       "T33",
       "T34",
       "T35",
+      "T36",
       "T40",
       "T41"
     ],
     "uncommitted_files": [],
-    "next_step": "T35 concluída (5 testes). RISCO: DTO T41 cobre 7 campos, schema exige mais. Aguardando decisão.",
+    "next_step": "T36 concluída (5 testes). Aguardando decisão para T37 (GET /public/stats/summary).",
     "blockers": [],
     "branch": null,
     "completed_at": null,
