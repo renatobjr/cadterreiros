@@ -15,7 +15,7 @@
 | T6 | ui/Button | ✅ Done | renderiza variantes; a11y ok | Quick | commit 12322b9; build ✓; lint ✓; 14 testes (2 files) |
 | T7 | ui/TextInput | ✅ Done | renderiza; erro ligado | Quick | commit 7d4cec2; build ✓; lint ✓; 18 testes (3 files) |
 | T8 | layout/Nav + Footer | ✅ Done | renderiza; navegação ok | Quick | commit acd3b1a; build ✓; lint ✓; 20 testes (4 files) |
-| T9 | domain/types.ts | ⬜ Pending | compila strict; sem any | Build | 
+| T9 | domain/types.ts | ✅ Done | compila strict; sem any | Build | 
 | T10 | domain/sanitize.ts | ⬜ Pending | testes de sanitize passam | Quick | 
 | T11 | api/client.ts | ⬜ Pending | client configurado | Quick | 
 | T12 | api/communities.ts | ⬜ Pending | chamadas tipadas | Quick | 
