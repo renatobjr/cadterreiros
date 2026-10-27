@@ -83,7 +83,7 @@ export function Login() {
         <h1 className="display-2">Acesso liberado</h1>
         <p className="lede">
           Sessão iniciada como{" "}
-          <strong>{user.fullname ?? user.email ?? "curadoria"}</strong>.
+          <strong>{user?.fullname ?? user?.email ?? "curadoria"}</strong>.
         </p>
 
         <div className="auth-links">

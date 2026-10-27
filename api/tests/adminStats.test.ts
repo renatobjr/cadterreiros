@@ -7,6 +7,7 @@ import express from "express";
 import handleResponse from "../src/middlewares/handleResponse";
 import religiousCommunityRoutes from "../src/routes/religiousCommunity.routes";
 import { ReligiousCommunity } from "../src/schemas/ReligiousCommunity";
+import { ERole, User } from "../src/schemas/User";
 import tokenUtils from "../src/utils/token.utils";
 
 const basePath = process.env.NODE_BASE_URL || "/api/v1";
@@ -32,6 +33,23 @@ let capturedPipelines: Stage[][] = [];
 
 const originalAggregate = ReligiousCommunity.aggregate.bind(ReligiousCommunity);
 const originalVerify = tokenUtils.verify;
+const originalFindById = User.findById;
+
+/** `isAuth` carrega o usuário no banco: responde um admin habilitado. */
+const stubAdminUser = () => {
+  const query = {
+    select: () => query,
+    then: (resolve: (value: unknown) => unknown) =>
+      Promise.resolve({
+        _id: "admin-user-id",
+        email: "admin@teste.local",
+        fullname: "Admin Teste",
+        role: ERole.ADMIN,
+        isEnabled: true,
+      }).then(resolve),
+  };
+  (User as any).findById = () => query;
+};
 let server: Server;
 let baseUrl: string;
 
@@ -77,6 +95,7 @@ before(async () => {
 
   // Auth mockado: qualquer token Bearer válido resolve para um usuário admin.
   (tokenUtils as any).verify = () => ({ id: "admin-user-id" });
+  stubAdminUser();
 
   const app = express();
   app.use(handleResponse);
@@ -94,6 +113,7 @@ before(async () => {
 after(async () => {
   (ReligiousCommunity as any).aggregate = originalAggregate;
   (tokenUtils as any).verify = originalVerify;
+  (User as any).findById = originalFindById;
   await new Promise<void>((resolve, reject) =>
     server.close((error) => (error ? reject(error) : resolve()))
   );

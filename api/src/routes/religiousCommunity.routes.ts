@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { religiousCommunityController } from "@/api/controllers/religiousCommunity.controller";
 import isAuth from "@/api/middlewares/isAuth";
+import { requireAdmin } from "@/api/middlewares/requireRole";
 import {
   publicCreateRateLimit,
   publicUploadMainPictureRateLimit,
@@ -110,52 +111,62 @@ router.put(
 router.put(
   `${path}/assign-owner`,
   isAuth,
+  requireAdmin,
   religiousCommunityController.assignOwner
 );
 router.put(
   `${path}/set-census-step`,
   isAuth,
+  requireAdmin,
   religiousCommunityController.setCensusStep
 );
 router.put(
   `${path}/request-corrections`,
   isAuth,
+  requireAdmin,
   religiousCommunityController.requestCorrections
 );
 router.put(
   `${path}/approve-census`,
   isAuth,
+  requireAdmin,
   religiousCommunityController.approveCensus
 );
 router.put(
   `${path}/reject-census`,
   isAuth,
+  requireAdmin,
   religiousCommunityController.rejectCensus
 );
 // Admin stats (todos os registros, sem filtro de censo)
 router.get(
   `${path}/stats/by-census-step`,
   isAuth,
+  requireAdmin,
   religiousCommunityController.getStatsByCensusStep
 );
 router.get(
   `${path}/stats/by-status`,
   isAuth,
+  requireAdmin,
   religiousCommunityController.getStatsByStatus
 );
 router.get(
   `${path}/stats/by-educational-level`,
   isAuth,
+  requireAdmin,
   religiousCommunityController.getStatsByEducationalLevel
 );
 router.get(
   `${path}/stats/bio-coverage`,
   isAuth,
+  requireAdmin,
   religiousCommunityController.getStatsBioCoverage
 );
 router.get(
   `${path}/stats/voluntary-registrations`,
   isAuth,
+  requireAdmin,
   religiousCommunityController.getStatsVoluntaryRegistrations
 );
 // Get id

@@ -354,6 +354,15 @@ export const religiousCommunityController = {
     const { id } = req.params;
     const community = req.body as IReligiousCommunity;
 
+    const canEdit = await religiousCommunityService.canUserEdit(
+      id,
+      req.user.id,
+      req.user.role
+    );
+    if (!canEdit) {
+      return res.apiResponse(HttpStatusCode.FORBIDDEN, "Forbidden");
+    }
+
     const response = await religiousCommunityService.updateReligiousCommunity(
       id,
       community
@@ -370,6 +379,16 @@ export const religiousCommunityController = {
     if (!req.files) {
       return res.apiResponse(HttpStatusCode.BAD_REQUEST, "No files uploaded");
     }
+
+    const canEdit = await religiousCommunityService.canUserEdit(
+      req.params.id,
+      req.user.id,
+      req.user.role
+    );
+    if (!canEdit) {
+      return res.apiResponse(HttpStatusCode.FORBIDDEN, "Forbidden");
+    }
+
     const response = await religiousCommunityService.postUpdateMainPicture(
       req.params.id,
       req.files
@@ -390,7 +409,17 @@ export const religiousCommunityController = {
     if (!files?.length) {
       return res.apiResponse(HttpStatusCode.BAD_REQUEST, "No files uploaded");
     }
-    return religiousCommunityController.postUploadMainPicture(req, res);
+
+    // Rota pública: sem sessão, apenas grava a foto do cadastro voluntário.
+    const response = await religiousCommunityService.postUpdateMainPicture(
+      req.params.id,
+      files
+    );
+    return res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
   },
 
   assignOwner: async (req: Request, res: Response): Promise<void> => {

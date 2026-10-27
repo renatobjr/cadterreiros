@@ -1,5 +1,6 @@
 import { Router } from "express";
 import authController from "@/api/controllers/auth.controller";
+import isAuth from "@/api/middlewares/isAuth";
 import {
   authGenerateTokenRateLimit,
   authLoginRateLimit,
@@ -27,6 +28,7 @@ router.post(
   authController.verifyOTP
 );
 router.post(`${path}/login`, authLoginRateLimit, authController.login);
-router.post(`${path}/validate-token`, authController.validateToken);
+router.post(`${path}/logout`, authController.logout);
+router.post(`${path}/validate-token`, isAuth, authController.validateToken);
 
 export default router;

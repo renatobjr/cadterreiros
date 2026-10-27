@@ -149,9 +149,8 @@ describe("Login", () => {
       "href",
       "/",
     );
-    await waitFor(() =>
-      expect(localStorage.getItem("SESSION_TOKEN")).toBe("jwt-token"),
-    );
+    // Sessão por cookie: nada de token no localStorage.
+    expect(localStorage.getItem("SESSION_TOKEN")).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: "Sair" }));
 

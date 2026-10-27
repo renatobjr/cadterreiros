@@ -34,13 +34,18 @@ describe("auth api", () => {
     expect(client.post).toHaveBeenCalledWith("auth/verify-otp", { token: "tok", otp: "1234" });
   });
 
-  it("validateToken calls post with header", async () => {
+  it("validateToken usa o cookie de sessão (sem header de token)", async () => {
     (client.post as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: true });
-    const res = await authApi.validateToken("tok");
+    const res = await authApi.validateToken();
     expect(res).toEqual({ ok: true });
-    expect(client.post).toHaveBeenCalledWith("auth/validate-token", null, {
-      headers: { "X-Access-Token": "Bearer tok" },
-    });
+    expect(client.post).toHaveBeenCalledWith("auth/validate-token");
+  });
+
+  it("logout encerra a sessão no servidor", async () => {
+    (client.post as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: true });
+    const res = await authApi.logout();
+    expect(res).toEqual({ ok: true });
+    expect(client.post).toHaveBeenCalledWith("auth/logout");
   });
 
   it("setPassword calls post", async () => {

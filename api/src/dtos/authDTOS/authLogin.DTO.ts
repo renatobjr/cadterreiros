@@ -9,6 +9,9 @@ class UserDTO {
 
   @Expose({ name: "email" })
   email!: string;
+
+  @Expose({ name: "role" })
+  role!: string;
 }
 
 export class AuthLoginDTO {
@@ -19,6 +22,7 @@ export class AuthLoginDTO {
       id: value.obj._id,
       fullname: value.obj.fullname,
       email: value.obj.email,
+      role: value.obj.role,
     };
   })
   user!: UserDTO;

@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { authApi, type LoginPayload } from "../../api/auth";
 import { isRefusal, readEnvelope } from "../../api/envelope";
-import {
-  ANONYMOUS_USER,
-  AuthContext,
-  SESSION_TOKEN_KEY,
-  type AuthContextValue,
-  type AuthUser,
-} from "./context";
+import { AuthContext, type AuthContextValue, type AuthUser } from "./context";
 
 export interface AuthProviderProps {
   children: ReactNode;
@@ -15,93 +16,97 @@ export interface AuthProviderProps {
 
 type SessionRecord = Record<string, unknown>;
 
-/** A API pode devolver a sessão direto ou dentro de um envelope `data`. */
-function unwrapSession(response: unknown): SessionRecord {
-  let current = response as SessionRecord | null | undefined;
-
-  for (let depth = 0; depth < 3 && current !== null && current !== undefined; depth += 1) {
-    if (typeof current.token === "string") {
-      return current;
-    }
-    const next = current.data;
-    current = typeof next === "object" && next !== null ? (next as SessionRecord) : undefined;
-  }
-
-  return {};
+interface SessionPayload {
+  user?: unknown;
 }
 
-function readUser(value: unknown): AuthUser {
-  if (typeof value !== "object" || value === null) {
-    return ANONYMOUS_USER;
-  }
+function readUser(value: unknown): AuthUser | null {
+  if (typeof value !== "object" || value === null) return null;
 
   const record = value as SessionRecord;
   const id = typeof record.id === "string" ? record.id : null;
   const email = typeof record.email === "string" ? record.email : null;
   const fullname = typeof record.fullname === "string" ? record.fullname : null;
+  const role = typeof record.role === "string" ? record.role : null;
 
-  return { id, email, fullname };
+  if (!id && !email) return null;
+
+  return { id, email, fullname, role };
 }
 
-/** Provê a sessão da curadoria (token em `localStorage` + usuário logado). */
+/** Lê `{ user }` do envelope da API (login/validate-token). */
+function userFromResponse(response: unknown): AuthUser | null {
+  const envelope = readEnvelope<SessionPayload>(response);
+  if (!envelope || isRefusal(envelope)) return null;
+  return readUser(envelope.data?.user);
+}
+
+/**
+ * Sessão do painel baseada em **cookie httpOnly**.
+ *
+ * Não há token em `localStorage`: o navegador envia o cookie a cada requisição
+ * (`withCredentials`) e a identidade é recuperada com `validate-token` no boot.
+ */
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<AuthUser>(ANONYMOUS_USER);
-  const [token, setToken] = useState<string | null>(() =>
-    localStorage.getItem(SESSION_TOKEN_KEY),
-  );
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [restoring, setRestoring] = useState(true);
+  /** Evita que a validação inicial sobrescreva um login feito no meio do caminho. */
+  const sessionSettledRef = useRef(false);
 
-  const login = useCallback(async (payload: LoginPayload) => {
-    const response = await authApi.login(payload);
-    const session = unwrapSession(response);
-    const sessionToken = typeof session.token === "string" ? session.token : null;
-
-    if (sessionToken !== null) {
-      setUser(readUser(session.user));
-      setToken(sessionToken);
-      localStorage.setItem(SESSION_TOKEN_KEY, sessionToken);
-    }
-
-    return response;
-  }, []);
-
-  const logout = useCallback(() => {
-    setUser(ANONYMOUS_USER);
-    setToken(null);
-    localStorage.removeItem(SESSION_TOKEN_KEY);
-  }, []);
-
-  // Ao recarregar, o token vem do localStorage mas a identidade se perde:
-  // validamos a sessão para recuperar nome/e-mail (ou descartar token inválido).
   useEffect(() => {
-    const stored = localStorage.getItem(SESSION_TOKEN_KEY);
-    if (!stored) return;
-
     let active = true;
+
+    // Migração: versões antigas guardavam o JWT no localStorage.
+    localStorage.removeItem("SESSION_TOKEN");
+
     authApi
-      .validateToken(stored)
+      .validateToken()
       .then((response) => {
-        if (!active) return;
-        const envelope = readEnvelope<{ user?: unknown }>(response);
-        if (isRefusal(envelope)) {
-          logout();
-          return;
+        if (active && !sessionSettledRef.current) {
+          setUser(userFromResponse(response));
         }
-        const payload = envelope?.data ?? (response as { user?: unknown });
-        setUser(readUser(payload?.user ?? payload));
-        setToken(stored);
       })
       .catch(() => {
-        if (active) logout();
+        if (active && !sessionSettledRef.current) setUser(null);
+      })
+      .finally(() => {
+        if (active) setRestoring(false);
       });
+
+    // Encerra a sessão local quando a API responde 401 (expiração/revogação).
+    function handleUnauthorized() {
+      sessionSettledRef.current = true;
+      setUser(null);
+    }
+
+    window.addEventListener("cadterreiros:unauthorized", handleUnauthorized);
 
     return () => {
       active = false;
+      window.removeEventListener("cadterreiros:unauthorized", handleUnauthorized);
     };
-  }, [logout]);
+  }, []);
+
+  const login = useCallback(async (payload: LoginPayload) => {
+    sessionSettledRef.current = true;
+    const response = await authApi.login(payload);
+    const nextUser = userFromResponse(response);
+    if (nextUser) setUser(nextUser);
+    return response;
+  }, []);
+
+  const logout = useCallback(async () => {
+    try {
+      await authApi.logout();
+    } catch {
+      // mesmo se a API falhar, a sessão local é encerrada
+    }
+    setUser(null);
+  }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, isAuth: token !== null, login, logout }),
-    [user, token, login, logout],
+    () => ({ user, isAuth: user !== null, restoring, login, logout }),
+    [user, restoring, login, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

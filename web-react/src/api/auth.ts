@@ -48,12 +48,15 @@ export async function verifyOtp(token: string, otp: string): Promise<unknown> {
   return response;
 }
 
-export async function validateToken(token: string): Promise<unknown> {
-  const response = (await client.post(`${URL}/validate-token`, null, {
-    headers: {
-      "X-Access-Token": `Bearer ${token}`,
-    },
-  })) as unknown;
+/** Valida a sessão atual (o cookie httpOnly vai automaticamente). */
+export async function validateToken(): Promise<unknown> {
+  const response = (await client.post(`${URL}/validate-token`)) as unknown;
+  return response;
+}
+
+/** Encerra a sessão no servidor, limpando o cookie. */
+export async function logout(): Promise<unknown> {
+  const response = (await client.post(`${URL}/logout`)) as unknown;
   return response;
 }
 
@@ -72,6 +75,7 @@ export async function setPassword(
 
 export const authApi = {
   login,
+  logout,
   generateUserToken,
   verifyOtp,
   validateToken,

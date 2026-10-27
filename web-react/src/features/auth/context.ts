@@ -1,25 +1,28 @@
 import { createContext, useContext } from "react";
 import type { LoginPayload, LoginResponse } from "../../api/auth";
 
-export const SESSION_TOKEN_KEY = "SESSION_TOKEN";
-
 export interface AuthUser {
   id: string | null;
   email: string | null;
   fullname: string | null;
+  /** `admin` (curadoria) ou `census_taker` (recenseador). */
+  role: string | null;
 }
 
 export interface AuthContextValue {
-  user: AuthUser;
+  user: AuthUser | null;
   isAuth: boolean;
+  /** `true` enquanto a sessão do cookie ainda está sendo verificada. */
+  restoring: boolean;
   login: (payload: LoginPayload) => Promise<LoginResponse>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 export const ANONYMOUS_USER: AuthUser = {
   id: null,
   email: null,
   fullname: null,
+  role: null,
 };
 
 export const AuthContext = createContext<AuthContextValue | null>(null);

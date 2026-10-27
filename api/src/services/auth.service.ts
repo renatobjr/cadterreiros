@@ -17,6 +17,9 @@ const otpHash = (code: string): string =>
     .update(code)
     .digest("hex");
 
+/** Validade da sessão do painel (mesma usada no cookie httpOnly). */
+const SESSION_TTL = "8h";
+
 /** Escopo do token de curta duração emitido só depois do OTP verificado. */
 const PASSWORD_RESET_SCOPE = "password-reset";
 
@@ -62,7 +65,11 @@ export const authService = {
         };
       }
 
-      const generateToken = tokenUtils.generate({ id: user._id });
+      // Sessão com validade explícita (antes o JWT nunca expirava).
+      const generateToken = tokenUtils.generate(
+        { id: user._id, role: user.role },
+        { expiresIn: SESSION_TTL }
+      );
       await User.findByIdAndUpdate(user._id, { lastLogin: new Date() });
       return {
         data: {

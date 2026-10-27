@@ -190,6 +190,28 @@ const resolveLocalization = async (
 };
 
 export const religiousCommunityService = {
+  /**
+   * Um registro só pode ser editado pelo admin ou pelo recenseador dono dele.
+   * Recenseadores podem *ver* todos (list/detail), mas não alterar de terceiros.
+   */
+  canUserEdit: async (
+    id: string,
+    userId: string,
+    role: string
+  ): Promise<boolean> => {
+    if (role === ERole.ADMIN) return true;
+
+    try {
+      const record = await ReligiousCommunity.findById(id).select(
+        "censusTaker"
+      );
+      if (!record) return false;
+      return String(record.censusTaker ?? "") === String(userId);
+    } catch {
+      return false;
+    }
+  },
+
   createReligiousCommunity: async (
     religiousCommunity: Partial<IReligiousCommunity>,
     userId: string

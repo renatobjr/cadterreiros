@@ -1,16 +1,5 @@
-import { Expose, Transform, Type } from "class-transformer";
+import { Expose, Transform } from "class-transformer";
 import slugify from "slugify";
-
-class LeaderContactDTO {
-  @Expose()
-  phone?: string | number | undefined;
-
-  @Expose()
-  mobile?: string | number | undefined;
-
-  @Expose()
-  email?: string | undefined;
-}
 
 /**
  * Ficha pública de uma comunidade (`GET /public/:id`).
@@ -70,10 +59,6 @@ export class ReligiousCommunitiesGetByIdDTO {
   @Expose()
   @Transform((value) => value.obj.communityAddress?.fullAddress ?? null)
   fullAddress!: string | null;
-
-  @Expose({ name: "leaderContacts" })
-  @Type(() => LeaderContactDTO)
-  leaderContacts?: LeaderContactDTO;
 
   @Expose()
   @Transform((value) => value.obj.religiousSpaceMainPicture ?? null)

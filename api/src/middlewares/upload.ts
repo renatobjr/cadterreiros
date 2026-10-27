@@ -11,7 +11,22 @@ export const UPLOAD_MAIN_PICTURE_DIR = path.join(
   "religiousCommunities"
 );
 
-const upload = multer({ dest: UPLOAD_MAIN_PICTURE_DIR }).any();
+const MAX_UPLOAD_BYTES = 8 * 1024 * 1024; // 8 MB
+
+/** Aceita apenas imagens — evita armazenar conteúdo arbitrário no diretório servido. */
+const imageOnly: multer.Options["fileFilter"] = (_req, file, done) => {
+  if (file.mimetype?.startsWith("image/")) {
+    done(null, true);
+    return;
+  }
+  done(new Error("Apenas imagens são aceitas"));
+};
+
+const upload = multer({
+  dest: UPLOAD_MAIN_PICTURE_DIR,
+  limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
+  fileFilter: imageOnly,
+}).any();
 
 /**
  * Processa o `multipart/form-data` do upload público de foto.

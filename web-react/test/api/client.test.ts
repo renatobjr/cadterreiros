@@ -22,10 +22,11 @@ describe("api client", () => {
     expect(typeof client.put).toBe("function");
   });
 
-  it("attaches auth token from localStorage as X-Access-Token", () => {
+  it("envia cookies de sessão e não lê token do localStorage", () => {
     localStorage.setItem("SESSION_TOKEN", "tok123");
     const result = requestHandler()({ headers: {} });
-    expect(result.headers["X-Access-Token"]).toBe("Bearer tok123");
+    expect(result.headers["X-Access-Token"]).toBeUndefined();
+    expect(client.defaults.withCredentials).toBe(true);
   });
 
   it("attaches the public API key as x-cadterreiros-api", () => {
