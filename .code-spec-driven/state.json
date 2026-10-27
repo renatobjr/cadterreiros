@@ -1,0 +1,47 @@
+{
+  "workspace": "/media/files/antimonitor/projects/cadterreiros",
+  "repos": [
+    "/media/files/antimonitor/projects/cadterreiros"
+  ],
+  "probed_at": "2026-10-26T22:00:00Z",
+  "harness": "opencode",
+  "capabilities": {
+    "FETCH_ASANA": {
+      "tool": "n/a",
+      "status": "INDISPONIVEL",
+      "note": "Sem task no Asana. Usando contexto da migração como task."
+    },
+    "CODE_SEARCH": {
+      "tool": "grep",
+      "status": "DISPONIVEL"
+    },
+    "FILE_READ": {
+      "tool": "read",
+      "status": "DISPONIVEL"
+    },
+    "WRITE_FILE": {
+      "tool": "write",
+      "status": "DISPONIVEL"
+    },
+    "SHELL_EXEC": {
+      "tool": "shell",
+      "status": "DISPONIVEL"
+    }
+  },
+  "current": {
+    "feature": "migracao-vue-para-react",
+    "phase": 3,
+    "auto_sizing": "Large",
+    "task_id": null,
+    "current_task": "T2",
+    "completed_tasks": [
+      "T1"
+    ],
+    "uncommitted_files": [],
+    "next_step": "T1 concluído (build, lint, smoke test passam). Aguardando decisão para T2 (portar tokens.mjs + build-tokens).",
+    "blockers": [],
+    "branch": null,
+    "completed_at": null,
+    "total_tasks": 50
+  }
+}
