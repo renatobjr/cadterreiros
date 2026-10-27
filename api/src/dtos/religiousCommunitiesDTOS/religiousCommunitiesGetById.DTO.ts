@@ -52,7 +52,7 @@ export class ReligiousCommunitiesGetByIdDTO {
 
   @Expose()
   @Transform((value) => {
-    return value.obj.censusTaker.fullname;
+    return value.obj.censusTaker?.fullname ?? "não informado";
   })
   censusTaker!: string;
 

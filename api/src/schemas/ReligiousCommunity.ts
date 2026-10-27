@@ -84,8 +84,9 @@ export interface IReligiousCommunity {
   religiousSpaceEvents?: [];
   bio?: string | undefined;
   censusStep: ECensusStep;
-  censusTaker: Types.ObjectId;
+  censusTaker?: Types.ObjectId | null;
   rejectedReason?: string;
+  registeredVoluntarily: boolean;
   createdAt: Date | string;
 }
 
@@ -136,8 +137,17 @@ const ReligiousCommunitySchema = new Schema(
       enum: ECensusStep,
       default: ECensusStep.PENDING,
     },
-    censusTaker: { type: Schema.Types.ObjectId, required: true },
+    censusTaker: {
+      type: Schema.Types.ObjectId,
+      required: false,
+      default: null,
+    },
     rejectedReason: { type: String, required: false },
+    registeredVoluntarily: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   { timestamps: true }
 );

@@ -81,11 +81,11 @@ export class ReligiousCommunitiesGetByUserIdDTO {
   censusStep!: ECensusStep;
 
   @Expose()
-  @Transform((value) => value.obj.censusTaker._id)
+  @Transform((value) => value.obj.censusTaker?._id ?? null)
   censusTaker!: ObjectId;
 
   @Expose()
-  @Transform((value) => value.obj.censusTaker.fullname)
+  @Transform((value) => value.obj.censusTaker?.fullname ?? "não informado")
   censusTakerFullname!: string;
 
   @Expose()

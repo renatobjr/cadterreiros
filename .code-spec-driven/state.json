@@ -33,7 +33,7 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T33",
+    "current_task": "T34",
     "completed_tasks": [
       "T1",
       "T2",
@@ -66,10 +66,11 @@
       "T29",
       "T30",
       "T31",
-      "T32"
+      "T32",
+      "T33"
     ],
     "uncommitted_files": [],
-    "next_step": "T32 concluída (AuthContext + 6 testes). Aguardando decisão para T33 (schema registeredVoluntarily + censusTaker opcional).",
+    "next_step": "T33 concluída (schema + 3 testes). Aguardando decisão para T34 (GET /public/oldest).",
     "blockers": [],
     "branch": null,
     "completed_at": null,
