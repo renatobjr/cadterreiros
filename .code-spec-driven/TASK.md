@@ -39,7 +39,7 @@
 | T29 | pages/SetPassword | ✅ Done | renderiza | Quick | commit 96d56b9; build ✓; lint ✓; 1 teste (SetPassword.test.tsx) | renderiza | Quick | 
 | T30 | pages/FirstAccess | ✅ Done | renderiza | Quick | commit ff61bb3; build ✓; lint ✓; 3 testes (FirstAccess.test.tsx) | renderiza | Quick | 
 | T31 | pages/ForgotPassword | ✅ Done | renderiza | Quick | commit 22b02fc; build ✓; lint ✓; 3 testes (ForgotPassword.test.tsx) | renderiza | Quick | 
-| T32 | Auth Context | ✅ Done | login/logout funciona | Quick | commit pendente; build ✓; lint ✓; 6 testes (AuthContext.test.tsx) | login/logout funciona | Quick | 
+| T32 | Auth Context | ✅ Done | login/logout funciona | Quick | commit 598e6e8; build ✓; lint ✓; 6 testes (AuthContext.test.tsx) | login/logout funciona | Quick | 
 | T33 | Schema registeredVoluntarily + censusTaker opcional | ⬜ Pending | campo presente; censusTaker optional | Build | 
 | T34 | GET /public/oldest | ⬜ Pending | retorna 9 ordenados | Full | 
 | T35 | POST /public/create | ⬜ Pending | cria com PENDING, registeredVoluntarily true, censusTaker null; retorna id | Full | 
