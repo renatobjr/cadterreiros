@@ -943,20 +943,36 @@ a.article-card {
   margin-top: 0;
 }
 
+/* O próprio <form> é a grade de duas colunas: cada seção ocupa a coluna do
+   formulário e cada aside a coluna lateral. Assim o card "Como funciona"
+   divide a linha com a primeira seção e estica até a altura dela. */
 .cadastro-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.8fr);
-  gap: clamp(24px, 4vw, 56px);
+  column-gap: clamp(24px, 4vw, 56px);
+  row-gap: var(--s5);
   align-items: start;
 }
-.cadastro-main {
+.cadastro-layout > .cadastro-group,
+.cadastro-layout > .cadastro-actions {
+  grid-column: 1;
   min-width: 0;
 }
-.cadastro-form {
-  display: grid;
-  gap: var(--s5);
+.cadastro-layout > .cadastro-aside {
+  grid-column: 2;
+  min-width: 0;
+}
+.cadastro-layout > .cadastro-aside--intro {
+  align-self: stretch;
+  align-content: stretch;
+  grid-template-rows: 1fr;
+}
+.cadastro-layout > .form-error-summary,
+.cadastro-layout > .cadastro-status {
+  grid-column: 1 / -1;
 }
 .cadastro-required-note {
+  grid-column: 1 / -1;
   margin: 0;
 }
 .cadastro-group {
@@ -971,7 +987,37 @@ a.article-card {
 .cadastro-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s5) var(--s4);
+  /* O row-gap é herdado pelo subgrid dos campos; o respiro entre linhas de
+     campos vem do padding inferior de .field__control. */
+  gap: var(--s2) var(--s4);
+  align-items: start;
+  margin-block-end: calc(-1 * var(--s4));
+}
+/* Cada campo empilha cabeçalho (label + ajuda) e controle em linhas próprias.
+   Com `subgrid`, todos os controles de uma mesma linha do grid começam no
+   mesmo topo, mesmo quando um dos campos tem texto de ajuda. */
+.cadastro-grid .field {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: var(--s2);
+  align-items: start;
+}
+.cadastro-grid .field__head {
+  display: grid;
+  gap: var(--s2);
+  align-content: start;
+}
+.cadastro-grid .field__control {
+  display: grid;
+  gap: var(--s2);
+  align-content: start;
+  padding-block-end: var(--s4);
+}
+@supports (grid-template-rows: subgrid) {
+  .cadastro-grid > .field {
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+  }
 }
 .cadastro-full {
   grid-column: 1 / -1;
@@ -1076,10 +1122,14 @@ a.article-card {
   margin: 0;
 }
 .cadastro-aside {
-  position: sticky;
-  top: calc(var(--nav-h) + var(--s5));
   display: grid;
+  align-content: start;
   gap: var(--s5);
+}
+.cadastro-aside--intro > .card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .cadastro-aside .card--pad {
   padding: var(--s5);
@@ -1269,8 +1319,9 @@ a.article-card {
   .cadastro-layout {
     grid-template-columns: 1fr;
   }
-  .cadastro-aside {
-    position: static;
+  .cadastro-layout > .cadastro-group,
+  .cadastro-layout > .cadastro-aside {
+    grid-column: 1;
   }
   .cadastro-success__grid {
     grid-template-columns: 1fr;

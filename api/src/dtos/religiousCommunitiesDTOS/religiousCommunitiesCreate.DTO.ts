@@ -8,6 +8,7 @@ import {
   IsNotEmptyObject,
   IsNumber,
   IsObject,
+  IsOptional,
   IsString,
   Max,
   Min,
@@ -86,8 +87,10 @@ export class CommunityAddressDTO {
 /**
  * Payload do cadastro voluntário (`POST /public/create`).
  *
- * Validação strict: apenas os campos abaixo são aceitos e todos são
- * obrigatórios — payload inválido resulta em 400 com erros por campo.
+ * Validação strict: apenas os campos abaixo são aceitos e, exceto
+ * `communityGoogleApiLocalization` e `bio`, todos são obrigatórios — payload
+ * inválido resulta em 400 com erros por campo. A localização, quando omitida,
+ * é obtida por geocoding no servidor.
  */
 export class ReligiousCommunityCreateDTO {
   @IsString()
@@ -146,17 +149,22 @@ export class ReligiousCommunityCreateDTO {
   @IsBoolean()
   leaderSufferedRacism!: boolean;
 
+  @IsOptional()
   @IsObject()
   @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => CommunityGeoLocationDTO)
-  communityGoogleApiLocalization!: CommunityGeoLocationDTO;
+  communityGoogleApiLocalization?: CommunityGeoLocationDTO;
 
   @IsObject()
   @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => CommunityAddressDTO)
   communityAddress!: CommunityAddressDTO;
+
+  @IsOptional()
+  @IsString()
+  bio?: string;
 
   @IsBoolean()
   authorization!: boolean;

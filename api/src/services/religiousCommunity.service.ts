@@ -2,12 +2,14 @@ import {
   ECensusStep,
   EReligiousSpaceStatus,
   ICommunityAddress,
+  IGeoLocation,
   IReligiousCommunity,
   ReligiousCommunity,
 } from "@/api/schemas/ReligiousCommunity";
 import { ApiResponseType } from "@/api/@types/responsesTypes";
 import OpenAI from "openai";
 import { gptPrompt } from "../configs/gptPrompt";
+import { geocodeAddress } from "../configs/geocoder";
 import { PipelineStage, Types } from "mongoose";
 import { ERole, IUser, User } from "../schemas/User";
 import fileUtils from "../utils/file.utils";
@@ -141,6 +143,54 @@ const spaceStatusValue = {
   $ifNull: ["$religiousSpaceStatus", EReligiousSpaceStatus.ACTIVE],
 };
 
+/** Coordenadas úteis: números finitos e que não sejam o par 0,0. */
+const hasUsefulCoordinates = (
+  localization?: Partial<IGeoLocation> | null
+): localization is IGeoLocation => {
+  const lat = Number(localization?.lat);
+  const long = Number(localization?.long);
+  return (
+    Number.isFinite(lat) &&
+    Number.isFinite(long) &&
+    !(lat === 0 && long === 0)
+  );
+};
+
+/** Endereço usado no geocoding: endereço completo ou "bairro, cidade, PB". */
+const geocodingQuery = (address?: Partial<ICommunityAddress>): string => {
+  const fullAddress = address?.fullAddress?.trim();
+  if (fullAddress) return fullAddress;
+
+  const parts = [address?.neighborhood, address?.city]
+    .map((part) => (typeof part === "string" ? part.trim() : ""))
+    .filter(Boolean);
+
+  if (parts.length === 0) return "";
+
+  return [...parts, "PB"].join(", ");
+};
+
+/**
+ * Localização enviada pelo cliente ou, na ausência dela, geocodificada
+ * pelo Nominatim. Sem coordenadas válidas, grava 0,0.
+ */
+const resolveLocalization = async (
+  community: Partial<IReligiousCommunity>
+): Promise<IGeoLocation> => {
+  const given = community.communityGoogleApiLocalization;
+
+  if (hasUsefulCoordinates(given)) {
+    return { lat: Number(given.lat), long: Number(given.long) };
+  }
+
+  const query = geocodingQuery(community.communityAddress);
+  if (!query) return { lat: 0, long: 0 };
+
+  const geocoded = await geocodeAddress(query);
+
+  return geocoded ?? { lat: 0, long: 0 };
+};
+
 export const religiousCommunityService = {
   createReligiousCommunity: async (
     religiousCommunity: Partial<IReligiousCommunity>,
@@ -198,6 +248,9 @@ export const religiousCommunityService = {
     try {
       const createdCommunity = await ReligiousCommunity.create({
         ...religiousCommunity,
+        communityGoogleApiLocalization: await resolveLocalization(
+          religiousCommunity
+        ),
         censusTaker: null,
         censusStep: ECensusStep.PENDING,
         registeredVoluntarily: true,

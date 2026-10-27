@@ -206,6 +206,65 @@ test("POST /public/create com payload inválido retorna 400 com erros de valida�
   assert.equal(createdPayload, undefined, "não deve criar com payload inválido");
 });
 
+test("POST /public/create sem localização geocodifica o endereço pelo Nominatim", async () => {
+  const { communityGoogleApiLocalization: _omitted, ...withoutLocation } =
+    validPayload;
+  const realFetch = globalThis.fetch;
+  let geocodeUrl = "";
+
+  globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input);
+    if (url.includes("nominatim")) {
+      geocodeUrl = url;
+      return new Response(JSON.stringify([{ lat: "-7.12", lon: "-34.87" }]), {
+        status: 200,
+      });
+    }
+    return realFetch(input, init);
+  }) as typeof fetch;
+
+  try {
+    const response = await postAuthorized(withoutLocation);
+
+    assert.equal(response.status, 201);
+    assert.deepEqual(createdPayload?.communityGoogleApiLocalization, {
+      lat: -7.12,
+      long: -34.87,
+    });
+    assert.equal(
+      new URL(geocodeUrl).searchParams.get("q"),
+      validPayload.communityAddress.fullAddress
+    );
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+test("POST /public/create sem localização grava 0,0 quando o geocoding falha", async () => {
+  const { communityGoogleApiLocalization: _omitted, ...withoutLocation } =
+    validPayload;
+  const realFetch = globalThis.fetch;
+
+  globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    if (String(input).includes("nominatim")) {
+      throw new Error("geocoding indisponível");
+    }
+    return realFetch(input, init);
+  }) as typeof fetch;
+
+  try {
+    const response = await postAuthorized(withoutLocation);
+
+    assert.equal(response.status, 201);
+    assert.deepEqual(createdPayload?.communityGoogleApiLocalization, {
+      lat: 0,
+      long: 0,
+    });
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
 test("POST /public/create 6x em 1 min retorna 429 na sexta requisição", async () => {
   for (let attempt = 1; attempt <= 5; attempt += 1) {
     const response = await postAuthorized();

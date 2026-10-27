@@ -11,6 +11,10 @@ client.interceptors.request.use(
     if (token) {
       config.headers["X-Access-Token"] = `Bearer ${token}`;
     }
+    const apiKey = import.meta.env.VITE_CADTERREIROS_API_KEY;
+    if (apiKey) {
+      config.headers["x-cadterreiros-api"] = apiKey;
+    }
     return config;
   },
   (error: unknown) => Promise.reject(error),

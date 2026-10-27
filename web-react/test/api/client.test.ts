@@ -1,9 +1,20 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import client from "../../src/api/client";
+
+type RequestConfig = { headers: Record<string, unknown> };
+
+function requestHandler() {
+  return client.interceptors.request.handlers?.[0]?.fulfilled as unknown as (
+    c: RequestConfig,
+  ) => RequestConfig;
+}
 
 describe("api client", () => {
   beforeEach(() => localStorage.clear());
-  afterEach(() => localStorage.clear());
+  afterEach(() => {
+    localStorage.clear();
+    vi.unstubAllEnvs();
+  });
 
   it("is an axios instance", () => {
     expect(typeof client.get).toBe("function");
@@ -13,18 +24,18 @@ describe("api client", () => {
 
   it("attaches auth token from localStorage as X-Access-Token", () => {
     localStorage.setItem("SESSION_TOKEN", "tok123");
-    const handler = client.interceptors.request.handlers?.[0]?.fulfilled as unknown as (
-      c: { headers: Record<string, unknown> },
-    ) => { headers: Record<string, unknown> };
-    const result = handler({ headers: {} });
+    const result = requestHandler()({ headers: {} });
     expect(result.headers["X-Access-Token"]).toBe("Bearer tok123");
   });
 
+  it("attaches the public API key as x-cadterreiros-api", () => {
+    vi.stubEnv("VITE_CADTERREIROS_API_KEY", "test-api-key");
+    const result = requestHandler()({ headers: {} });
+    expect(result.headers["x-cadterreiros-api"]).toBe("test-api-key");
+  });
+
   it("does not attach header when no token", () => {
-    const handler = client.interceptors.request.handlers?.[0]?.fulfilled as unknown as (
-      c: { headers: Record<string, unknown> },
-    ) => { headers: Record<string, unknown> };
-    const result = handler({ headers: {} });
+    const result = requestHandler()({ headers: {} });
     expect(result.headers["X-Access-Token"]).toBeUndefined();
   });
 });

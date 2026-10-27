@@ -58,7 +58,6 @@ const REQUIRED_FIELDS = [
   "leaderGender",
   "leaderEducationalLevel",
   "leaderSufferedRacism",
-  "communityGoogleApiLocalization",
   "communityAddress",
 ];
 
@@ -119,6 +118,25 @@ test("payload válido é aceito pelo middleware", async () => {
       long: -34.864,
     });
     assert.equal(body.received.leaderSufferedRacism, false);
+  } finally {
+    await stopServer(server);
+  }
+});
+
+test("payload sem localização é aceito (geocoding fica no servidor)", async () => {
+  const { baseUrl, server } = await startServer();
+
+  try {
+    const { communityGoogleApiLocalization: _omitted, ...withoutLocation } =
+      validPayload;
+    const response = await post(baseUrl, withoutLocation);
+    const body = await response.json();
+
+    assert.equal(response.status, 201);
+    assert.ok(
+      !("communityGoogleApiLocalization" in body.received),
+      "localização omitida não deve ser exigida"
+    );
   } finally {
     await stopServer(server);
   }
