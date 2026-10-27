@@ -31,10 +31,10 @@
 | T21 | pages/AboutProject | ✅ Done | renderiza | Quick | build ✓; lint ✓; 1 teste (AboutProject.test.tsx) |
 | T22 | pages/CommunityRegister | ✅ Done | submit chama /public/create | Full | build ✓; lint ✓; 1 teste (CommunityRegister.test.tsx) |
 | T23 | Router + redirects | ✅ Done | todas rotas; redirects funcionam | Full | build ✓; lint ✓; react-router-dom; redirects legados + 404 |
-| T24 | features/metrics/MappingCharts | ✅ Done | renderiza | Full | build ✓; lint ✓; 1 teste (MappingCharts.test.tsx) | renderiza | Full | 
-| T25 | composed/Pagination | ✅ Done | navega páginas | Quick | 
-| T26 | composed/EmptyState | ✅ Done | renderiza | Quick | 
-| T27 | pages/Login | ⬜ Pending | renderiza | Quick | 
+| T24 | features/metrics/MappingCharts | ✅ Done | renderiza | Full | build ✓; lint ✓; 1 teste (MappingCharts.test.tsx) |build ✓; lint ✓; 1 teste (MappingCharts.test.tsx) | renderiza | Full | 
+| T25 | composed/Pagination | ✅ Done | navega páginas | Quick | build ✓; lint ✓; 7 testes (Pagination.test.tsx) |
+| T26 | composed/EmptyState | ✅ Done | renderiza | Quick | build ✓; lint ✓; 3 testes (EmptyState.test.tsx) |
+| T27 | pages/Login | ✅ Done | renderiza | Quick | build ✓; lint ✓; 1 teste (Login.test.tsx) |
 | T28 | pages/OTP | ⬜ Pending | submit OTP | Quick | 
 | T29 | pages/SetPassword | ⬜ Pending | renderiza | Quick | 
 | T30 | pages/FirstAccess | ⬜ Pending | renderiza | Quick | 
