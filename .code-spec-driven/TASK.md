@@ -52,7 +52,7 @@
 | T40 | rate-limit + header x-cadterreiros-api | ✅ Done | 403 sem header; 429 após 5 req | Full | commit 3beb80d; build ✓; 10 testes (4 T40 + 6 anteriores) | 403 sem header; 429 após 5 req | Full | 
 | T41 | class-validator strict | ✅ Done | 400 com erros | Full | commit 8e5c114; build ✓; 15 testes (5 T41 + 10 anteriores) | 400 com erros | Full | 
 | T42 | Remover /public/random + /public/mapping | ✅ Done | endpoints não existem | Full | commit 5fb8200; build ✓; 45 testes | endpoints não existem | Full | 
-| T43 | Vitest setup | ⬜ Pending | npm run test roda | Full | 
+| T43 | Vitest setup | ✅ Done | npm run test roda | Full | configurado desde T1 (commit e18cdab); vitest.config.ts + setup.ts; 86 testes (26 files) |
 | T44 | Testes fluxos reais | ⬜ Pending | testes passam | Full | 
 | T45 | verify-contrast | ⬜ Pending | verde | Full | 
 | T46 | verify-tokens | ⬜ Pending | verde | Quick | 
