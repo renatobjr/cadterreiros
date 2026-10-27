@@ -19,3 +19,5 @@
 
 # Artifacts
 .artifacts/
+# env (web-react)
+/web-react/.env
