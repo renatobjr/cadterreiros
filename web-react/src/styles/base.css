@@ -477,3 +477,32 @@ table.data tbody tr:hover {
   block-size: var(--od-icon-size, 1em);
   flex: none;
 }
+
+/* Mapa (Leaflet) — marcador e cluster próprios, como no CadMap.vue */
+.cad-marker-icon {
+  background: transparent;
+  border: none;
+}
+.cad-cluster-wrapper {
+  background: transparent;
+  border: none;
+}
+.cad-cluster-icon {
+  align-items: center;
+  background-size: cover;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  font-size: 14px;
+  font-weight: 700;
+  height: 40px;
+  justify-content: center;
+  width: 40px;
+}
+
+/* CTA de card de artigo: texto e seta alinhados na mesma linha */
+.article-card__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

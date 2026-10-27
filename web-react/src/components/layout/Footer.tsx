@@ -58,7 +58,6 @@ export function Footer() {
 
         <div className="foot__bottom">
           <span>© 2026 Casa de Cultura Ilê Asé D&apos;Osoguian</span>
-          <span>Recenseamento · snapshot de 01/10/2026</span>
         </div>
       </div>
     </footer>
