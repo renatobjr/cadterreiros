@@ -33,7 +33,7 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T13",
+    "current_task": "T14",
     "completed_tasks": [
       "T1",
       "T2",
@@ -46,10 +46,11 @@
       "T9",
       "T10",
       "T11",
-      "T12"
+      "T12",
+      "T13"
     ],
     "uncommitted_files": [],
-    "next_step": "T12 concluída (communities.ts + 4 testes mocked). Aguardando decisão para T13 (api/auth.ts).",
+    "next_step": "T13 concluída (auth.ts + 5 testes). Aguardando decisão para T14 (features/communities/CommunityCard).",
     "blockers": [],
     "branch": null,
     "completed_at": null,
