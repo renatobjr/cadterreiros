@@ -26,11 +26,11 @@
 | T16 | features/auth/LoginForm | ✅ Done | submit chama API | Quick | commit f299499; build ✓; lint ✓; 2 testes (LoginForm.test.tsx) |
 | T17 | pages/Home | ✅ Done | renderiza dados reais | Full | commit 437d21d; build ✓; lint ✓; 1 teste (Home.test.tsx) |
 | T18 | pages/Search | ✅ Done | filtra SPA | Full | commit 39019ea; build ✓; lint ✓; 1 teste (Search.test.tsx) |
-| T19 | pages/Community | ✅ Done | renderiza | Full | 
-| T20 | pages/Mapping | ✅ Done | renderiza 10 gráficos | Full | 
-| T21 | pages/AboutProject | ✅ Done | renderiza | Quick | 
-| T22 | pages/CommunityRegister | ✅ Done | submit chama /public/create | Full | 
-| T23 | Router + redirects | ⬜ Pending | todas rotas; redirects funcionam | Full | 
+| T19 | pages/Community | ✅ Done | renderiza | Full | build ✓; lint ✓; 1 teste (Community.test.tsx) |
+| T20 | pages/Mapping | ✅ Done | renderiza 10 gráficos | Full | build ✓; lint ✓; 1 teste (Mapping.test.tsx) |
+| T21 | pages/AboutProject | ✅ Done | renderiza | Quick | build ✓; lint ✓; 1 teste (AboutProject.test.tsx) |
+| T22 | pages/CommunityRegister | ✅ Done | submit chama /public/create | Full | build ✓; lint ✓; 1 teste (CommunityRegister.test.tsx) |
+| T23 | Router + redirects | ✅ Done | todas rotas; redirects funcionam | Full | build ✓; lint ✓; react-router-dom; redirects legados + 404 |
 | T24 | features/metrics/MappingCharts | ⬜ Pending | renderiza | Full | 
 | T25 | composed/Pagination | ⬜ Pending | navega páginas | Quick | 
 | T26 | composed/EmptyState | ⬜ Pending | renderiza | Quick | 
