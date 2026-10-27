@@ -33,7 +33,7 @@
     "phase": 3,
     "auto_sizing": "Large",
     "task_id": null,
-    "current_task": "T29",
+    "current_task": "T30",
     "completed_tasks": [
       "T1",
       "T2",
@@ -62,10 +62,11 @@
       "T25",
       "T26",
       "T27",
-      "T28"
+      "T28",
+      "T29"
     ],
     "uncommitted_files": [],
-    "next_step": "T27/T28 concluídas (Login + OTP). Aguardando decisão para T29 (pages/SetPassword).",
+    "next_step": "T29 concluída (SetPassword + test). Aguardando decisão para T30 (pages/FirstAccess).",
     "blockers": [],
     "branch": null,
     "completed_at": null,
