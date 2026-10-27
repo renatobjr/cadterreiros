@@ -56,6 +56,9 @@ function communityPlace(community: ReligiousCommunity): {
   return { neighborhood, city, label: [neighborhood, city].filter(Boolean).join(", ") };
 }
 
+const capitalize = (value: string): string =>
+  value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+
 export interface CommunityCardProps {
   community: ReligiousCommunity;
   onClick?: (community: ReligiousCommunity) => void;
@@ -100,10 +103,10 @@ export function CommunityCard({ community, onClick, href }: CommunityCardProps) 
                   } as CSSProperties
                 }
               />
-              {nation}
+              {capitalize(nation)}
             </span>
           ) : null}
-          {type ? <span className="tag">{type}</span> : null}
+          {type ? <span className="tag">{capitalize(type)}</span> : null}
           {year ? <span className="tag">Desde {year}</span> : null}
         </div>
         <span className="tcard__foot">
