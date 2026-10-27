@@ -41,7 +41,7 @@
 | T31 | pages/ForgotPassword | ✅ Done | renderiza | Quick | commit 22b02fc; build ✓; lint ✓; 3 testes (ForgotPassword.test.tsx) | renderiza | Quick | 
 | T32 | Auth Context | ✅ Done | login/logout funciona | Quick | commit 598e6e8; build ✓; lint ✓; 6 testes (AuthContext.test.tsx) | login/logout funciona | Quick | 
 | T33 | Schema registeredVoluntarily + censusTaker opcional | ✅ Done | campo presente; censusTaker optional | Build | commit 970637d; build ✓; 3 testes (schema test); 4 DTOs null-safe (censusTaker?._id / fullname ?? não informado) | campo presente; censusTaker optional | Build | 
-| T34 | GET /public/oldest | ✅ Done | retorna 9 ordenados | Full | commit pendente; build ✓; 6 testes (3 T34 + 3 T33) | retorna 9 ordenados | Full | 
+| T34 | GET /public/oldest | ✅ Done | retorna 9 ordenados | Full | commit 818a0b7; build ✓; 6 testes (3 T34 + 3 T33) | retorna 9 ordenados | Full | 
 | T35 | POST /public/create | ⬜ Pending | cria com PENDING, registeredVoluntarily true, censusTaker null; retorna id | Full | 
 | T36 | POST /public/upload-main-picture/:id | ⬜ Pending | upload funciona | Full | 
 | T37 | GET /public/stats/summary | ⬜ Pending | retorna totais | Full | 
