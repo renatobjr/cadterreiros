@@ -82,7 +82,7 @@
   font-size: 14px;
   font-weight: 600;
 }
-./* ---------- registration form ---------- */
+/* ---------- registration form ---------- */
 .form {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

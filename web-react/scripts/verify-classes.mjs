@@ -3,7 +3,7 @@
    que não corresponda a nenhuma regra. */
 import fs from 'node:fs'
 
-const cssFiles = ['base', 'components', 'pages', 'design-system'].map((f) => `src/styles/${f}.css`)
+const cssFiles = ['base', 'components', 'pages', 'design-system', 'prototype'].map((f) => `src/styles/${f}.css`)
 
 const walk = (d) => fs.existsSync(d) ? fs.readdirSync(d, { recursive: true }).map((f) => `${d}/${f}`) : []
 const codeFiles = [
