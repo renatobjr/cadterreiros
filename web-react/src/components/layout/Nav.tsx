@@ -1,4 +1,5 @@
 import { useState } from "react";
+import cadLogo from "../../assets/img/logos/cad.logo.svg";
 
 interface NavLink {
   label: string;
@@ -23,6 +24,7 @@ export function Nav() {
     <header className="nav">
       <div className="shell nav__in">
         <a className="nav__brand" href="/" aria-label="Cadterreiros, início">
+          <img className="nav__mark" src={cadLogo} alt="" width={42} height={42} />
           <span className="nav__brand-text">
             <span className="nav__word">Cadterreiros</span>
             <span className="nav__sub">Casa de Cultura Ilê Asé D&apos;Osoguian</span>
