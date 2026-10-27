@@ -19,8 +19,8 @@
 | T9 | domain/types.ts | ✅ Done | compila strict; sem any | Build | commit 5b33229; build ✓; lint ✓; types.ts espelhando API |
 | T10 | domain/sanitize.ts | ✅ Done | testes de sanitize passam | Quick | commit 8b2e360; build ✓; lint ✓; 15 testes (sanitize.test.ts) |
 | T11 | api/client.ts | ✅ Done | client configurado | Quick | commit 9d3807f; build ✓; lint ✓; 3 testes (client.test.ts → test/api/) |
-| T12 | api/communities.ts | ✅ Done | chamadas tipadas | Quick | 
-| T13 | api/auth.ts | ✅ Done | chamadas tipadas | Quick | 
+| T12 | api/communities.ts | ✅ Done | chamadas tipadas | Quick | commit b506943; build ✓; lint ✓; 4 testes (communities.test.ts → test/api/) |
+| T13 | api/auth.ts | ✅ Done | chamadas tipadas | Quick | commit f299499; build ✓; lint ✓; 5 testes (auth.test.ts → test/api/) |
 | T14 | features/communities/CommunityCard | ✅ Done | renderiza com dados | Quick | commit c1c5d14; build ✓; lint ✓; 2 testes (CommunityCard.test.tsx) |
 | T15 | features/communities/SearchFilters | ✅ Done | filtra sem reload | Quick | commit 39019ea; build ✓; lint ✓; 2 testes (SearchFilters.test.tsx) |
 | T16 | features/auth/LoginForm | ✅ Done | submit chama API | Quick | commit f299499; build ✓; lint ✓; 2 testes (LoginForm.test.tsx) |
