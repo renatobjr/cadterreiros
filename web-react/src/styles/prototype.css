@@ -3243,3 +3243,35 @@ a.article-card {
 .admin-assign:hover {
   color: var(--accent-deep);
 }
+
+/* Busca e contagem acima da tabela de usuários. */
+.admin-users-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s4);
+  margin-block: var(--s5) var(--s4);
+}
+.admin-users-tools .field {
+  flex: 1 1 280px;
+  max-width: 380px;
+}
+.admin-users-tools .meta {
+  margin: 0 0 12px;
+}
+/* Marca a própria conta na lista (não pode ser desativada/rebaixada). */
+.admin-you {
+  display: inline-block;
+  margin-left: var(--s2);
+  padding: 1px 7px;
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+  background: var(--surface-sunk);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}

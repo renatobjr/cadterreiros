@@ -82,7 +82,8 @@ export const usersService = {
 
   addUser: async (
     email: string,
-    role: ERole
+    role: ERole,
+    fullname?: string
   ): Promise<ApiResponseType<IUser | string>> => {
     try {
       const userExists = await User.findOne({ email });
@@ -93,7 +94,11 @@ export const usersService = {
         };
       }
 
-      const user = await User.create({ email, role });
+      const user = await User.create({
+        email,
+        role,
+        ...(fullname?.trim() ? { fullname: fullname.trim() } : {}),
+      });
 
       const html = await mailUtils.template({
         type: EMailTypes.ADD_USER,

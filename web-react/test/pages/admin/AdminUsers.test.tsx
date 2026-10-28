@@ -112,6 +112,52 @@ describe("AdminUsers", () => {
     await waitFor(() => expect(listUsers).toHaveBeenCalledTimes(2));
   });
 
+  it("marca a própria conta e bloqueia desativá-la ou rebaixá-la", async () => {
+    render(<AdminUsers />);
+    const row = (await screen.findByText("Renato Jr.")).closest(
+      "tr",
+    ) as HTMLElement;
+
+    expect(within(row).getByText("você")).toBeInTheDocument();
+    expect(within(row).getByRole("button", { name: "Desativar" })).toBeDisabled();
+    expect(within(row).getByRole("combobox")).toBeDisabled();
+  });
+
+  it("busca por nome ou e-mail dentro da aba", async () => {
+    render(<AdminUsers />);
+    await screen.findByText("Renato Jr.");
+
+    fireEvent.change(screen.getByLabelText("Buscar pessoa"), {
+      target: { value: "ana@" },
+    });
+
+    expect(screen.getByText("Ana Recenseadora")).toBeInTheDocument();
+    expect(screen.queryByText("Renato Jr.")).not.toBeInTheDocument();
+    expect(screen.getByText("1 perfil nesta aba")).toBeInTheDocument();
+  });
+
+  it("pagina a lista de dez em dez", async () => {
+    const many = Array.from({ length: 12 }, (_, index) => ({
+      id: `u-${index + 1}`,
+      fullname: `Pessoa ${String(index + 1).padStart(2, "0")}`,
+      email: `pessoa${index + 1}@cciao.org`,
+      role: "census_taker",
+      isEnabled: true,
+      isFirstLogin: false,
+    }));
+    listUsers.mockResolvedValue(many);
+    render(<AdminUsers />);
+
+    expect(await screen.findByText("Pessoa 01")).toBeInTheDocument();
+    expect(screen.queryByText("Pessoa 11")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "2" }));
+
+    expect(screen.getByText("Pessoa 11")).toBeInTheDocument();
+    expect(screen.getByText("Pessoa 12")).toBeInTheDocument();
+    expect(screen.queryByText("Pessoa 01")).not.toBeInTheDocument();
+  });
+
   it("convida uma pessoa nova só com nome e e-mail", async () => {
     render(<AdminUsers />);
     await screen.findByText("Renato Jr.");

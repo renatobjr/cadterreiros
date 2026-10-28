@@ -62,7 +62,9 @@ antes de redirecionar para `/admin`.
 - Upload/troca de foto na edição da ficha. ✅ campo + envio após salvar
 - Auditoria de decisões (quem aprovou/rejeitou e quando).
 - Ações em lote (aprovar/rejeitar vários registros).
-- Usuários: paginação, busca e proteção para não desativar a própria conta.
+- Usuários: paginação, busca e proteção para não desativar a própria conta. ✅
+  (a API também bloqueia autodesativação/autorebaixamento; cliente alinhado a
+  `{ id, status }`, `{ id, role }` e convite com `fullname`)
 - Opcional: drawer “Ver histórico de ações” (hoje a linha do tempo fica no aside).
 
 ## Fase 7 — Segurança e operação

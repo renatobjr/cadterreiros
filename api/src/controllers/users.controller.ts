@@ -45,6 +45,16 @@ export const usersController = {
   setUserStatus: async (req: Request, res: Response): Promise<void> => {
     try {
       const { id, status } = req.body;
+
+      // Ninguém desativa a própria conta: sem isso, o último admin pode se
+      // trancar para fora do painel.
+      if (id && req.user?.id === id && status === false) {
+        return res.apiResponse(HttpStatusCode.BAD_REQUEST, {
+          error: "Você não pode desativar a própria conta",
+          status: false,
+        });
+      }
+
       const response = await usersService.setUserStatus(id, status);
       res.apiResponse<IUser>(HttpStatusCode.OK, {
         error: response?.error,
@@ -64,6 +74,15 @@ export const usersController = {
   changeUserRole: async (req: Request, res: Response): Promise<void> => {
     try {
       const { id, role } = req.body;
+
+      // Rebaixar a si mesmo removeria o acesso ao painel no próximo request.
+      if (id && req.user?.id === id && role !== "admin") {
+        return res.apiResponse(HttpStatusCode.BAD_REQUEST, {
+          error: "Você não pode alterar o próprio papel",
+          status: false,
+        });
+      }
+
       const response = await usersService.changeUserRole(id, role);
       res.apiResponse<IUser>(HttpStatusCode.OK, {
         error: response?.error,
@@ -82,8 +101,8 @@ export const usersController = {
 
   addUser: async (req: Request, res: Response): Promise<void> => {
     try {
-      const { email, role } = req.body;
-      const response = await usersService.addUser(email, role);
+      const { fullname, email, role } = req.body;
+      const response = await usersService.addUser(email, role, fullname);
       res.apiResponse<IUser>(HttpStatusCode.OK, {
         error: response?.error,
         data: plainToInstance(UsersListDTO, response.data, {

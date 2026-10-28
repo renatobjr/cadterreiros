@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Select from "../../components/ui/Select";
 import PageLoader from "../../components/composed/PageLoader";
+import Pagination from "../../components/composed/Pagination";
 import {
   addUser,
   changeUserRole,
@@ -18,6 +19,8 @@ const ROLES = [
 
 type StatusTab = "active" | "inactive";
 
+const PAGE_SIZE = 10;
+
 /** Gestão de usuários (mock: `renderAdminUsers`). */
 export function AdminUsers() {
   const { user } = useAuth();
@@ -25,6 +28,8 @@ export function AdminUsers() {
 
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [tab, setTab] = useState<StatusTab>("active");
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
@@ -55,8 +60,23 @@ export function AdminUsers() {
 
   const activeCount = users.filter((item) => item.isEnabled).length;
   const inactiveCount = users.length - activeCount;
-  const visibleUsers = users.filter((item) =>
-    tab === "active" ? item.isEnabled : !item.isEnabled,
+
+  const term = query.trim().toLowerCase();
+  const matching = users.filter((item) => {
+    const inTab = tab === "active" ? item.isEnabled : !item.isEnabled;
+    if (!inTab) return false;
+    if (!term) return true;
+    return (
+      item.fullname.toLowerCase().includes(term) ||
+      item.email.toLowerCase().includes(term)
+    );
+  });
+
+  const totalPages = Math.max(1, Math.ceil(matching.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const visibleUsers = matching.slice(
+    (safePage - 1) * PAGE_SIZE,
+    safePage * PAGE_SIZE,
   );
 
   async function handleRole(id: string, nextRole: string) {
@@ -132,7 +152,10 @@ export function AdminUsers() {
           role="tab"
           className="tab"
           aria-selected={tab === "active"}
-          onClick={() => setTab("active")}
+          onClick={() => {
+            setTab("active");
+            setPage(1);
+          }}
         >
           Ativos
           <span className="admin-tab__count">{activeCount}</span>
@@ -142,11 +165,35 @@ export function AdminUsers() {
           role="tab"
           className="tab"
           aria-selected={tab === "inactive"}
-          onClick={() => setTab("inactive")}
+          onClick={() => {
+            setTab("inactive");
+            setPage(1);
+          }}
         >
           Desativados
           <span className="admin-tab__count">{inactiveCount}</span>
         </button>
+      </div>
+
+      <div className="admin-users-tools">
+        <div className="field">
+          <label htmlFor="users-search">Buscar pessoa</label>
+          <input
+            id="users-search"
+            className="input"
+            type="search"
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setPage(1);
+            }}
+            placeholder="Nome ou e-mail"
+          />
+        </div>
+        <p className="meta" aria-live="polite">
+          {matching.length === 1 ? "1 perfil" : `${matching.length} perfis`} nesta
+          aba
+        </p>
       </div>
 
       <div className="tablewrap admin-tablewrap">
@@ -170,16 +217,25 @@ export function AdminUsers() {
             ) : visibleUsers.length === 0 ? (
               <tr>
                 <td colSpan={5}>
-                  {tab === "active"
-                    ? "Nenhum usuário ativo."
-                    : "Nenhum usuário desativado."}
+                  {term
+                    ? "Nenhum perfil encontrado para essa busca."
+                    : tab === "active"
+                      ? "Nenhum usuário ativo."
+                      : "Nenhum usuário desativado."}
                 </td>
               </tr>
             ) : (
-              visibleUsers.map((item) => (
+              visibleUsers.map((item) => {
+                const isSelf = Boolean(user?.id) && item.id === user?.id;
+                return (
                 <tr key={item.id}>
                   <td>
-                    <span className="admin-name">{item.fullname}</span>
+                    <span className="admin-name">
+                      {item.fullname}
+                      {isSelf ? (
+                        <span className="admin-you">você</span>
+                      ) : null}
+                    </span>
                     <span className="admin-cell-line admin-cell-line--muted">
                       {item.email}
                     </span>
@@ -191,7 +247,7 @@ export function AdminUsers() {
                       onChange={(value) => void handleRole(item.id, value)}
                       options={ROLES}
                       placeholder="Selecione o papel"
-                      disabled={busy === item.id}
+                      disabled={busy === item.id || isSelf}
                     />
                   </td>
                   <td>
@@ -213,18 +269,28 @@ export function AdminUsers() {
                     <button
                       className="admin-action"
                       type="button"
-                      disabled={busy === item.id}
+                      disabled={busy === item.id || isSelf}
+                      title={
+                        isSelf
+                          ? "Você não pode desativar a própria conta"
+                          : undefined
+                      }
                       onClick={() => void handleStatus(item)}
                     >
                       {item.isEnabled ? "Desativar" : "Ativar"}
                     </button>
                   </td>
                 </tr>
-              ))
+                );
+              })
             )}
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 ? (
+        <Pagination page={safePage} totalPages={totalPages} onChange={setPage} />
+      ) : null}
 
       <section className="admin-panel mt-6">
         <p className="eyebrow">Novo acesso</p>

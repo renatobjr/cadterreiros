@@ -120,14 +120,15 @@ export async function listUsers(): Promise<AdminUser[]> {
 }
 
 export async function setUserStatus(id: string, isEnabled: boolean) {
+  // A API espera `{ id, status }` (contrato herdado do app Vue).
   return unwrap<unknown>(
-    await client.put(`${USERS_URL}/set-user-status`, { userId: id, isEnabled }),
+    await client.put(`${USERS_URL}/set-user-status`, { id, status: isEnabled }),
   );
 }
 
 export async function changeUserRole(id: string, role: string) {
   return unwrap<unknown>(
-    await client.put(`${USERS_URL}/change-user-role`, { userId: id, role }),
+    await client.put(`${USERS_URL}/change-user-role`, { id, role }),
   );
 }
 
