@@ -144,3 +144,8 @@ existem no protótipo — construir na identidade nova). Redirects legados:
    "não testei".
 4. Build local: Node 22 (`.nvmrc` na raiz), `npm ci`, `npm run build` limpo.
    `dist/` e `.env` nunca commitados.
+5. **Gate final de entrega**: ao concluir o conjunto de implementações, rodar
+   **code review + security review** em `web-react/` e `api/` (auth/RBAC,
+   sessão por cookie, CSRF, uploads, exposição de dados, segredos,
+   dependências). Nenhum achado crítico pode ficar aberto antes do cutover.
+   Roteiro em `.code-spec-driven/ROADMAP.md`.
