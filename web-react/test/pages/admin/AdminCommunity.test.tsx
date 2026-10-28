@@ -178,7 +178,13 @@ describe("AdminCommunity", () => {
   });
 
   it("atribui um recenseador pela ficha", async () => {
-    getCommunity.mockResolvedValue(makeCommunity({ censusStep: "pending" }));
+    getCommunity.mockResolvedValue(
+      makeCommunity({
+        censusStep: "pending",
+        censusTakerId: null,
+        censusTakerFullname: null,
+      }),
+    );
     renderDetail();
 
     fireEvent.click(
@@ -216,6 +222,16 @@ describe("AdminCommunity", () => {
     const history = document.querySelector(".admin-history") as HTMLElement;
     expect(within(history).getByText("Aprovado")).toBeInTheDocument();
     expect(within(history).getByText(/por Renato Jr\./)).toBeInTheDocument();
+  });
+
+  it("não oferece atribuição quando já existe recenseador", async () => {
+    getCommunity.mockResolvedValue(makeCommunity({ censusStep: "pending" }));
+    renderDetail();
+
+    await screen.findByRole("heading", { level: 1, name: "Terreiro Teste" });
+    expect(
+      screen.queryByRole("button", { name: "Atribuir recenseador" }),
+    ).not.toBeInTheDocument();
   });
 
   it("mostra a mensagem de registro inexistente", async () => {

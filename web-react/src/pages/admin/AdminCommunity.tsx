@@ -114,6 +114,14 @@ export function AdminCommunity() {
 
   const isOwner =
     String(community?.censusTakerId ?? "") === String(user?.id ?? "-");
+  /* Atribuição é só para quem ainda não tem responsável: trocar um
+     recenseador existente é outra decisão de curadoria. */
+  const hasCensusTaker =
+    Boolean(community?.censusTakerId) ||
+    Boolean(
+      community?.censusTakerFullname &&
+        community.censusTakerFullname !== "não informado",
+    );
   const canEdit = Boolean(community) && (isAdmin || isOwner);
   const canDecide = Boolean(community) && isAdmin;
 
@@ -614,7 +622,7 @@ export function AdminCommunity() {
                   community.censusTakerFullname !== "não informado"
                     ? community.censusTakerFullname
                     : "Aguardando atribuição"}
-                  {isAdmin ? (
+                  {isAdmin && !hasCensusTaker ? (
                     <button
                       type="button"
                       className="admin-assign"
