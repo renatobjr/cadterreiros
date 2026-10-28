@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import ArrowIcon from "../components/ui/ArrowIcon";
 import ArticleBody from "../features/articles/components/ArticleBody";
 import { getArticle } from "../features/articles/data";
 import type { Article as ArticleModel } from "../features/articles/data";
+import { applySeo } from "../utils/seo";
 
 const stripTags = (value: string): string => value.replace(/<[^>]*>/g, " ");
 
@@ -31,6 +33,19 @@ function readingMinutes(article: ArticleModel): number {
 export function Article() {
   const { slug } = useParams<{ slug: string }>();
   const article = getArticle(slug);
+
+  useEffect(() => {
+    if (!article) return;
+    /* O Layout aplica o SEO padrão no mesmo commit; o timeout garante que o
+       título específico do artigo seja o último a valer. */
+    const timer = window.setTimeout(() => {
+      applySeo(`/artigos/${article.slug}`, {
+        title: `${article.title} · Cadterreiros`,
+        description: article.description,
+      });
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [article]);
 
   if (!article) {
     return (

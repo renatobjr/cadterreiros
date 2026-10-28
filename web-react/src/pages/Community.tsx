@@ -12,6 +12,7 @@ import {
   trackCommunitySelect,
   trackCommunityView,
 } from "../features/analytics/events";
+import { applySeo } from "../utils/seo";
 import {
   capitalize,
   communityPhotoUrl,
@@ -194,6 +195,25 @@ export function Community({ id, slug }: CommunityProps = {}) {
   useEffect(() => {
     if (status !== "ready" || !community) return;
     trackCommunityView(community);
+  }, [status, community]);
+
+  // Título/descrição únicos desta ficha (sem expor liderança ou endereço).
+  useEffect(() => {
+    if (status !== "ready" || !community) return;
+    const place = communityPlace(community);
+    applySeo(`/terreiro/${community.slugify ?? community.id}`, {
+      title: `${community.religiousSpaceName} · Cadterreiros`,
+      description: [
+        community.religiousSpaceName,
+        place.label ? `— ${place.label}` : "",
+        community.religiousSpaceNation
+          ? `· nação ${community.religiousSpaceNation}`
+          : "",
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .concat(". Ficha pública do censo de terreiros da Paraíba."),
+    });
   }, [status, community]);
 
   if (status === "loading") {
