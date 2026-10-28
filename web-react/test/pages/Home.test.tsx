@@ -11,12 +11,14 @@ vi.mock("../../src/api/communities", () => ({
     statsByPhotoCoverage: vi.fn(),
     statsByNation: vi.fn(),
     oldest: vi.fn(),
+    list: vi.fn(),
   },
   default: {
     statsSummary: vi.fn(),
     statsByPhotoCoverage: vi.fn(),
     statsByNation: vi.fn(),
     oldest: vi.fn(),
+    list: vi.fn(),
   },
 }));
 
@@ -25,6 +27,7 @@ const api = communitiesApi as unknown as {
   statsByPhotoCoverage: ReturnType<typeof vi.fn>;
   statsByNation: ReturnType<typeof vi.fn>;
   oldest: ReturnType<typeof vi.fn>;
+  list: ReturnType<typeof vi.fn>;
 };
 
 const makeCommunity = (index: number): ReligiousCommunity => ({
@@ -87,6 +90,7 @@ const mockSuccess = () => {
     { nation: "jege", count: 34 },
   ]);
   api.oldest.mockResolvedValue(NINE_OLDEST);
+  api.list.mockResolvedValue(NINE_OLDEST);
 };
 
 describe("Home", () => {
@@ -160,8 +164,8 @@ describe("Home", () => {
       expect(screen.getByRole("link", { name: /Explorar o mapeamento/ })).toBeInTheDocument(),
     );
     const bars = document.querySelector(".bars") as HTMLElement;
-    expect(within(bars).getByText("ketu")).toBeInTheDocument();
-    expect(within(bars).getByText("angola")).toBeInTheDocument();
+    expect(within(bars).getByText("Ketu")).toBeInTheDocument();
+    expect(within(bars).getByText("Angola")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Explorar o mapeamento/ })).toHaveAttribute(
       "href",
       "/mapeamento",
@@ -220,6 +224,7 @@ describe("Home", () => {
     api.statsByPhotoCoverage.mockRejectedValue(new Error("falha"));
     api.statsByNation.mockRejectedValue(new Error("falha"));
     api.oldest.mockRejectedValue(new Error("falha"));
+    api.list.mockRejectedValue(new Error("falha"));
 
     renderHome();
 

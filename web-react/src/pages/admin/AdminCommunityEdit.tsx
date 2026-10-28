@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "../../components/ui/Select";
+import PageLoader from "../../components/composed/PageLoader";
 import { getCommunity, updateCommunity } from "../../api/admin";
 import { useAdminData } from "../../features/admin/adminDataContext";
 import { useToast } from "../../components/ui/toastContext";
@@ -278,9 +279,7 @@ export function AdminCommunityEdit() {
 
   if (loading) {
     return (
-      <p className="admin-muted" role="status" aria-live="polite">
-        Carregando cadastro…
-      </p>
+      <PageLoader compact label="Carregando cadastro" />
     );
   }
 

@@ -29,14 +29,27 @@ const code = readAll(codeFiles)
 let bad = 0
 
 /* ---------- 1. usados mas não definidos ---------- */
-const defined = new Set([...css.matchAll(/^\s*(--[a-z0-9-]+)\s*:/gm)].map((m) => m[1]))
+const defined = new Set([
+  ...[...css.matchAll(/^\s*(--[a-z0-9-]+)\s*:/gm)].map((m) => m[1]),
+  /* Custom properties atribuídas inline no JSX (`style={{ "--dot": ... }}`)
+     existem em tempo de execução: contam como definidas. */
+  ...[...code.matchAll(/['"](--[a-z0-9-]+)['"]\s*:/g)].map((m) => m[1]),
+])
 const used = new Set([
   ...[...css.matchAll(/var\(\s*(--[a-z0-9-]+)/g)].map((m) => m[1]),
   ...[...code.matchAll(/var\(\s*(--[a-z0-9-]+)/g)].map((m) => m[1]),
   ...[...code.matchAll(/['"](--[a-z0-9-]+)['"]\s*:/g)].map((m) => m[1]),
 ])
 
-const undefinedVars = [...used].filter((v) => !defined.has(v)).sort()
+/* `var(--n-${...})` chega aqui como `--n-`: o sufixo é dinâmico. Um nome
+   terminado em `-` é prefixo e está coberto se existir algum token assim. */
+const isDynamicPrefix = (name) => name.endsWith("-")
+const coveredByDefinedPrefix = (name) =>
+  isDynamicPrefix(name) && [...defined].some((d) => d.startsWith(name))
+
+const undefinedVars = [...used]
+  .filter((v) => !defined.has(v) && !coveredByDefinedPrefix(v))
+  .sort()
 if (undefinedVars.length) {
   console.log('usadas e NÃO definidas:')
   for (const v of undefinedVars) console.log('  ', v)
@@ -44,7 +57,17 @@ if (undefinedVars.length) {
 }
 
 /* ---------- 2. definidas e não usadas ---------- */
-const orphans = [...defined].filter((v) => !used.has(v)).sort()
+/* Prefixos dinâmicos usados no código (`--n-` cobre `--n-ketu`, etc.). */
+const usedPrefixes = [...used].filter(isDynamicPrefix)
+const usedByPrefix = (name) => usedPrefixes.some((prefix) => name.startsWith(prefix))
+
+/* Paleta reservada: o mapa esquemático do protótipo virou Leaflet, mas os
+   tons continuam no design system para reuso (mar, costa, rio). */
+const RESERVED_TOKENS = new Set(["--map-sea", "--map-coast", "--map-river"])
+
+const orphans = [...defined]
+  .filter((v) => !used.has(v) && !usedByPrefix(v) && !RESERVED_TOKENS.has(v))
+  .sort()
 if (orphans.length) {
   console.log('definidas e NÃO usadas:')
   for (const v of orphans) console.log('  ', v)

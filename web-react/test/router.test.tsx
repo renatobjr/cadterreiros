@@ -74,11 +74,11 @@ describe("router", () => {
     ["/primeiro-acesso", /Configurar acesso/],
     ["/otp/token-123/email%40teste.com", /Confira seu e-mail/],
     ["/set-password/token-123", /Criar nova senha/],
-  ])("renderiza a página real de auth em %s", (path, heading) => {
+  ])("renderiza a página real de auth em %s", async (path, heading) => {
     renderRoute(path);
 
     expect(
-      screen.getByRole("heading", { level: 1, name: heading }),
+      await screen.findByRole("heading", { level: 1, name: heading }),
     ).toBeInTheDocument();
   });
 
@@ -114,11 +114,11 @@ describe("router", () => {
     ).toBeInTheDocument();
   });
 
-  it("redireciona /login para /entrar", () => {
+  it("redireciona /login para /entrar", async () => {
     renderRoute("/login");
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "Entrar no painel" }),
+      await screen.findByRole("heading", { level: 1, name: "Entrar no painel" }),
     ).toBeInTheDocument();
   });
 

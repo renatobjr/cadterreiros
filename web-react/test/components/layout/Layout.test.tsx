@@ -2,6 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import Layout from "../../../src/components/layout/Layout";
+import { AuthProvider } from "../../../src/features/auth/AuthProvider";
 
 function renderLayout() {
   const router = createMemoryRouter(
@@ -13,7 +14,11 @@ function renderLayout() {
     ],
     { initialEntries: ["/"] },
   );
-  return render(<RouterProvider router={router} />);
+  return render(
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>,
+  );
 }
 
 describe("Layout", () => {
@@ -24,8 +29,10 @@ describe("Layout", () => {
     expect(screen.getByRole("contentinfo")).toBeInTheDocument();
   });
 
-  it("expõe os links principais no Nav", () => {
+  it("expõe os links principais no Nav", async () => {
     renderLayout();
+    // O link de conta só aparece depois de validar a sessão.
+    await screen.findByRole("link", { name: "Entrar" });
     const nav = within(screen.getByRole("banner"));
     const links = [
       ["Início", "/"],

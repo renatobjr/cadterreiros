@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import ArrowIcon from "../../components/ui/ArrowIcon";
+import PageLoader from "../../components/composed/PageLoader";
 import { useAdminData } from "../../features/admin/adminDataContext";
 import { listUsers, statsPhotoCoverage } from "../../api/admin";
 import { useAuth } from "../../features/auth/context";
@@ -111,9 +112,7 @@ export function AdminOverview() {
       </div>
 
       {loading ? (
-        <p className="admin-muted" role="status" aria-live="polite">
-          Carregando painel…
-        </p>
+        <PageLoader compact label="Carregando painel" />
       ) : error ? (
         <div className="admin-empty">
           <p>Não foi possível carregar os cadastros.</p>
@@ -152,7 +151,7 @@ export function AdminOverview() {
           </div>
 
           <div className="admin-overview-grid">
-            <section className="admin-panel admin-panel--queue">
+            <section className="admin-panel">
               <div className="admin-panel__head">
                 <div>
                   <p className="eyebrow">Fila de aprovação</p>

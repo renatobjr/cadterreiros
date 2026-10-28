@@ -132,7 +132,7 @@ export function Mapping() {
   const empty = !loading && !error && all.length === 0;
 
   return (
-    <main className="mapping">
+    <main>
       <div className="page-head">
         <div className="shell">
           <p className="eyebrow">Território e censo</p>

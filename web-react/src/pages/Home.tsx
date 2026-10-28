@@ -195,7 +195,7 @@ export function Home() {
       >
         <div className="shell stats__grid">
           {counters.map((counter) => (
-            <div className="stat od-stat" key={counter.label}>
+            <div className="stat" key={counter.label}>
               <div className="stat__bar" aria-hidden="true" />
               <div className="stat__num">{counter.value}</div>
               <div className="stat__label">{counter.label}</div>

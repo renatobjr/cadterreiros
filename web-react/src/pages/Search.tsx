@@ -5,6 +5,7 @@ import SearchFilters, { type SearchFiltersValue } from "../features/communities/
 import CommunityCard from "../features/communities/components/CommunityCard";
 import type { CommunityAddress, ReligiousCommunity } from "../domain/types";
 import Select from "../components/ui/Select";
+import PageLoader from "../components/composed/PageLoader";
 import Pagination from "../components/composed/Pagination";
 
 /** Extrai bairro e cidade, tolerando o DTO achatado (apenas `fullAddress`). */
@@ -197,7 +198,7 @@ export function Search() {
 
         <div id="results-body">
           {loading ? (
-            <p>Carregando…</p>
+            <PageLoader compact label="Carregando terreiros" />
           ) : filtered.length === 0 ? (
             <div className="empty">
               <p className="eyebrow">Nenhum resultado</p>

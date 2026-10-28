@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 import { communitiesApi } from "../api/communities";
 import type { ReligiousCommunity } from "../domain/types";
 import ArrowIcon from "../components/ui/ArrowIcon";
+import PageLoader from "../components/composed/PageLoader";
 import CommunityCard from "../features/communities/components/CommunityCard";
 import LeafletMap from "../features/metrics/components/LeafletMap";
 import { copyToClipboard } from "../utils/clipboard";
@@ -194,9 +195,7 @@ export function Community({ id, slug }: CommunityProps = {}) {
     return (
       <main>
         <div className="shell page-body">
-          <p className="muted" role="status" aria-live="polite">
-            Carregando ficha do terreiro…
-          </p>
+          <PageLoader label="Carregando ficha do terreiro" />
         </div>
       </main>
     );

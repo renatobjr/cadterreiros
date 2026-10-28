@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Select from "../../components/ui/Select";
+import PageLoader from "../../components/composed/PageLoader";
 import Pagination from "../../components/composed/Pagination";
 import { decide } from "../../api/admin";
 import DecisionDialog, {
@@ -305,9 +306,7 @@ export function AdminRecords() {
       </div>
 
       {loading ? (
-        <p className="admin-muted" role="status" aria-live="polite">
-          Carregando cadastros…
-        </p>
+        <PageLoader compact label="Carregando cadastros" />
       ) : error ? (
         <div className="admin-empty">
           <p>Não foi possível carregar os cadastros.</p>

@@ -3216,3 +3216,12 @@ a.article-card {
 .admin-detail-actions .action-menu__trigger {
   justify-content: center;
 }
+
+/* Placeholder do link de conta enquanto a sessão é validada (evita salto). */
+.nav__login--loading {
+  min-width: 72px;
+  border-radius: var(--r);
+  background: var(--surface-sunk);
+  opacity: 0.6;
+  pointer-events: none;
+}

@@ -23,6 +23,10 @@ function renderPage() {
   );
 }
 
+async function waitForm() {
+  await screen.findByLabelText(/E-mail/);
+}
+
 function submit() {
   fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
 }
@@ -34,8 +38,9 @@ describe("Login", () => {
     validateMock.mockRejectedValue(new Error("sem sessão"));
   });
 
-  it("renderiza a moldura do mock com o cartão de acesso", () => {
+  it("renderiza a moldura do mock com o cartão de acesso", async () => {
     renderPage();
+    await waitForm();
 
     expect(document.querySelector(".auth-shell")).toBeInTheDocument();
     expect(
@@ -69,8 +74,9 @@ describe("Login", () => {
     ).toBeInTheDocument();
   });
 
-  it("marca o body com auth-mode enquanto está montado", () => {
+  it("marca o body com auth-mode enquanto está montado", async () => {
     const { unmount } = renderPage();
+    await waitForm();
     expect(document.body).toHaveClass("auth-mode");
     unmount();
     expect(document.body).not.toHaveClass("auth-mode");
@@ -78,6 +84,7 @@ describe("Login", () => {
 
   it("valida e-mail e senha antes de chamar a API", async () => {
     renderPage();
+    await waitForm();
 
     submit();
 
@@ -98,6 +105,7 @@ describe("Login", () => {
       data: { status: false, error: "Email ou senha inválida" },
     });
     renderPage();
+    await waitForm();
 
     fireEvent.change(screen.getByLabelText(/E-mail/), {
       target: { value: "curadoria@cciao.org" },
@@ -143,6 +151,8 @@ describe("Login", () => {
       </MemoryRouter>,
     );
 
+    await waitForm();
+
     fireEvent.change(screen.getByLabelText(/E-mail/), {
       target: { value: "curadoria@cciao.org" },
     });
@@ -156,8 +166,9 @@ describe("Login", () => {
     expect(localStorage.getItem("SESSION_TOKEN")).toBeNull();
   });
 
-  it("alterna a visibilidade da senha", () => {
+  it("alterna a visibilidade da senha", async () => {
     renderPage();
+    await waitForm();
     const password = screen.getByLabelText(/Senha/);
 
     expect(password).toHaveAttribute("type", "password");

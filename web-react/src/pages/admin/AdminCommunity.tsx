@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ArrowIcon from "../../components/ui/ArrowIcon";
+import PageLoader from "../../components/composed/PageLoader";
 import DecisionDialog, {
   type DecisionAction,
   type DecisionTarget,
@@ -191,9 +192,7 @@ export function AdminCommunity() {
 
   if (loading) {
     return (
-      <p className="admin-muted" role="status" aria-live="polite">
-        Carregando cadastro…
-      </p>
+      <PageLoader compact label="Carregando cadastro" />
     );
   }
 
@@ -259,7 +258,7 @@ export function AdminCommunity() {
 
   return (
     <>
-      <div className="admin-page-head admin-detail-head">
+      <div className="admin-page-head">
         <div className="admin-page-head__text">
           <Link className="admin-back" to="/admin/cadastros">
             Voltar para cadastros

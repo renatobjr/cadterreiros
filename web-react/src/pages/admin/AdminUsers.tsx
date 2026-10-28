@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Select from "../../components/ui/Select";
+import PageLoader from "../../components/composed/PageLoader";
 import {
   addUser,
   changeUserRole,
@@ -162,7 +163,9 @@ export function AdminUsers() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={5}>Carregando usuários…</td>
+                <td colSpan={5}>
+                  <PageLoader compact label="Carregando usuários" />
+                </td>
               </tr>
             ) : visibleUsers.length === 0 ? (
               <tr>

@@ -1150,7 +1150,7 @@ export function CommunityRegister() {
               />
             </div>
           </section>
-          <aside className="cadastro-aside cadastro-aside--rest">
+          <aside className="cadastro-aside">
             <div className="card card--pad">
               <p className="eyebrow">Privacidade</p>
               <p>

@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import AuthShell from "../features/auth/components/AuthShell";
+import PageLoader from "../components/composed/PageLoader";
 import { useAuth } from "../features/auth/context";
 import { readEnvelope } from "../api/envelope";
 
@@ -35,7 +36,7 @@ function validate(email: string, password: string): LoginErrors {
 
 /** Tela de acesso da curadoria, fiel ao mock (`renderAuthLogin`). */
 export function Login() {
-  const { login, isAuth } = useAuth();
+  const { login, isAuth, restoring } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -80,6 +81,12 @@ export function Login() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  // Enquanto a sessão é validada, não renderiza o formulário: sem “pisca”
+  // de login para quem já está autenticado.
+  if (restoring) {
+    return <PageLoader label="Verificando sessão" />;
   }
 
   // Sessão ativa: o painel é o destino natural (mock: `auth` → `admin`).

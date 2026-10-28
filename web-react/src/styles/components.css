@@ -254,6 +254,11 @@
   grid-template-columns: repeat(4, 1fr);
   gap: var(--gutter);
 }
+.stat {
+  display: grid;
+  align-content: start;
+  gap: var(--s2);
+}
 .stat__num {
   font-family: var(--font-display);
   font-size: clamp(2.3rem, 4.2vw, 3.25rem);
@@ -864,4 +869,43 @@
 }
 .mapbox__pin:hover {
   r: 7;
+}
+
+/* ---------- carregamento de página (marca + spinner) ---------- */
+.page-loader {
+  display: grid;
+  place-items: center;
+  gap: var(--s4);
+  min-height: 60vh;
+  padding: var(--s8) var(--s5);
+}
+.page-loader--compact {
+  min-height: 220px;
+  padding: var(--s6) var(--s4);
+}
+.page-loader__mark {
+  width: 56px;
+  height: 56px;
+  opacity: 0.9;
+}
+.page-loader__spinner {
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: cad-spin 0.8s linear infinite;
+}
+@keyframes cad-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* Sem movimento: mantém a marca e mostra uma barra discreta. */
+@media (prefers-reduced-motion: reduce) {
+  .page-loader__spinner {
+    animation: none;
+    border-color: var(--accent);
+    border-right-color: transparent;
+  }
 }

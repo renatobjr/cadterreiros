@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../auth/context";
+import PageLoader from "../../../components/composed/PageLoader";
 
 /**
  * Protege as rotas do painel.
@@ -14,9 +15,7 @@ export function RequireAdmin() {
   if (restoring) {
     return (
       <main className="admin-shell">
-        <p className="admin-muted" role="status" aria-live="polite">
-          Verificando sessão…
-        </p>
+        <PageLoader label="Verificando sessão" />
       </main>
     );
   }

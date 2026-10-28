@@ -74,12 +74,8 @@ describe("Fluxo de mapeamento", () => {
     expect(
       screen.getByRole("region", { name: "Mapa dos terreiros" }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText("Legenda das nações"),
-    ).toHaveTextContent("Umbanda");
-    expect(screen.getByLabelText("Legenda das nações")).toHaveTextContent(
-      "Ekiti Efon",
-    );
+    // A legenda de nações foi removida do mapeamento (decisão de produto).
+    expect(screen.queryByLabelText("Legenda das nações")).not.toBeInTheDocument();
 
     expect(screen.getAllByTestId("chart-card")).toHaveLength(10);
     CHART_TITLES.forEach((title) => {
