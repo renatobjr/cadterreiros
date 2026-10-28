@@ -6,7 +6,7 @@ import type { ReligiousCommunity } from "../domain/types";
 import ArrowIcon from "../components/ui/ArrowIcon";
 import PageLoader from "../components/composed/PageLoader";
 import CommunityCard from "../features/communities/components/CommunityCard";
-import LeafletMap from "../features/metrics/components/LeafletMap";
+import LeafletMap from "../features/metrics/components/LazyLeafletMap";
 import { copyToClipboard } from "../utils/clipboard";
 import {
   trackCommunitySelect,

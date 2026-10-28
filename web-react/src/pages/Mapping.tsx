@@ -5,7 +5,7 @@ import EmptyState from "../components/composed/EmptyState";
 import SearchFilters from "../features/communities/components/SearchFilters";
 import type { SearchFiltersValue } from "../features/communities/components/SearchFilters";
 import MappingCharts from "../features/metrics/components/MappingCharts";
-import LeafletMap from "../features/metrics/components/LeafletMap";
+import LeafletMap from "../features/metrics/components/LazyLeafletMap";
 import type { ReligiousCommunity } from "../domain/types";
 import { trackFilterApply } from "../features/analytics/events";
 

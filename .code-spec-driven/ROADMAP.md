@@ -7,7 +7,7 @@ Estado atual:
 
 - gates: `verify-paths` 🟢 · `verify-contrast` 🟢 · `verify-tokens` 🟢 · `verify-classes` 🟢
 - build: ok, sem aviso de chunk (`manualChunks`: react / leaflet / icons)
-- testes: **250 verdes** em 44 arquivos
+- testes: **265 verdes** em 47 arquivos
 - API: 86/86 verdes
 
 ---
@@ -52,8 +52,9 @@ antes de redirecionar para `/admin`.
 ### 5.1 Demais itens
 
 1. ~~Corrigir as 12 falhas de teste~~ ✅ (mocks desatualizados, não bugs de tela).
-2. Cobertura de testes do painel: `RequireAdmin` ✅, listagem ✅; faltam ficha, edição e usuários.
-3. Code splitting: `manualChunks` ✅; falta `React.lazy` para `/admin` e Leaflet.
+2. Cobertura de testes do painel: `RequireAdmin` ✅, listagem ✅, ficha ✅, edição ✅, usuários ✅.
+3. Code splitting: `manualChunks` ✅ + `React.lazy` para `/admin` ✅ e Leaflet ✅
+   (`LazyLeafletMap`; index público caiu de 275 kB para 227 kB).
 
 ## Fase 6 — Completar o painel (mock)
 

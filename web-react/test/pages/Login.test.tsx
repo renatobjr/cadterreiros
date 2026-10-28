@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import Login from "../../src/pages/Login";
@@ -77,7 +77,7 @@ describe("Login", () => {
   it("marca o body com auth-mode enquanto está montado", async () => {
     const { unmount } = renderPage();
     await waitForm();
-    expect(document.body).toHaveClass("auth-mode");
+    await waitFor(() => expect(document.body).toHaveClass("auth-mode"));
     unmount();
     expect(document.body).not.toHaveClass("auth-mode");
   });

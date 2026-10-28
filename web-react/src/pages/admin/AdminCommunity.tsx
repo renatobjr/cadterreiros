@@ -10,7 +10,7 @@ import ActionMenu, {
   type ActionMenuItem,
 } from "../../features/admin/components/ActionMenu";
 import AdminActionIcon from "../../features/admin/components/AdminActionIcon";
-import LeafletMap from "../../features/metrics/components/LeafletMap";
+import LeafletMap from "../../features/metrics/components/LazyLeafletMap";
 import { decide, getCommunity } from "../../api/admin";
 import { useAuth } from "../../features/auth/context";
 import { useAdminData } from "../../features/admin/adminDataContext";

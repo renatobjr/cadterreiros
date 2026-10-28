@@ -8,7 +8,7 @@ import EmptyState from "../components/composed/EmptyState";
 import ArticleCard from "../features/articles/components/ArticleCard";
 import CommunityCard from "../features/communities/components/CommunityCard";
 import { trackCommunitySelect } from "../features/analytics/events";
-import LeafletMap from "../features/metrics/components/LeafletMap";
+import LeafletMap from "../features/metrics/components/LazyLeafletMap";
 import type {
   NationStats,
   PhotoCoverageStats,

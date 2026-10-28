@@ -71,8 +71,9 @@ describe("Fluxo de mapeamento", () => {
     expect(
       screen.getByText("2 cidades · 3 bairros · acervo completo"),
     ).toBeInTheDocument();
+    // O mapa é carregado sob demanda (Leaflet em chunk próprio).
     expect(
-      screen.getByRole("region", { name: "Mapa dos terreiros" }),
+      await screen.findByRole("region", { name: "Mapa dos terreiros" }),
     ).toBeInTheDocument();
     // A legenda de nações foi removida do mapeamento (decisão de produto).
     expect(screen.queryByLabelText("Legenda das nações")).not.toBeInTheDocument();

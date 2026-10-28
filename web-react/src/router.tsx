@@ -1,3 +1,4 @@
+import { lazy, Suspense, type ReactNode } from "react";
 import {
   createBrowserRouter,
   Navigate,
@@ -25,11 +26,26 @@ import NotFound from "./pages/NotFound";
 import RequireAdmin from "./features/admin/components/RequireAdmin";
 import AdminShell from "./features/admin/components/AdminShell";
 import AdminDataProvider from "./features/admin/AdminDataProvider";
-import AdminOverview from "./pages/admin/AdminOverview";
-import AdminRecords from "./pages/admin/AdminRecords";
-import AdminCommunity from "./pages/admin/AdminCommunity";
-import AdminCommunityEdit from "./pages/admin/AdminCommunityEdit";
-import AdminUsers from "./pages/admin/AdminUsers";
+import PageLoader from "./components/composed/PageLoader";
+
+/* O painel é um conjunto fechado de telas pesadas (tabelas, filtros, mapa).
+   Carregá-lo sob demanda tira esse código do bundle público. */
+const AdminOverview = lazy(() => import("./pages/admin/AdminOverview"));
+const AdminRecords = lazy(() => import("./pages/admin/AdminRecords"));
+const AdminCommunity = lazy(() => import("./pages/admin/AdminCommunity"));
+const AdminCommunityEdit = lazy(
+  () => import("./pages/admin/AdminCommunityEdit"),
+);
+const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
+
+/** Área do painel: o `Suspense` fica dentro do guard, só para as telas. */
+function AdminPage({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={<PageLoader label="Carregando painel" />}>
+      {children}
+    </Suspense>
+  );
+}
 
 /** Redirect do endereço antigo `/:id/:slug` para a rota pública por slug. */
 function LegacyTerreiro() {
@@ -74,14 +90,46 @@ export const routes: RouteObject[] = [
               </AdminDataProvider>
             ),
             children: [
-              { path: "/admin", element: <AdminOverview /> },
-              { path: "/admin/cadastros", element: <AdminRecords /> },
-              { path: "/admin/cadastros/:id", element: <AdminCommunity /> },
+              {
+                path: "/admin",
+                element: (
+                  <AdminPage>
+                    <AdminOverview />
+                  </AdminPage>
+                ),
+              },
+              {
+                path: "/admin/cadastros",
+                element: (
+                  <AdminPage>
+                    <AdminRecords />
+                  </AdminPage>
+                ),
+              },
+              {
+                path: "/admin/cadastros/:id",
+                element: (
+                  <AdminPage>
+                    <AdminCommunity />
+                  </AdminPage>
+                ),
+              },
               {
                 path: "/admin/cadastros/:id/editar",
-                element: <AdminCommunityEdit />,
+                element: (
+                  <AdminPage>
+                    <AdminCommunityEdit />
+                  </AdminPage>
+                ),
               },
-              { path: "/admin/usuarios", element: <AdminUsers /> },
+              {
+                path: "/admin/usuarios",
+                element: (
+                  <AdminPage>
+                    <AdminUsers />
+                  </AdminPage>
+                ),
+              },
             ],
           },
         ],
