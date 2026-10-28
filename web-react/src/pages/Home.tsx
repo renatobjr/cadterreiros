@@ -7,6 +7,7 @@ import Button from "../components/ui/Button";
 import EmptyState from "../components/composed/EmptyState";
 import ArticleCard from "../features/articles/components/ArticleCard";
 import CommunityCard from "../features/communities/components/CommunityCard";
+import { trackCommunitySelect } from "../features/analytics/events";
 import LeafletMap from "../features/metrics/components/LeafletMap";
 import type {
   NationStats,
@@ -256,7 +257,10 @@ export function Home() {
                 <CommunityCard
                   key={community.id}
                   community={community}
-                  onClick={(item) => navigate(`/terreiro/${item.id}`)}
+                  onClick={(item) => {
+                    trackCommunitySelect(item, "home");
+                    navigate(`/terreiro/${item.id}`);
+                  }}
                 />
               ))}
             </div>

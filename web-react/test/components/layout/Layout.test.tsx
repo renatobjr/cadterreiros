@@ -3,6 +3,7 @@ import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import Layout from "../../../src/components/layout/Layout";
 import { AuthProvider } from "../../../src/features/auth/AuthProvider";
+import { ConsentProvider } from "../../../src/features/analytics/ConsentProvider";
 
 function renderLayout() {
   const router = createMemoryRouter(
@@ -15,9 +16,11 @@ function renderLayout() {
     { initialEntries: ["/"] },
   );
   return render(
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>,
+    <ConsentProvider>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </ConsentProvider>,
   );
 }
 

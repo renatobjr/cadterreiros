@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import client from "../api/client";
 import ArrowIcon from "../components/ui/ArrowIcon";
 import Select from "../components/ui/Select";
+import { trackRegistrationLead } from "../features/analytics/events";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -929,6 +930,9 @@ export function CommunityRegister() {
         setSubmitError(refusal);
         return;
       }
+
+      // Só a cidade: o cadastro voluntário não envia dado pessoal ao GA.
+      trackRegistrationLead(city);
 
       setResult({
         protocol: extractProtocol(response),

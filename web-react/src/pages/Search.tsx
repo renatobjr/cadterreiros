@@ -7,6 +7,11 @@ import type { CommunityAddress, ReligiousCommunity } from "../domain/types";
 import Select from "../components/ui/Select";
 import PageLoader from "../components/composed/PageLoader";
 import Pagination from "../components/composed/Pagination";
+import {
+  trackCommunitySelect,
+  trackFilterApply,
+  trackSearch,
+} from "../features/analytics/events";
 
 /** Extrai bairro e cidade, tolerando o DTO achatado (apenas `fullAddress`). */
 function communityPlace(community: ReligiousCommunity): {
@@ -129,6 +134,32 @@ export function Search() {
   const hasFilters =
     Boolean(filters.query?.trim()) || Boolean(filters.nation) || Boolean(filters.city) || Boolean(filters.type);
 
+  /* Evento de busca: espera o visitante parar de digitar. Com termo vira
+     `search` (termo + nº de resultados); só com facetas, `filter_apply`. */
+  useEffect(() => {
+    const term = (filters.query ?? "").trim();
+    const hasFacet = Boolean(filters.nation || filters.city || filters.type);
+    if (!term && !hasFacet) return;
+    const timer = window.setTimeout(() => {
+      if (term) {
+        trackSearch({
+          term,
+          results: filtered.length,
+          nation: filters.nation,
+          city: filters.city,
+          type: filters.type,
+        });
+      } else {
+        trackFilterApply({
+          nation: filters.nation,
+          city: filters.city,
+          type: filters.type,
+        });
+      }
+    }, 600);
+    return () => window.clearTimeout(timer);
+  }, [filters, filtered.length]);
+
   return (
     <>
       <section className="page-head">
@@ -247,7 +278,11 @@ export function Search() {
                         <td>{place.neighborhood || "não informado"}</td>
                         <td>{place.city || "não informado"}</td>
                         <td>
-                          <Link className="btn btn--quiet act" to={`/terreiro/${c.slugify ?? c.id}`}>
+                          <Link
+                            className="btn btn--quiet act"
+                            to={`/terreiro/${c.slugify ?? c.id}`}
+                            onClick={() => trackCommunitySelect(c, "search")}
+                          >
                             Ver ficha
                           </Link>
                         </td>
@@ -260,7 +295,12 @@ export function Search() {
           ) : (
             <div className="cardgrid">
               {pageItems.map((c) => (
-                <CommunityCard key={c.id} community={c} href={`/terreiro/${c.slugify ?? c.id}`} />
+                <CommunityCard
+                  key={c.id}
+                  community={c}
+                  href={`/terreiro/${c.slugify ?? c.id}`}
+                  onClick={() => trackCommunitySelect(c, "search")}
+                />
               ))}
             </div>
           )}

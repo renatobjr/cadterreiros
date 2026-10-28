@@ -3,6 +3,7 @@ import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import { routes } from "../src/router";
 import { AuthProvider } from "../src/features/auth/AuthProvider";
+import { ConsentProvider } from "../src/features/analytics/ConsentProvider";
 
 // As páginas de busca e de terreiro consultam a API no mount; o teste de
 // roteamento não deve depender de rede.
@@ -22,9 +23,11 @@ vi.mock("../src/api/communities", () => {
 function renderRoute(path: string) {
   const router = createMemoryRouter(routes, { initialEntries: [path] });
   return render(
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>,
+    <ConsentProvider>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </ConsentProvider>,
   );
 }
 

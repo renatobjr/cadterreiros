@@ -1,4 +1,6 @@
+import { Link } from "react-router-dom";
 import logoWhite from "../../assets/img/logos/logo_white.svg";
+import { useConsent } from "../../features/analytics/context";
 
 interface FooterLink {
   label: string;
@@ -19,6 +21,8 @@ const projectLinks: FooterLink[] = [
 ];
 
 export function Footer() {
+  const { openPreferences } = useConsent();
+
   return (
     <footer className="foot">
       <div className="shell">
@@ -42,7 +46,7 @@ export function Footer() {
             <ul className="foot__list">
               {navigateLinks.map((l) => (
                 <li key={l.href}>
-                  <a href={l.href}>{l.label}</a>
+                  <Link to={l.href}>{l.label}</Link>
                 </li>
               ))}
             </ul>
@@ -53,7 +57,7 @@ export function Footer() {
             <ul className="foot__list">
               {projectLinks.map((l) => (
                 <li key={l.href}>
-                  <a href={l.href}>{l.label}</a>
+                  <Link to={l.href}>{l.label}</Link>
                 </li>
               ))}
               <li>Processo Seletivo nº 01/2018</li>
@@ -65,6 +69,13 @@ export function Footer() {
 
         <div className="foot__bottom">
           <span>© 2026 Casa de Cultura Ilê Asé D&apos;Osoguian</span>
+          <button
+            type="button"
+            className="foot__cookie"
+            onClick={openPreferences}
+          >
+            Preferências de cookies
+          </button>
         </div>
       </div>
     </footer>

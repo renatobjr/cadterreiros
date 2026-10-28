@@ -1,11 +1,13 @@
 # ROADMAP — próximas fases (retomar em 28/10/2026)
 
-Contexto: 53 de 58 tarefas do plano `MIG` concluídas. Seguir **na ordem abaixo**.
-Estado de referência no momento em que este arquivo foi escrito:
+Contexto: Fase 4 concluída (T46–T50) e Fase 5.0 concluída (loader + sessão).
+Seguir **na ordem abaixo**.
 
-- gates: `verify-paths` 🟢 · `verify-contrast` 🟢 · `verify-tokens` 🔴 · `verify-classes` 🔴
-- build: ok, com aviso de chunk > 500 kB (Leaflet + painel no mesmo bundle)
-- testes: 198 verdes · **12 falhas pré-existentes** (`Home` 9, `MappingFlow` 1, `Nav` 2)
+Estado atual:
+
+- gates: `verify-paths` 🟢 · `verify-contrast` 🟢 · `verify-tokens` 🟢 · `verify-classes` 🟢
+- build: ok, sem aviso de chunk (`manualChunks`: react / leaflet / icons)
+- testes: **250 verdes** em 44 arquivos
 - API: 86/86 verdes
 
 ---
@@ -14,11 +16,11 @@ Estado de referência no momento em que este arquivo foi escrito:
 
 | Tarefa | O que fazer |
 |---|---|
-| **T46** `verify-tokens` | tratar variáveis dinâmicas (`--dot`, `--n-*`, `--od-icon-size`) como permitidas no gate e remover/justificar tokens de mapa sem uso (`--map-coast`, `--map-river`, `--map-sea`, `--n-*`) |
-| **T47** `verify-classes` | criar as regras faltantes (`admin-detail-head`, `admin-panel--queue`, `cadastro-aside--rest`, `mapping`, `od-stat`, `stat`) ou remover as classes do JSX; limpar as ~100 classes órfãs no CSS |
-| **T48** `verify-paths` + build | paths ok; resolver o warning de bundle com `React.lazy` em `/admin` e no mapa |
-| **T49** CookieBanner | banner fixo (Aceitar/Rejeitar/Personalizar) + link “Preferências de cookies” no rodapé; persistência em `localStorage` (`cadterreiros.consent`). **Decisão tomada:** migrar o GA4 do app Vue (ver bloco abaixo) com Consent Mode v2 |
-| **T50** CookieBanner tests | render, aceitar, rejeitar e persistência |
+| **T46** `verify-tokens` ✅ | gate passou a contar custom properties inline (`style={{ "--dot": … }}`) e prefixos dinâmicos (`--n-` cobre `--n-*`); `--map-sea/coast/river` ficaram como paleta reservada |
+| **T47** `verify-classes` ✅ | classes fantasma removidas do JSX (`od-stat`, `admin-detail-head`, `admin-panel--queue`, `cadastro-aside--rest`, `mapping`) e regra `.stat` criada; zero classe usada sem estilo |
+| **T48** `verify-paths` + build ✅ | paths ok; warning resolvido com `manualChunks`; `React.lazy` em admin/Leaflet fica como otimização da Fase 5 |
+| **T49** CookieBanner ✅ | banner fixo (Aceitar/Rejeitar/Personalizar) + “Preferências de cookies” no rodapé; `localStorage` (`cadterreiros.consent`); GA4 com Consent Mode v2 só na área pública |
+| **T50** CookieBanner tests ✅ | render, aceitar, rejeitar, personalizar, persistência e reabertura pelo rodapé |
 
 ## Fase 5 — Estabilização (bloqueia o cutover)
 
@@ -49,9 +51,9 @@ antes de redirecionar para `/admin`.
 
 ### 5.1 Demais itens
 
-1. Corrigir as **12 falhas** de teste (mocks desatualizados, não bugs de tela).
-2. Cobertura de testes do painel: `RequireAdmin` (guarda), listagem, ficha, edição e usuários — hoje só o `ActionMenu` tem teste.
-3. Code splitting: `React.lazy` + `manualChunks` para admin e Leaflet.
+1. ~~Corrigir as 12 falhas de teste~~ ✅ (mocks desatualizados, não bugs de tela).
+2. Cobertura de testes do painel: `RequireAdmin` ✅, listagem ✅; faltam ficha, edição e usuários.
+3. Code splitting: `manualChunks` ✅; falta `React.lazy` para `/admin` e Leaflet.
 
 ## Fase 6 — Completar o painel (mock)
 
@@ -102,7 +104,22 @@ Nenhuma entrega passa com gate vermelho ou achado crítico aberto.
 - `src/main.js` faz `router.afterEach` → `gtag('config', id, { page_path })` (page_view de SPA);
 - nenhum evento customizado.
 
-**Como migrar para `web-react/` (escopo fechado):**
+**Como foi implementado em `web-react/` (T49/T50):**
+
+- `src/features/analytics/consent.ts` — chave versionada, leitura tolerante a
+  formato inválido/storage bloqueado e `isTrackablePath` (bloqueia `/admin*`,
+  auth, OTP, set-password e design system).
+- `src/features/analytics/ga.ts` — `gtag.js` injetado só após aceite, Consent
+  Mode v2 (`analytics_storage` denied por padrão), `send_page_view: false`,
+  page_view manual por rota e sanitizador de PII (chaves e valores).
+- `src/features/analytics/ConsentProvider.tsx` + `context.ts` — escolha,
+  reabertura e aplicação imediata do consentimento.
+- `src/features/analytics/events.ts` — `search`, `view_item`, `select_content`,
+  `generate_lead`, `filter_apply` (sem nome de liderança, contato ou endereço).
+- `src/components/composed/CookieBanner.tsx` + CSS + link no rodapé.
+- Testes: `consent.test.ts` (9), `ga.test.ts` (14), `CookieBanner.test.tsx` (6).
+
+**Plano original de migração (referência):**
 
 1. **Config**: `VITE_GA_ID` (fallback para `G-CCSQS7ZTT2`) — nada hardcoded no HTML.
 2. **Consentimento**: Consent Mode v2 com `analytics_storage: "denied"` por padrão; o

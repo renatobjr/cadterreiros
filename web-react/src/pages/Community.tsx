@@ -9,6 +9,10 @@ import CommunityCard from "../features/communities/components/CommunityCard";
 import LeafletMap from "../features/metrics/components/LeafletMap";
 import { copyToClipboard } from "../utils/clipboard";
 import {
+  trackCommunitySelect,
+  trackCommunityView,
+} from "../features/analytics/events";
+import {
   capitalize,
   communityPhotoUrl,
   communityPlace,
@@ -190,6 +194,12 @@ export function Community({ id, slug }: CommunityProps = {}) {
     const timer = window.setTimeout(() => setCopyState("idle"), 2600);
     return () => window.clearTimeout(timer);
   }, [copyState]);
+
+  // Ficha aberta: view_item com slug e nação (nunca o nome da liderança).
+  useEffect(() => {
+    if (status !== "ready" || !community) return;
+    trackCommunityView(community);
+  }, [status, community]);
 
   if (status === "loading") {
     return (
@@ -414,6 +424,7 @@ export function Community({ id, slug }: CommunityProps = {}) {
                   key={item.id}
                   community={item}
                   href={`/terreiro/${item.slugify ?? item.id}`}
+                  onClick={() => trackCommunitySelect(item, "related")}
                 />
               ))}
             </div>

@@ -7,6 +7,7 @@ import type { SearchFiltersValue } from "../features/communities/components/Sear
 import MappingCharts from "../features/metrics/components/MappingCharts";
 import LeafletMap from "../features/metrics/components/LeafletMap";
 import type { ReligiousCommunity } from "../domain/types";
+import { trackFilterApply } from "../features/analytics/events";
 
 /** Extrai bairro e cidade, tolerando o DTO achatado (apenas `fullAddress`). */
 function communityPlace(community: ReligiousCommunity): {
@@ -179,14 +180,25 @@ export function Mapping() {
                 nations={nations}
                 cities={cities}
                 types={types}
-                onChange={setFilters}
+                onChange={(next) => {
+                  setFilters(next);
+                  trackFilterApply({
+                    nation: next.nation,
+                    city: next.city,
+                    type: next.type,
+                    hasQuery: Boolean(next.query?.trim()),
+                  });
+                }}
               />
               {hasFilters ? (
                 <div className="filterbar__actions">
                   <button
                     type="button"
                     className="btn btn--quiet"
-                    onClick={() => setFilters({})}
+                    onClick={() => {
+                      setFilters({});
+                      trackFilterApply({ cleared: true });
+                    }}
                   >
                     Limpar
                   </button>
