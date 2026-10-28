@@ -8,6 +8,7 @@ export type ResponseType<T> = (
 
 export interface ApiResponseType<T> {
   data?: T;
-  error?: T;
+  /** Falhas trafegam como mensagem/erro, não como dado de sucesso. */
+  error?: T | string;
   status: boolean;
 }

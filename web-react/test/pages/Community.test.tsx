@@ -126,7 +126,6 @@ describe("Community", () => {
     expect(within(ficha).getByText("Centro")).toBeInTheDocument();
     expect(within(ficha).getByText("João Pessoa")).toBeInTheDocument();
     expect(within(ficha).getByText("01/01/2020")).toBeInTheDocument();
-    expect(within(ficha).getByText("não informado")).toBeInTheDocument();
   });
 
   it("mostra a navegação, as ações e os terreiros próximos", async () => {

@@ -52,11 +52,13 @@ const originalCreate = ReligiousCommunity.create.bind(ReligiousCommunity);
 const originalUpdateOne = ReligiousCommunity.updateOne.bind(
   ReligiousCommunity
 );
+const originalFindById = ReligiousCommunity.findById;
 
 let createdPayload: Record<string, unknown> | undefined;
 let updatedFilter: Record<string, unknown> | undefined;
 let updatedPayload: Record<string, unknown> | undefined;
 const uploadedFiles: string[] = [];
+const communityState = { censusStep: "pending", registeredVoluntarily: true };
 let server: Server;
 let baseUrl: string;
 
@@ -80,9 +82,32 @@ const postPicture = (headers: Record<string, string> = {}) => {
   const form = new FormData();
   form.append(
     "file",
-    new Blob([Buffer.from("fake-image")], { type: "image/png" }),
+    new Blob(
+      [
+        Buffer.from([
+          0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00,
+          0x00,
+        ]),
+      ],
+      { type: "image/png" }
+    ),
     "terreiro.png"
   );
+
+  return fetch(`${baseUrl}${uploadEndpoint}`, {
+    method: "POST",
+    headers,
+    body: form,
+  });
+};
+
+const postBytes = (
+  bytes: Buffer,
+  filename: string,
+  headers: Record<string, string> = {}
+) => {
+  const form = new FormData();
+  form.append("file", new Blob([bytes], { type: "image/png" }), filename);
 
   return fetch(`${baseUrl}${uploadEndpoint}`, {
     method: "POST",
@@ -111,6 +136,11 @@ before(async () => {
     return new ReligiousCommunity(payload);
   };
 
+  // A rota pública só aceita foto de cadastro pendente vindo do formulário.
+  (ReligiousCommunity as any).findById = (id: string) => ({
+    select: async () => ({ _id: id, ...communityState }),
+  });
+
   (ReligiousCommunity as any).updateOne = async (
     filter: Record<string, unknown>,
     update: Record<string, unknown>
@@ -138,12 +168,15 @@ beforeEach(async () => {
   createdPayload = undefined;
   updatedFilter = undefined;
   updatedPayload = undefined;
+  communityState.censusStep = "pending";
+  communityState.registeredVoluntarily = true;
   await resetRateLimits();
 });
 
 after(async () => {
   (ReligiousCommunity as any).create = originalCreate;
   (ReligiousCommunity as any).updateOne = originalUpdateOne;
+  (ReligiousCommunity as any).findById = originalFindById;
   delete process.env.CADTERREIROS_API_KEY;
 
   for (const filename of uploadedFiles) {
@@ -177,6 +210,30 @@ test("POST /public/upload-main-picture/:id com header e arquivo retorna 200", as
   assert.deepEqual(updatedPayload, {
     $set: { religiousSpaceMainPicture: body.data.data },
   });
+});
+
+test("recusa foto de cadastro já aprovado", async () => {
+  communityState.censusStep = "approved";
+
+  const response = await postPicture(authorized);
+  const body = await response.json();
+
+  assert.equal(body.data.status, false);
+  assert.match(String(body.data.error), /não permitido/);
+  assert.equal(updatedPayload, undefined);
+});
+
+test("recusa HTML disfarçado de imagem (magic bytes)", async () => {
+  const response = await postBytes(
+    Buffer.from("<script>alert(1)</script>"),
+    "x.html",
+    authorized
+  );
+  const body = await response.json();
+
+  assert.equal(body.data.status, false);
+  assert.match(String(body.data.error), /Formato de imagem não suportado/);
+  assert.equal(updatedPayload, undefined);
 });
 
 test("POST /public/upload-main-picture/:id sem header x-cadterreiros-api retorna 403", async () => {

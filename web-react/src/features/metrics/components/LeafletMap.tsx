@@ -117,9 +117,19 @@ export function LeafletMap({
         title: c.religiousSpaceName,
         bubblingMouseEvents: false,
       });
-      marker.bindPopup(
-        `<strong>${c.religiousSpaceName}</strong><br/>${c.communityAddress?.city ?? c.fullAddress ?? ""}`,
+      /* DOM em vez de string: nome/endereço vêm do formulário público e o
+         Leaflet interpreta HTML no popup (XSS armazenado). */
+      const popup = document.createElement("div");
+      const popupName = document.createElement("strong");
+      popupName.textContent = c.religiousSpaceName;
+      popup.append(popupName);
+      popup.append(document.createElement("br"));
+      popup.append(
+        document.createTextNode(
+          c.communityAddress?.city ?? c.fullAddress ?? "",
+        ),
       );
+      marker.bindPopup(popup);
       markerLayer.addLayer(marker);
     });
 

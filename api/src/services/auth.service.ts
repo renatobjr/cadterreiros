@@ -58,12 +58,8 @@ export const authService = {
         };
       }
 
-      if (origin === "web" && user.role !== ERole.ADMIN) {
-        return {
-          error: "Você não tem permissão de acesso",
-          status: false,
-        };
-      }
+      /* O painel é da curadoria E dos recenseadores: o RBAC da API limita o
+         que cada papel pode fazer, então o login web não barra por papel. */
 
       // Sessão com validade explícita (antes o JWT nunca expirava).
       const generateToken = tokenUtils.generate(

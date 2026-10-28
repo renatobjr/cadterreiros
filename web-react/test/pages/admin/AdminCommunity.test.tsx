@@ -130,6 +130,26 @@ describe("AdminCommunity", () => {
     );
   });
 
+  it("envia o motivo no campo que a API espera ao pedir correções", async () => {
+    getCommunity.mockResolvedValue(makeCommunity({ censusStep: "approved" }));
+    renderDetail();
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: /Solicitar correções/ }),
+    );
+    fireEvent.change(screen.getByLabelText("Motivo"), {
+      target: { value: "Falta a fotografia da fachada." },
+    });
+    fireEvent.click(screen.getByText("Confirmar"));
+
+    await waitFor(() =>
+      expect(decide).toHaveBeenCalledWith("corrections", {
+        communityId: "1",
+        rejectedReason: "Falta a fotografia da fachada.",
+      }),
+    );
+  });
+
   it("no estado aprovado só oferece correções e edição", async () => {
     getCommunity.mockResolvedValue(makeCommunity({ censusStep: "approved" }));
     renderDetail();

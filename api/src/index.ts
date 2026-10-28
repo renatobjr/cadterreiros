@@ -9,7 +9,6 @@ import handleResponse from "@/api/middlewares/handleResponse";
 import initialDataSeed from "./db/initialData.seed";
 import mongoose from "mongoose";
 import morgan from "morgan";
-import multer from "multer";
 import path from "path";
 
 import health from "@/api/routes/health.routes";
@@ -49,6 +48,13 @@ api
       ],
     })
   )
+  .use((_req, res, next) => {
+    // Cabeçalhos de defesa em profundidade (a SPA é servida pelo proxy).
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("Referrer-Policy", "no-referrer");
+    next();
+  })
   .use(cookieParser())
   .use(requireTrustedOrigin())
   .use(express.json())
@@ -65,19 +71,17 @@ api
       extended: true,
     })
   )
+  /* Uploads só são gravados nas rotas de foto (multer por rota, depois de
+     autenticação/rate limit). `nosniff` impede que um arquivo seja
+     reinterpretado como HTML pela origem do painel. */
   .use(
-    multer({
-      dest: path.join(__dirname, "../uploads/religiousCommunities"),
-      // Limite e tipo também no parser global: o corpo multipart é consumido
-      // aqui antes dos middlewares de rota.
-      limits: { fileSize: 8 * 1024 * 1024, files: 1 },
-      fileFilter: (_req, file, done) => {
-        if (file.mimetype?.startsWith("image/")) return done(null, true);
-        return done(new Error("Apenas imagens são aceitas"));
+    express.static(path.join(__dirname, "../uploads"), {
+      setHeaders: (response) => {
+        response.setHeader("X-Content-Type-Options", "nosniff");
+        response.setHeader("Content-Disposition", "inline");
       },
-    }).any()
+    })
   )
-  .use(express.static(path.join(__dirname, "../uploads")))
   .use(handleResponse)
   .use(health)
   .use(authPublicRoutes)

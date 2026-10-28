@@ -69,9 +69,5 @@ export class ReligiousCommunitiesGetByIdDTO {
   bio!: string | null;
 
   @Expose()
-  @Transform((value) => value.obj.censusTaker?.fullname ?? null)
-  censusTaker!: string | null;
-
-  @Expose()
   createdAt!: Date;
 }

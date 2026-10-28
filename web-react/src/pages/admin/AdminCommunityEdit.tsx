@@ -41,7 +41,7 @@ const LANGUAGES = ["yoruba", "quicongo", "umbundo", "ewe fon", "outros"].map(
   (value) => ({ value, label: value }),
 );
 
-const GENDERS = ["feminino", "masculino", "outro"].map((value) => ({
+const GENDERS = ["feminino", "masculino", "intersexo", "ns/nr"].map((value) => ({
   value,
   label: value,
 }));
@@ -51,13 +51,15 @@ const ETHNICITIES = ["preta", "parda", "branca", "indígena", "amarela"].map(
 );
 
 const EDUCATION = [
+  "Sem escolaridade",
   "Fundamental Incompleto",
   "Fundamental Completo",
   "Segundo Grau Incompleto",
   "Segundo Grau Completo",
   "Superior Incompleto",
   "Superior Completo",
-  "Pós-graduação",
+  "Pós-graduado",
+  "NS/NR",
 ].map((value) => ({ value, label: value }));
 
 const STATES = [

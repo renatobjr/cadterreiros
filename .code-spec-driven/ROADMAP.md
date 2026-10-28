@@ -103,6 +103,39 @@ Ao final de **todas** as implementações acima, executar:
 
 Nenhuma entrega passa com gate vermelho ou achado crítico aberto.
 
+### Resultado do gate (28/10/2026)
+
+Code review e security review executados em `web-react/` e `api/`.
+Bloqueantes corrigidos nesta rodada:
+
+1. **XSS armazenado no popup do Leaflet** — popup montado com DOM/`textContent`.
+2. **“Solicitar correções” quebrava o contrato** — enviava `correctionNotes` e
+   `userId` ausente; API criava um ObjectId aleatório. Agora o campo é
+   `rejectedReason` e `userId` é opcional (mantém o responsável).
+3. **Upload**: validação por *magic bytes* (extensão vem do conteúdo), rota
+   pública só aceita cadastro pendente/voluntário, multer global removido
+   (grava só nas rotas, após auth/rate limit), `nosniff` nos estáticos.
+4. **Listagem pública** força `censusStep=approved` no servidor, escapa regex,
+   limita a 500 e não expõe mais recenseador/etapa.
+5. **Mass assignment** na edição: allowlist de campos; auditoria/origem/dono
+   não vêm do corpo.
+6. **Erros de banco em usuários** deixam de ser “sucesso”; papel validado
+   (String enum) e `status` precisa ser booleano.
+7. **Login de recenseador** liberado no painel (RBAC da API continua barrando
+   escrita); `isOwner` usa `censusTaker`/`censusTakerId` do DTO.
+8. **E-mails**: Mustache com escape (`{{ }}`) em todos os templates.
+9. **Dependências**: `jade` removido, `npm audit` em 0 vulnerabilidades
+   (api e web-react).
+10. **Produção**: `NODE_ENV=production` no PM2, `watch:false`, headers de
+    segurança na API e `trust proxy`.
+
+Pendências conhecidas (não bloqueiam o sandbox; exigem decisão antes do go-live):
+
+- revogação de sessão por `tokenVersion` (logout/troca de senha não invalidam JWT);
+- token de reset/OTP ainda trafega no path e é reutilizável;
+- regeocodificação ao editar endereço (marcador mantém coordenadas antigas);
+- CSP/HSTS no proxy, sitemap/robots e monitoramento de erros.
+
 ---
 
 ## GA4 — decisão para o T49 (migrar do Vue)

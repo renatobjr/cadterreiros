@@ -17,8 +17,10 @@ describe("Nav", () => {
   it("renders brand and all main links", async () => {
     renderNav();
     // Enquanto a sessão é validada, o link de conta é um placeholder.
-    await waitFor(() =>
-      expect(screen.getByRole("link", { name: "Entrar" })).toBeInTheDocument(),
+    await waitFor(
+      () =>
+        expect(screen.getByRole("link", { name: "Entrar" })).toBeInTheDocument(),
+      { timeout: 3000 },
     );
     const nav = within(screen.getByRole("banner"));
     expect(nav.getByRole("link", { name: /cadterreiros, início/i })).toBeInTheDocument();

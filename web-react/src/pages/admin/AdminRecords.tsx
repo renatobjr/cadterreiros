@@ -165,8 +165,13 @@ export function AdminRecords() {
   }
 
   async function approveRecord(record: ReligiousCommunity) {
-    const ok = await decide("approve", { communityId: record.id });
-    if (ok) reload();
+    try {
+      const ok = await decide("approve", { communityId: record.id });
+      if (ok) reload();
+      else setBulkMessage("Não foi possível aprovar o cadastro.");
+    } catch {
+      setBulkMessage("Falha ao aprovar o cadastro. Tente novamente.");
+    }
   }
 
   async function confirmDecision(
@@ -174,13 +179,14 @@ export function AdminRecords() {
     action: DecisionAction,
     reason: string,
   ) {
+    // Rejeitar e solicitar correções usam o mesmo campo (`rejectedReason`);
+    // sem `userId`, a API mantém o responsável atual.
     const ok = await decide(action, {
       communityId: record.id,
-      ...(action === "reject"
-        ? { rejectedReason: reason }
-        : { correctionNotes: reason }),
+      rejectedReason: reason,
     });
-    if (ok) reload();
+    if (!ok) throw new Error("A API recusou a solicitação.");
+    reload();
   }
 
   const hasFilters = Boolean(query || origin || nation || city);

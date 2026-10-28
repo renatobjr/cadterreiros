@@ -91,6 +91,10 @@ export class ReligiousCommunitiesGetByAllPropsDTO {
   censusTaker!: ObjectId;
 
   @Expose()
+  @Transform((value) => value.obj.censusTaker?._id ?? null)
+  censusTakerId!: string | null;
+
+  @Expose()
   @Transform((value) => value.obj.censusTaker?.fullname ?? null)
   censusTakerFullname!: string | null;
 

@@ -101,11 +101,6 @@ function fichaRows(community: ReligiousCommunity): FichaRow[] {
     },
     { label: "Cidade", value: place.city || "não informado", empty: !place.city },
     {
-      label: "Recenseador",
-      value: community.censusTaker || "não informado",
-      empty: !community.censusTaker,
-    },
-    {
       label: "Recenseado em",
       value: formatDate(community.createdAt),
       empty: !community.createdAt,

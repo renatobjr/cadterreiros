@@ -104,6 +104,7 @@ router.get(
 router.post(
   `${path}/upload-main-picture/:id`,
   isAuth,
+  uploadMainPicture,
   religiousCommunityController.postUploadMainPicture
 );
 router.post(

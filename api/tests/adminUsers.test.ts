@@ -34,6 +34,13 @@ const USERS: Record<string, unknown> = {
     role: ERole.CENSUS_TAKER,
     isEnabled: true,
   },
+  "user-admin-2": {
+    _id: "user-admin-2",
+    email: "outro-admin@teste.local",
+    fullname: "Outro Admin",
+    role: ERole.ADMIN,
+    isEnabled: true,
+  },
 };
 
 const calls: Record<string, unknown[][]> = {
@@ -44,6 +51,7 @@ const calls: Record<string, unknown[][]> = {
 
 const originalVerify = tokenUtils.verify;
 const originalFindById = User.findById;
+const originalCount = User.countDocuments;
 const originalService = {
   setUserStatus: usersService.setUserStatus,
   changeUserRole: usersService.changeUserRole,
@@ -70,6 +78,8 @@ before(async () => {
     };
     return query;
   };
+
+  (User as any).countDocuments = async () => 1;
 
   (usersService as any).setUserStatus = async (id: string, status: boolean) => {
     calls.status.push([id, status]);
@@ -105,6 +115,7 @@ before(async () => {
 after(async () => {
   (tokenUtils as any).verify = originalVerify;
   (User as any).findById = originalFindById;
+  (User as any).countDocuments = originalCount;
   Object.assign(usersService, originalService);
 
   await new Promise<void>((resolve, reject) =>
@@ -138,6 +149,33 @@ test("admin desativa outra pessoa", async () => {
 
   assert.equal(response.status, 200);
   assert.deepEqual(calls.status, [["user-taker", false]]);
+});
+
+test("status não booleano é recusado", async () => {
+  calls.status.length = 0;
+
+  const response = await fetch(`${baseUrl}${statusPath}`, {
+    method: "PUT",
+    headers: headers("user-admin"),
+    body: JSON.stringify({ id: "user-taker", status: "false" }),
+  });
+
+  assert.equal(response.status, 400);
+  assert.equal(calls.status.length, 0);
+});
+
+test("não desativa o último administrador ativo", async () => {
+  calls.status.length = 0;
+
+  const response = await fetch(`${baseUrl}${statusPath}`, {
+    method: "PUT",
+    headers: headers("user-admin"),
+    body: JSON.stringify({ id: "user-admin-2", status: false }),
+  });
+
+  assert.equal(response.status, 400);
+  assert.match(JSON.stringify(await response.json()), /administrador ativo/);
+  assert.equal(calls.status.length, 0);
 });
 
 test("admin não rebaixa a própria conta", async () => {

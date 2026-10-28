@@ -1158,9 +1158,10 @@ export function CommunityRegister() {
             <div className="card card--pad">
               <p className="eyebrow">Privacidade</p>
               <p>
-                Não pedimos telefone nem e-mail nesta etapa. O nome da liderança
-                e o endereço detalhado são usados pela curadoria e não aparecem
-                na ficha pública.
+                Não pedimos telefone. O e-mail de contato serve apenas para a
+                curadoria falar sobre este cadastro e não aparece na ficha
+                pública. O nome da liderança e o endereço detalhado também
+                ficam restritos à curadoria.
               </p>
               <p className="meta mt-6">
                 Os dados são enviados apenas para a avaliação da curadoria.

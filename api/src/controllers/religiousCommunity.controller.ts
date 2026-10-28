@@ -9,10 +9,16 @@ import { ReligiousCommunitiesGetRamdomDTO } from "../dtos/religiousCommunitiesDT
 import { ReligiousCommunitiesGetByIdDTO } from "../dtos/religiousCommunitiesDTOS/religiousCommunitiesGetById.DTO";
 import { ReligiousCommunitiesGetByUserIdDTO } from "../dtos/religiousCommunitiesDTOS/religiousCommunitiesGetByUserId.DTO";
 import { ReligiousCommunitiesGetByAllPropsDTO } from "../dtos/religiousCommunitiesDTOS/religiousCommunitiesGetAllProps.DTO";
+import { ECensusStep } from "@/api/schemas/ReligiousCommunity";
 
 export const religiousCommunityController = {
   list: async (req: Request, res: Response): Promise<void> => {
-    const queryParams: any = req.query;
+    /* A listagem pública sempre filtra por aprovado no servidor: o query
+       string do cliente nunca decide o que é publicado. */
+    const queryParams: any = {
+      ...req.query,
+      censusStep: ECensusStep.APPROVED,
+    };
     const response = await religiousCommunityService.list(queryParams);
 
     res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
@@ -428,7 +434,8 @@ export const religiousCommunityController = {
     // Rota pública: sem sessão, apenas grava a foto do cadastro voluntário.
     const response = await religiousCommunityService.postUpdateMainPicture(
       req.params.id,
-      files
+      files,
+      { publicFlow: true }
     );
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,

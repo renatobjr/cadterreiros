@@ -59,14 +59,4 @@ export class ReligiousCommunitiesListDTO {
   @Expose()
   bio?: string;
 
-  @Expose()
-  censusStep!: string;
-
-  @Expose()
-  @Transform((value) => value.obj.censusTaker?._id ?? null)
-  censusTakerId!: string;
-
-  @Expose()
-  @Transform((value) => value.obj.censusTaker?.fullname ?? "não informado")
-  censusTakerFullname!: string;
 }

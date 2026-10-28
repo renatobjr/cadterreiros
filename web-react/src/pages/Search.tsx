@@ -75,6 +75,8 @@ function sortCommunities(list: ReligiousCommunity[], sort: SortKey): ReligiousCo
 export function Search() {
   const [filters, setFilters] = useState<SearchFiltersValue>({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [all, setAll] = useState<ReligiousCommunity[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -91,11 +93,20 @@ export function Search() {
   useEffect(() => {
     let active = true;
     setLoading(true);
+    setError(false);
     Promise.all([communitiesApi.list(), communitiesApi.statsSummary()])
       .then(([list, summary]) => {
         if (!active) return;
         setAll(list);
         setTotal(summary.totalReligiousCommunities || list.length);
+      })
+      .catch(() => {
+        // Antes caía em "0 terreiros": falha de rede não é acervo vazio.
+        if (active) {
+          setAll([]);
+          setTotal(0);
+          setError(true);
+        }
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -103,7 +114,7 @@ export function Search() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [attempt]);
 
   const filtered = useMemo(() => {
     const term = (filters.query ?? "").toLowerCase().trim();
@@ -230,6 +241,20 @@ export function Search() {
         <div id="results-body">
           {loading ? (
             <PageLoader compact label="Carregando terreiros" />
+          ) : error ? (
+            <div className="empty" role="alert">
+              <p className="eyebrow">Falha ao carregar</p>
+              <p>Não foi possível carregar o acervo agora.</p>
+              <div className="empty__actions">
+                <button
+                  type="button"
+                  className="btn btn--primary"
+                  onClick={() => setAttempt((current) => current + 1)}
+                >
+                  Tentar novamente
+                </button>
+              </div>
+            </div>
           ) : filtered.length === 0 ? (
             <div className="empty">
               <p className="eyebrow">Nenhum resultado</p>

@@ -112,8 +112,8 @@ export function AdminCommunity() {
       ),
   );
 
-  const isOwner =
-    String(community?.censusTakerId ?? "") === String(user?.id ?? "-");
+  const ownerId = community?.censusTakerId ?? community?.censusTaker ?? "";
+  const isOwner = String(ownerId) === String(user?.id ?? "-");
   /* Atribuição é só para quem ainda não tem responsável: trocar um
      recenseador existente é outra decisão de curadoria. */
   const hasCensusTaker =
@@ -213,16 +213,15 @@ export function AdminCommunity() {
     action: DecisionAction,
     reason: string,
   ) {
+    // Rejeitar e solicitar correções usam o mesmo campo (`rejectedReason`);
+    // sem `userId`, a API mantém o responsável atual.
     const ok = await decide(action, {
       communityId: record.id,
-      ...(action === "reject"
-        ? { rejectedReason: reason }
-        : { correctionNotes: reason }),
+      rejectedReason: reason,
     });
-    if (ok) {
-      await load();
-      reload();
-    }
+    if (!ok) throw new Error("A API recusou a decisão.");
+    await load();
+    reload();
   }
 
   if (loading) {

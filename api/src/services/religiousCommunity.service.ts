@@ -10,7 +10,7 @@ import { ApiResponseType } from "@/api/@types/responsesTypes";
 import { geocodeAddress } from "../configs/geocoder";
 import { PipelineStage, Types } from "mongoose";
 import { ERole, IUser, User } from "../schemas/User";
-import fileUtils from "../utils/file.utils";
+import fileUtils, { detectImageExtension } from "../utils/file.utils";
 import fs from "fs";
 import mailUtils from "../utils/mail.utils";
 import { EMailTypes } from "../enum/EmailTYpes.enum";
@@ -189,6 +189,35 @@ const resolveLocalization = async (
   return geocoded ?? { lat: 0, long: 0 };
 };
 
+/** Campos que a edição do painel pode alterar (nunca dono/etapa/auditoria). */
+const EDITABLE_COMMUNITY_FIELDS = [
+  "religiousSpaceName",
+  "communityType",
+  "religiousSpaceNation",
+  "religiousSpacePraticalLanguages",
+  "religiousSpaceYearFoundation",
+  "religiousSpaceLeaderName",
+  "religiousSpacePositionName",
+  "religiousSpaceLeaderFoundation",
+  "religiousSpaceStartedBy",
+  "religiousSpaceNameDateStartedBy",
+  "leaderGender",
+  "leaderEthnicity",
+  "leaderEducationalLevel",
+  "leaderSufferedRacism",
+  "religiousSpaceStatus",
+  "bio",
+] as const;
+
+const EDITABLE_ADDRESS_FIELDS = [
+  "street",
+  "number",
+  "neighborhood",
+  "city",
+  "state",
+  "zipcode",
+] as const;
+
 /** Quem executou a decisão (vem do `isAuth`). */
 export interface DecisionActor {
   id?: string | null;
@@ -251,6 +280,10 @@ export const religiousCommunityService = {
     try {
       religiousCommunity.censusTaker = new Types.ObjectId(userId);
       religiousCommunity.censusStep = ECensusStep.PENDING;
+      /* Auditoria e origem são do sistema, não do corpo da requisição. */
+      religiousCommunity.decisionLog = [];
+      religiousCommunity.rejectedReason = undefined;
+      religiousCommunity.registeredVoluntarily = false;
 
       const createdCommunity = await ReligiousCommunity.create(
         religiousCommunity
@@ -341,23 +374,42 @@ export const religiousCommunityService = {
         };
       }
 
-      religiousCommunity.censusStep = ECensusStep.PENDING;
+      /* Allowlist: o corpo vem do cliente e NÃO pode reatribuir o dono,
+         forjar auditoria ou mexer em qualquer campo fora do formulário.
+         Editar sempre devolve o cadastro para a fila. */
+      const updates: Record<string, unknown> = {
+        censusStep: ECensusStep.PENDING,
+      };
+      for (const field of EDITABLE_COMMUNITY_FIELDS) {
+        if (religiousCommunity[field] !== undefined) {
+          updates[field] = religiousCommunity[field];
+        }
+      }
 
+      const incomingAddress = religiousCommunity.communityAddress;
+      const address: Record<string, unknown> = {
+        ...((community.communityAddress as unknown as Record<string, unknown>) ??
+          {}),
+      };
+      if (incomingAddress) {
+        for (const field of EDITABLE_ADDRESS_FIELDS) {
+          if (incomingAddress[field] !== undefined) {
+            address[field] = incomingAddress[field];
+          }
+        }
+      }
       const parts = [
-        religiousCommunity.communityAddress?.street,
-        religiousCommunity.communityAddress?.number,
-        religiousCommunity.communityAddress?.neighborhood,
-        religiousCommunity.communityAddress?.city,
-        religiousCommunity.communityAddress?.state,
-        religiousCommunity.communityAddress?.zipcode,
+        address.street,
+        address.number,
+        address.neighborhood,
+        address.city,
+        address.state,
+        address.zipcode,
       ];
+      address.fullAddress = parts.join(" - ");
+      updates.communityAddress = address;
 
-      religiousCommunity.communityAddress = {
-        ...religiousCommunity.communityAddress,
-        fullAddress: parts.join(" - "),
-      } as ICommunityAddress;
-
-      await community.updateOne(religiousCommunity);
+      await community.updateOne(updates);
 
       const user = await User.findById(community.censusTaker);
       const adminUsers = await User.find({
@@ -367,9 +419,11 @@ export const religiousCommunityService = {
       const html = await mailUtils.template({
         type: EMailTypes.UPDATE_COMMUNITY,
         data: {
-          communityName: community.religiousSpaceName,
+          communityName:
+            (updates.religiousSpaceName as string) ??
+            community.religiousSpaceName,
           censusTaker: user?.fullname ?? user?.email,
-          fullAddress: community.communityAddress.fullAddress,
+          fullAddress: address.fullAddress,
         },
       });
 
@@ -392,8 +446,10 @@ export const religiousCommunityService = {
           );
         });
 
+      // `updateOne` não muta a instância: devolve o documento atualizado.
+      const updated = await ReligiousCommunity.findById(communityId);
       return {
-        data: community,
+        data: updated ?? community,
         status: true,
       };
     } catch (error) {
@@ -411,8 +467,10 @@ export const religiousCommunityService = {
       let searchTerm = {};
 
       if (options.search) {
-        const searchValue = options.search.trim();
-        const isYear = /^\d{4}$/.test(searchValue);
+        const rawSearch = options.search.trim().slice(0, 120);
+        const isYear = /^\d{4}$/.test(rawSearch);
+        // Busca é texto literal: evita ReDoS e consultas caras com `(a+)+$`.
+        const searchValue = rawSearch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
         const orConditions: SearchCondition[] = [
           { religiousSpaceName: { $regex: searchValue, $options: "i" } },
@@ -484,6 +542,7 @@ export const religiousCommunityService = {
         {
           $unwind: { path: "$censusTaker", preserveNullAndEmptyArrays: true },
         },
+        { $limit: 500 },
       ]);
 
       return {
@@ -1237,11 +1296,33 @@ export const religiousCommunityService = {
 
   postUpdateMainPicture: async (
     id: string,
-    file: any
+    file: any,
+    options: { publicFlow?: boolean } = {}
   ): Promise<Record<string, boolean | string>> => {
+    const originalPath = fileUtils.getPublicPath(file[0].filename);
     try {
-      const ext = fileUtils.getFileExtension(file[0].originalname);
-      const originalPath = fileUtils.getPublicPath(file[0].filename);
+      if (options.publicFlow) {
+        const target = await ReligiousCommunity.findById(id).select(
+          "censusStep registeredVoluntarily religiousSpaceMainPicture"
+        );
+        /* A rota pública não pode trocar a foto de acervo já aprovado (ou de
+           cadastro que não veio do formulário voluntário). */
+        if (
+          !target ||
+          target.censusStep !== ECensusStep.PENDING ||
+          !target.registeredVoluntarily
+        ) {
+          fs.unlinkSync(originalPath);
+          return { error: "Upload não permitido para este cadastro", status: false };
+        }
+      }
+
+      const buffer = await fs.promises.readFile(originalPath);
+      const ext = detectImageExtension(buffer);
+      if (!ext) {
+        fs.unlinkSync(originalPath);
+        return { error: "Formato de imagem não suportado", status: false };
+      }
 
       const filename = `${file[0].filename}.${ext}`;
       fs.renameSync(originalPath, fileUtils.getPublicPath(filename));
@@ -1256,6 +1337,11 @@ export const religiousCommunityService = {
         status: true,
       };
     } catch (error) {
+      try {
+        if (fs.existsSync(originalPath)) fs.unlinkSync(originalPath);
+      } catch {
+        /* arquivo temporário já removido */
+      }
       return {
         error: error as string,
         status: false,
@@ -1328,6 +1414,9 @@ export const religiousCommunityService = {
     actor?: DecisionActor
   ): Promise<Record<string, boolean | string>> => {
     try {
+      if (!Object.values(ECensusStep).includes(step)) {
+        return { error: "Invalid census step", status: false };
+      }
       await ReligiousCommunity.findOneAndUpdate(
         { _id: new Types.ObjectId(communityId) },
         {
@@ -1402,19 +1491,23 @@ export const religiousCommunityService = {
 
   requestCorrections: async (
     communityId: string,
-    userId: string,
+    userId: string | null | undefined,
     rejectedReason: string,
     actor?: DecisionActor
   ) => {
     try {
+      /* Sem `userId`, mantém o responsável atual — `new ObjectId(undefined)`
+         gerava um id aleatório e "sumia" com o cadastro. */
+      const updates: Record<string, unknown> = {
+        censusStep: ECensusStep.REJECTED,
+        rejectedReason: rejectedReason,
+      };
+      if (userId) updates.censusTaker = new Types.ObjectId(userId);
+
       const community = await ReligiousCommunity.findOneAndUpdate(
         { _id: new Types.ObjectId(communityId) },
         {
-          $set: {
-            censusStep: ECensusStep.REJECTED,
-            censusTaker: new Types.ObjectId(userId),
-            rejectedReason: rejectedReason,
-          },
+          $set: updates,
           $push: decisionPush("corrections", actor, rejectedReason),
         },
         { new: true }

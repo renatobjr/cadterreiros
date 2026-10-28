@@ -14,15 +14,16 @@ export const usersService = {
       };
     } catch (error: any) {
       return {
-        data: error,
-        status: true,
+        error: error,
+        status: false,
       };
     }
   },
 
   listAll: async (): Promise<ApiResponseType<IUser[]>> => {
     try {
-      const users = await User.find({ isFirstLogin: false });
+      // Inclui convidados que ainda não concluíram o primeiro acesso.
+      const users = await User.find({});
 
       return {
         data: users,
@@ -30,8 +31,8 @@ export const usersService = {
       };
     } catch (error: any) {
       return {
-        data: error,
-        status: true,
+        error: error,
+        status: false,
       };
     }
   },
@@ -46,14 +47,17 @@ export const usersService = {
         { $set: { isEnabled: status } },
         { new: true }
       );
+      if (!user) {
+        return { error: "Usuário não encontrado", status: false };
+      }
       return {
         data: user as IUser,
         status: true,
       };
     } catch (error: any) {
       return {
-        data: error,
-        status: true,
+        error: error,
+        status: false,
       };
     }
   },
@@ -68,14 +72,17 @@ export const usersService = {
         { $set: { role: role } },
         { new: true }
       );
+      if (!user) {
+        return { error: "Usuário não encontrado", status: false };
+      }
       return {
         data: user as IUser,
         status: true,
       };
     } catch (error: any) {
       return {
-        data: error,
-        status: true,
+        error: error,
+        status: false,
       };
     }
   },

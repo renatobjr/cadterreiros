@@ -81,9 +81,12 @@ export function AdminUsers() {
 
   async function handleRole(id: string, nextRole: string) {
     setBusy(id);
+    setError("");
     try {
       await changeUserRole(id, nextRole);
       await load();
+    } catch {
+      setError("Não foi possível alterar o papel. Tente novamente.");
     } finally {
       setBusy(null);
     }
@@ -91,9 +94,12 @@ export function AdminUsers() {
 
   async function handleStatus(target: AdminUser) {
     setBusy(target.id);
+    setError("");
     try {
       await setUserStatus(target.id, !target.isEnabled);
       await load();
+    } catch {
+      setError("Não foi possível alterar a situação. Tente novamente.");
     } finally {
       setBusy(null);
     }
@@ -102,6 +108,7 @@ export function AdminUsers() {
   async function handleCreate() {
     if (!fullname.trim() || !email.trim()) return;
     setBusy("new");
+    setError("");
     try {
       await addUser({
         fullname: fullname.trim(),
@@ -111,6 +118,8 @@ export function AdminUsers() {
       setFullname("");
       setEmail("");
       await load();
+    } catch {
+      setError("Não foi possível enviar o convite. Tente novamente.");
     } finally {
       setBusy(null);
     }
