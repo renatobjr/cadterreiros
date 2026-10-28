@@ -24,7 +24,10 @@ export function Layout() {
      `send_page_view: false`). Rotas privadas são filtradas em `trackPageView`. */
   useEffect(() => {
     if (!analyticsEnabled) return;
-    trackPageView(location.pathname);
+    /* Espera o gtag.js processar o consentimento antes de enfileirar o
+       page_view; sem isso o evento pode ser descartado na primeira visita. */
+    const timer = window.setTimeout(() => trackPageView(location.pathname), 0);
+    return () => window.clearTimeout(timer);
   }, [analyticsEnabled, location.pathname]);
 
   return (
