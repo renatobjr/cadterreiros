@@ -268,33 +268,26 @@ export function Home() {
         </div>
       </section>
 
-      <section className="section section--tight" aria-labelledby="numeros-title">
-        <div className="shell home-numbers">
-          <div>
-            <p className="eyebrow">Mapeamento em números</p>
-            <h2 className="display-2" id="numeros-title">
-              Quantos somos? Onde estamos?
-            </h2>
-            <p className="lede">
-              {summary
-                ? `As ${formatNumber(total)} comunidades se distribuem por ${formatNumber(
-                    neighborhoods,
-                  )} bairros e ${formatNumber(cities)} cidades da Região Metropolitana de João Pessoa. A nação é lida como dado do censo, não como decoração.`
-                : "As comunidades do censo se distribuem pelos bairros e cidades da Região Metropolitana de João Pessoa. A nação é lida como dado do censo, não como decoração."}
+      <section className="section section--deep" aria-labelledby="numeros-title">
+        <div className="shell">
+          <p className="eyebrow">Mapeamento em números</p>
+          <h2 className="display-2" id="numeros-title">
+            Quantos somos? Onde estamos?
+          </h2>
+          <p className="lede">
+            {summary
+              ? `As ${formatNumber(total)} comunidades se distribuem por ${formatNumber(
+                  neighborhoods,
+                )} bairros e ${formatNumber(cities)} cidades da Região Metropolitana de João Pessoa. A nação é lida como dado do censo, não como decoração.`
+              : "As comunidades do censo se distribuem pelos bairros e cidades da Região Metropolitana de João Pessoa. A nação é lida como dado do censo, não como decoração."}
+          </p>
+          {photoCoverage ? (
+            <p className="meta mt-6">
+              {formatNumber(withPhoto)} registros com fotografia no acervo
             </p>
-            {photoCoverage ? (
-              <p className="meta mt-6">
-                {formatNumber(withPhoto)} registros com fotografia no acervo
-              </p>
-            ) : null}
-            <p className="mt-6">
-              <Link className="pill-link" to="/mapeamento">
-                Explorar o mapeamento <ArrowIcon />
-              </Link>
-            </p>
-          </div>
+          ) : null}
 
-          <div>
+          <div className="home-numbers mt-7">
             {loading ? (
               <p className="muted" role="status" aria-live="polite">
                 Carregando os números por nação…
@@ -332,7 +325,6 @@ export function Home() {
                             nationMax > 0
                               ? `${Math.max(2, (item.count / nationMax) * 100)}%`
                               : "0%",
-                          background: "var(--accent-deep)",
                         }}
                       />
                     </div>
@@ -340,6 +332,12 @@ export function Home() {
                 ))}
               </div>
             )}
+          </div>
+
+          <div className="hero__actions mt-7">
+            <Link className="btn btn--light" to="/mapeamento">
+              Explorar o mapeamento <ArrowIcon />
+            </Link>
           </div>
         </div>
       </section>

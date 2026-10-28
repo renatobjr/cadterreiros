@@ -86,11 +86,13 @@ interface RegisterResult {
   language: string;
   photoPreview: string | null;
   photoName: string;
+  photoWarning?: string;
 }
 
 interface PhotoSelection {
   preview: string;
   name: string;
+  file: File;
 }
 
 const COMMUNITY_TYPE_OPTIONS: SelectOption[] = [
@@ -694,6 +696,12 @@ function SuccessView({ result, onReset }: SuccessViewProps) {
       </div>
 
       <div className="shell page-body">
+        {result.photoWarning ? (
+          <p className="auth-alert" role="alert">
+            {result.photoWarning}
+          </p>
+        ) : null}
+
         <div className="cadastro-success card">
           <div className="cadastro-success__head">
             <div>
@@ -883,7 +891,7 @@ export function CommunityRegister() {
         ? URL.createObjectURL(file)
         : "";
     if (preview) objectUrlRef.current = preview;
-    setPhoto({ preview, name: file.name });
+    setPhoto({ preview, name: file.name, file });
   }
 
   function removePhoto() {
@@ -934,8 +942,31 @@ export function CommunityRegister() {
       // Só a cidade: o cadastro voluntário não envia dado pessoal ao GA.
       trackRegistrationLead(city);
 
+      /* A foto tem endpoint próprio e só pode subir depois que o cadastro
+         existe (rota pública exige registro pendente/voluntário). */
+      const createdId = extractProtocol(response);
+      let photoWarning = "";
+      if (createdId && photo?.file) {
+        try {
+          const body = new FormData();
+          body.append("file", photo.file);
+          const upload = await client.post(
+            `religious-communities/public/upload-main-picture/${createdId}`,
+            body,
+          );
+          const envelope = asRecord(asRecord(upload)?.data);
+          if (envelope?.status === false) {
+            photoWarning =
+              "O cadastro foi recebido, mas o envio da foto falhou. A curadoria pode adicioná-la depois.";
+          }
+        } catch {
+          photoWarning =
+            "O cadastro foi recebido, mas o envio da foto falhou. A curadoria pode adicioná-la depois.";
+        }
+      }
+
       setResult({
-        protocol: extractProtocol(response),
+        protocol: createdId,
         name: form.religiousSpaceName.trim(),
         communityType: form.communityType,
         nation: form.religiousSpaceNation,
@@ -945,6 +976,7 @@ export function CommunityRegister() {
         language: form.religiousSpacePraticalLanguages,
         photoPreview: photo?.preview ?? null,
         photoName: photo?.name ?? "",
+        photoWarning,
       });
     } catch (error) {
       setSubmitError(describeSubmitError(error));
@@ -1372,8 +1404,9 @@ export function CommunityRegister() {
                 aria-describedby={hintId("photo")}
               />
               <p className="field__hint" id={hintId("photo")}>
-                Uma imagem horizontal ajuda a apresentar a comunidade. A foto
-                é apenas uma prévia local nesta etapa.
+                Uma imagem horizontal ajuda a apresentar a comunidade. A foto é
+                enviada junto com o cadastro e passa pela aprovação da
+                curadoria.
               </p>
               {photo?.preview && (
                 <div className="cadastro-photo-preview">

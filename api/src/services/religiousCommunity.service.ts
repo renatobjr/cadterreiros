@@ -1490,7 +1490,7 @@ export const religiousCommunityService = {
           : "Analisamos o cadastro da comunidade abaixo e precisamos de alguns ajustes antes de publicá-lo no acervo.",
         nextStep: isRejected
           ? "Se os ajustes forem possíveis, envie o cadastro novamente pelo site ou responda esta mensagem para falar com a curadoria."
-          : "Ajuste os dados indicados e envie novamente pelo site. Assim que chegarem, a curadoria retoma a análise.",
+          : "Ajuste os dados indicados e responda este e-mail. Assim que chegarem, a curadoria retoma a análise.",
       },
     });
 

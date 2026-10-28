@@ -168,6 +168,31 @@ describe("Fluxo de cadastro voluntário", () => {
     expect(postMock).not.toHaveBeenCalled();
   });
 
+  it("sobe a foto depois de criar o cadastro", async () => {
+    postMock
+      .mockResolvedValueOnce({ id: "PROT-2026-001" })
+      .mockResolvedValueOnce({ data: { status: true } });
+    renderPage();
+    fillRequiredFields();
+
+    const file = new File(["foto"], "fachada.png", { type: "image/png" });
+    fireEvent.change(screen.getByLabelText(/Fotografia do terreiro/), {
+      target: { files: [file] },
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: /enviar para curadoria/i }),
+    );
+
+    await waitFor(() => expect(postMock).toHaveBeenCalledTimes(2));
+
+    expect(postMock.mock.calls[1][0]).toBe(
+      "religious-communities/public/upload-main-picture/PROT-2026-001",
+    );
+    const body = postMock.mock.calls[1][1] as FormData;
+    expect(body.get("file")).toBe(file);
+    expect(await screen.findByText("Cadastro recebido")).toBeInTheDocument();
+  });
+
   it("envia o payload completo e exibe o protocolo com o resumo", async () => {
     renderPage();
     fillRequiredFields();

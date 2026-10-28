@@ -3,6 +3,7 @@ import { beforeEach, describe, it, expect, vi } from "vitest";
 import client from "../../src/api/client";
 import Mapping from "../../src/pages/Mapping";
 import { sampleCommunities } from "../fixtures/communities";
+import { MemoryRouter } from "react-router-dom";
 
 vi.mock("../../src/api/client", () => ({
   default: {
@@ -44,7 +45,11 @@ describe("Fluxo de mapeamento", () => {
   it("mostra o estado de carregamento enquanto a API responde", () => {
     getMock.mockImplementation(() => new Promise(() => {}));
 
-    render(<Mapping />);
+    render(
+      <MemoryRouter>
+        <Mapping />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByRole("status")).toHaveTextContent(
       "Carregando dados do mapeamento…",
@@ -54,7 +59,11 @@ describe("Fluxo de mapeamento", () => {
   it("renderiza page-head, filtros, resumo, mapa, legenda e gráficos", async () => {
     mockList();
 
-    render(<Mapping />);
+    render(
+      <MemoryRouter>
+        <Mapping />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByText("Território e censo")).toBeInTheDocument();
     expect(
@@ -103,7 +112,11 @@ describe("Fluxo de mapeamento", () => {
   it("carrega a lista completa uma única vez, sem endpoints agregados", async () => {
     mockList();
 
-    render(<Mapping />);
+    render(
+      <MemoryRouter>
+        <Mapping />
+      </MemoryRouter>,
+    );
 
     await waitFor(() =>
       expect(screen.getAllByTestId("chart-card")).toHaveLength(10),
@@ -118,7 +131,11 @@ describe("Fluxo de mapeamento", () => {
   it("filtra localmente mapa, resumo e gráficos e limpa os filtros", async () => {
     mockList();
 
-    render(<Mapping />);
+    render(
+      <MemoryRouter>
+        <Mapping />
+      </MemoryRouter>,
+    );
 
     await waitFor(() =>
       expect(screen.getByText("4 terreiros")).toBeInTheDocument(),
@@ -139,21 +156,25 @@ describe("Fluxo de mapeamento", () => {
     expect(within(cityChart).getByText("Bayeux")).toBeInTheDocument();
     expect(within(cityChart).queryByText("João Pessoa")).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Limpar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Limpar filtros" }));
 
     expect(screen.getByText("4 terreiros")).toBeInTheDocument();
     expect(
       screen.getByText("2 cidades · 3 bairros · acervo completo"),
     ).toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: "Limpar" }),
+      screen.queryByRole("button", { name: "Limpar filtros" }),
     ).not.toBeInTheDocument();
   });
 
   it("mostra mapa vazio quando o filtro não encontra terreiros", async () => {
     mockList();
 
-    render(<Mapping />);
+    render(
+      <MemoryRouter>
+        <Mapping />
+      </MemoryRouter>,
+    );
 
     await waitFor(() =>
       expect(screen.getByText("4 terreiros")).toBeInTheDocument(),
@@ -175,7 +196,11 @@ describe("Fluxo de mapeamento", () => {
   it("desenha a maior barra de cada gráfico ocupando 100%", async () => {
     mockList();
 
-    render(<Mapping />);
+    render(
+      <MemoryRouter>
+        <Mapping />
+      </MemoryRouter>,
+    );
 
     await screen.findByText("4 terreiros");
     const nationChart = screen
@@ -192,7 +217,11 @@ describe("Fluxo de mapeamento", () => {
       throw new Error("falha de rede");
     });
 
-    render(<Mapping />);
+    render(
+      <MemoryRouter>
+        <Mapping />
+      </MemoryRouter>,
+    );
 
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "Não foi possível carregar os dados do mapeamento.",
@@ -211,7 +240,11 @@ describe("Fluxo de mapeamento", () => {
   it("exibe estado vazio quando não há comunidades aprovadas", async () => {
     mockList([]);
 
-    render(<Mapping />);
+    render(
+      <MemoryRouter>
+        <Mapping />
+      </MemoryRouter>,
+    );
 
     expect(
       await screen.findByText("Nenhum terreiro aprovado"),

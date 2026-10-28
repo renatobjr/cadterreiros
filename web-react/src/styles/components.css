@@ -986,3 +986,32 @@
     flex: 1 1 auto;
   }
 }
+
+/* ---------- barras sobre superfície escura ---------- */
+.section--deep .bar__label {
+  color: var(--on-deep);
+}
+.section--deep .bar__value {
+  color: var(--on-deep-muted);
+}
+.section--deep .bar__track {
+  background: var(--border-on-deep);
+  border-color: var(--border-on-deep);
+}
+.section--deep .bar__fill {
+  background: var(--gold);
+}
+.section--deep .chart-note,
+.section--deep .muted {
+  color: var(--on-deep-muted);
+}
+.section--deep .meta {
+  color: var(--on-deep-muted);
+}
+
+/* Rodapé do frame de busca: ação alinhada à direita, abaixo dos campos. */
+.toolbar__foot--full {
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  margin-top: 0;
+}

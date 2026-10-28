@@ -372,16 +372,17 @@ export function AdminRecords() {
             placeholder="Atualizado (recente)"
           />
         </div>
-        <div className="filterbar__actions">
-          <button
-            className="btn btn--quiet"
-            type="button"
-            onClick={resetFilters}
-            disabled={!hasFilters && sort === "updated"}
-          >
-            Limpar filtros
-          </button>
-        </div>
+        {hasFilters || sort !== "updated" ? (
+          <div className="admin-filterbar__foot">
+            <button
+              className="btn btn--quiet"
+              type="button"
+              onClick={resetFilters}
+            >
+              Limpar filtros
+            </button>
+          </div>
+        ) : null}
       </div>
 
       <div className="admin-results-head">

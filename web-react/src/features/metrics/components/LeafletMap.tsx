@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster";
@@ -38,6 +39,7 @@ export function LeafletMap({
   showMarker = true,
 }: LeafletMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.MarkerClusterGroup | null>(null);
 
@@ -117,19 +119,29 @@ export function LeafletMap({
         title: c.religiousSpaceName,
         bubblingMouseEvents: false,
       });
-      /* DOM em vez de string: nome/endereço vêm do formulário público e o
-         Leaflet interpreta HTML no popup (XSS armazenado). */
-      const popup = document.createElement("div");
-      const popupName = document.createElement("strong");
-      popupName.textContent = c.religiousSpaceName;
-      popup.append(popupName);
-      popup.append(document.createElement("br"));
-      popup.append(
-        document.createTextNode(
-          c.communityAddress?.city ?? c.fullAddress ?? "",
-        ),
-      );
-      marker.bindPopup(popup);
+      if (c.slugify) {
+        /* Cadastro público: clique no marcador abre a ficha. O tooltip
+           substitui o popup para não competir com a navegação. */
+        marker.bindTooltip(c.religiousSpaceName, {
+          direction: "top",
+          offset: [0, -MARKER_SIZE / 2],
+        });
+        marker.on("click", () => navigate(`/terreiro/${c.slugify}`));
+      } else {
+        /* DOM em vez de string: nome/endereço vêm do formulário público e o
+           Leaflet interpreta HTML no popup (XSS armazenado). */
+        const popup = document.createElement("div");
+        const popupName = document.createElement("strong");
+        popupName.textContent = c.religiousSpaceName;
+        popup.append(popupName);
+        popup.append(document.createElement("br"));
+        popup.append(
+          document.createTextNode(
+            c.communityAddress?.city ?? c.fullAddress ?? "",
+          ),
+        );
+        marker.bindPopup(popup);
+      }
       markerLayer.addLayer(marker);
     });
 
@@ -137,7 +149,7 @@ export function LeafletMap({
     if (bounds.isValid()) {
       map.fitBounds(bounds, { padding: [40, 40], maxZoom });
     }
-  }, [communities, maxZoom, showMarker]);
+  }, [communities, maxZoom, showMarker, navigate]);
 
   return (
     <div

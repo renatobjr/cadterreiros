@@ -18,6 +18,9 @@ export interface SearchFiltersProps {
   nations?: string[];
   cities?: string[];
   types?: string[];
+  /** Quando informado, mostra o botão de limpar dentro do frame da busca. */
+  onClear?: () => void;
+  clearLabel?: string;
 }
 
 export function SearchFilters({
@@ -29,10 +32,15 @@ export function SearchFilters({
   nations = [],
   cities = [],
   types = [],
+  onClear,
+  clearLabel = "Limpar filtros",
 }: SearchFiltersProps) {
   const controlled = value ?? filters;
   const [internal, setInternal] = React.useState<SearchFiltersValue>({});
   const current = controlled ?? internal;
+  const hasValue = Boolean(
+    current.query?.trim() || current.nation || current.city || current.type,
+  );
 
   const emit = (next: SearchFiltersValue) => {
     if (!controlled) setInternal(next);
@@ -79,6 +87,14 @@ export function SearchFilters({
           placeholder="Todos"
         />
       </div>
+
+      {onClear && hasValue ? (
+        <div className="toolbar__foot toolbar__foot--full">
+          <button type="button" className="btn btn--quiet" onClick={onClear}>
+            {clearLabel}
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

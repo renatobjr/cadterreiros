@@ -142,9 +142,6 @@ export function Search() {
   const pageItems = sorted.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
   const rangeStart = sorted.length ? (safePage - 1) * PAGE_SIZE + 1 : 0;
   const rangeEnd = Math.min(safePage * PAGE_SIZE, sorted.length);
-  const hasFilters =
-    Boolean(filters.query?.trim()) || Boolean(filters.nation) || Boolean(filters.city) || Boolean(filters.type);
-
   /* Evento de busca: espera o visitante parar de digitar. Com termo vira
      `search` (termo + nº de resultados); só com facetas, `filter_apply`. */
   useEffect(() => {
@@ -184,7 +181,20 @@ export function Search() {
         </div>
       </section>
       <div className="shell page-body">
-        <SearchFilters value={filters} nations={nations} cities={cities} types={types} onChange={(next) => { setFilters(next); setPage(1); }} />
+        <SearchFilters
+          value={filters}
+          nations={nations}
+          cities={cities}
+          types={types}
+          onChange={(next) => {
+            setFilters(next);
+            setPage(1);
+          }}
+          onClear={() => {
+            setFilters({});
+            setPage(1);
+          }}
+        />
 
         <h2 className="skip-vis">Resultados da busca</h2>
         <div className="results-head">
@@ -223,18 +233,6 @@ export function Search() {
             <Link className="btn btn--quiet" to="/mapeamento">
               Ver no mapa
             </Link>
-            {hasFilters ? (
-              <button
-                type="button"
-                className="btn btn--quiet"
-                onClick={() => {
-                  setFilters({});
-                  setPage(1);
-                }}
-              >
-                Limpar filtros
-              </button>
-            ) : null}
           </div>
         </div>
 

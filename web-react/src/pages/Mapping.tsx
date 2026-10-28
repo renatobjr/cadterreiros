@@ -189,21 +189,11 @@ export function Mapping() {
                     hasQuery: Boolean(next.query?.trim()),
                   });
                 }}
+                onClear={() => {
+                  setFilters({});
+                  trackFilterApply({ cleared: true });
+                }}
               />
-              {hasFilters ? (
-                <div className="filterbar__actions">
-                  <button
-                    type="button"
-                    className="btn btn--quiet"
-                    onClick={() => {
-                      setFilters({});
-                      trackFilterApply({ cleared: true });
-                    }}
-                  >
-                    Limpar
-                  </button>
-                </div>
-              ) : null}
             </div>
 
             <div className="mapping-summary">
