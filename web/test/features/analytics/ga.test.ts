@@ -9,7 +9,9 @@ function gaScript(): HTMLScriptElement | null {
 }
 
 function commands(): unknown[][] {
-  return (window.dataLayer ?? []) as unknown[][];
+  return (window.dataLayer ?? []).map((entry) =>
+    Array.from(entry as ArrayLike<unknown>),
+  );
 }
 
 function events(name: string): unknown[][] {
