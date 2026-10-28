@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ArrowIcon from "../../components/ui/ArrowIcon";
 import DecisionDialog, {
   type DecisionAction,
   type DecisionTarget,
 } from "../../features/admin/components/DecisionDialog";
+import ActionMenu, {
+  type ActionMenuItem,
+} from "../../features/admin/components/ActionMenu";
+import AdminActionIcon from "../../features/admin/components/AdminActionIcon";
 import LeafletMap from "../../features/metrics/components/LeafletMap";
 import { decide, getCommunity } from "../../api/admin";
 import { useAuth } from "../../features/auth/context";
@@ -50,6 +54,7 @@ export function AdminCommunity() {
   const { id = "" } = useParams<{ id: string }>();
   const { user } = useAuth();
   const { reload } = useAdminData();
+  const navigate = useNavigate();
   const isAdmin = user?.role === "admin";
 
   const [community, setCommunity] = useState<ReligiousCommunity | null>(null);
@@ -213,6 +218,37 @@ export function AdminCommunity() {
 
   const founded = validYear(community.religiousSpaceYearFoundation);
 
+  const menuItems: ActionMenuItem[] = [
+    ...(canDecide
+      ? [
+          {
+            id: "corrections",
+            label: "Solicitar correções",
+            icon: "corrections" as const,
+            onSelect: () =>
+              setDecision({
+                record: {
+                  id: community.id,
+                  name: community.religiousSpaceName,
+                },
+                action: "corrections" as DecisionAction,
+              }),
+          },
+        ]
+      : []),
+    ...(canEdit
+      ? [
+          {
+            id: "edit",
+            label: "Editar cadastro",
+            icon: "edit" as const,
+            onSelect: () =>
+              navigate(`/admin/cadastros/${community.id}/editar`),
+          },
+        ]
+      : []),
+  ];
+
   // O DTO administrativo entrega as coordenadas em `communityGoogleApiLocalization`;
   // o mapa lê `lat`/`long` — normalizamos para o marcador aparecer.
   const mapCommunity = {
@@ -250,71 +286,98 @@ export function AdminCommunity() {
               {origin}
             </span>
           </div>
-        </div>
 
-        {/* Ação principal separada das secundárias (NN/g: destaque claro). */}
-        <div className="admin-page-head__actions admin-detail-actions">
-          <div className="admin-detail-actions__group">
-            {canDecide && community.censusStep !== "approved" ? (
-              <button
-                className="btn btn--primary"
-                type="button"
-                disabled={acting}
-                onClick={() => void approve()}
+          {/* Por estado do censo:
+              - pendente: decisão à vista (aprovar/rejeitar) + menu com as demais;
+              - aprovado: os dois botões de manutenção, sem menu;
+              - rejeitado: aprovar + menu. */}
+          <div className="admin-page-head__actions admin-detail-actions">
+            {!canDecide && canEdit ? (
+              <Link
+                className="btn btn--ghost"
+                to={`/admin/cadastros/${community.id}/editar`}
               >
-                {acting ? "Aprovando…" : "Aprovar"}
-              </button>
+                <AdminActionIcon kind="edit" />
+                Editar cadastro
+              </Link>
             ) : null}
 
             {canDecide && community.censusStep === "pending" ? (
-              <button
-                className="btn btn--danger"
-                type="button"
-                onClick={() =>
-                  setDecision({
-                    record: {
-                      id: community.id,
-                      name: community.religiousSpaceName,
-                    },
-                    action: "reject",
-                  })
-                }
-              >
-                Rejeitar
-              </button>
-            ) : null}
-          </div>
+              <>
+                <button
+                  className="btn btn--primary"
+                  type="button"
+                  disabled={acting}
+                  onClick={() => void approve()}
+                >
+                  <AdminActionIcon kind="approve" />
+                  {acting ? "Aprovando…" : "Aprovar"}
+                </button>
 
-          <div className="admin-detail-actions__group admin-detail-actions__group--secondary">
-            {canDecide ? (
-              <button
-                className="btn btn--ghost"
-                type="button"
-                onClick={() =>
-                  setDecision({
-                    record: {
-                      id: community.id,
-                      name: community.religiousSpaceName,
-                    },
-                    action: "corrections",
-                  })
-                }
-              >
-                Solicitar correções
-              </button>
+                <button
+                  className="btn btn--danger"
+                  type="button"
+                  onClick={() =>
+                    setDecision({
+                      record: {
+                        id: community.id,
+                        name: community.religiousSpaceName,
+                      },
+                      action: "reject",
+                    })
+                  }
+                >
+                  <AdminActionIcon kind="reject" />
+                  Rejeitar
+                </button>
+
+                <ActionMenu label="Mais ações" items={menuItems} />
+              </>
             ) : null}
 
-            {canEdit ? (
-              <Link
-                className={`btn ${
-                  community.censusStep === "approved"
-                    ? "btn--primary"
-                    : "btn--ghost"
-                }`}
-                to={`/admin/cadastros/${community.id}/editar`}
-              >
-                Editar cadastro <ArrowIcon />
-              </Link>
+            {canDecide && community.censusStep === "approved" ? (
+              <>
+                <button
+                  className="btn btn--ghost"
+                  type="button"
+                  onClick={() =>
+                    setDecision({
+                      record: {
+                        id: community.id,
+                        name: community.religiousSpaceName,
+                      },
+                      action: "corrections",
+                    })
+                  }
+                >
+                  <AdminActionIcon kind="corrections" />
+                  Solicitar correções
+                </button>
+
+                <Link
+                  className="btn btn--primary"
+                  to={`/admin/cadastros/${community.id}/editar`}
+                >
+                  <AdminActionIcon kind="edit" />
+                  Editar cadastro
+                </Link>
+              </>
+            ) : null}
+
+            {canDecide && community.censusStep === "rejected" ? (
+              <>
+                <button
+                  className="btn btn--primary"
+                  type="button"
+                  disabled={acting}
+                  onClick={() => void approve()}
+                >
+                  <AdminActionIcon kind="approve" />
+                  {acting ? "Aprovando…" : "Aprovar"}
+                </button>
+
+                <ActionMenu label="Mais ações" items={menuItems} />
+              </>
             ) : null}
           </div>
         </div>
