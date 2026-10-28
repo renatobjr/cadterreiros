@@ -1,0 +1,374 @@
+@charset "utf-8";
+
+/* ============================================================
+   Página de referência do design system.
+   Só a apresentação. Nenhum token é redefinido aqui: se algo aqui
+   precisar de uma cor nova, ela vai para scripts/tokens.mjs.
+   ============================================================ */
+
+.ds-hero .lede {
+  max-width: 62ch;
+}
+.ds-hero code,
+.dsprinc code,
+.dsdont code,
+.dstep__meta code,
+.dsspace code,
+.dsw__name,
+.dsw__val {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+}
+
+/* ---------- princípios ---------- */
+.dsprinc {
+  display: grid;
+  gap: var(--s4);
+  margin: var(--s5) 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: ds;
+  max-width: 78ch;
+}
+.dsprinc li {
+  counter-increment: ds;
+  position: relative;
+  padding-left: var(--s7);
+  color: var(--fg-soft);
+  line-height: var(--type-body-leading);
+}
+.dsprinc li::before {
+  content: counter(ds);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--pill);
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow-size);
+  color: var(--accent);
+}
+.dsprinc strong {
+  color: var(--fg);
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* ---------- tabela de contraste ---------- */
+.dstable {
+  width: 100%;
+  margin-top: var(--s5);
+  border-collapse: collapse;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.dstable thead th {
+  text-align: left;
+  padding: var(--s3) var(--s4);
+  background: var(--surface-sunk);
+  border-bottom: 1px solid var(--border-strong);
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow-size);
+  letter-spacing: var(--type-eyebrow-tracking);
+  text-transform: uppercase;
+  color: var(--fg-soft);
+}
+.dstable tbody tr + tr {
+  border-top: 1px solid var(--border-soft);
+}
+.dsp {
+  vertical-align: middle;
+}
+.dsp th,
+.dsp td {
+  padding: var(--s3) var(--s4);
+  text-align: left;
+}
+.dsp__min {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.dsp__sample {
+  display: inline-block;
+  padding: 7px 14px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r);
+  font-size: 14px;
+}
+.dsp__ratio {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.dsp__tag {
+  display: inline-block;
+  margin-left: var(--s2);
+  padding: 1px 7px;
+  border-radius: var(--pill);
+  font-size: 11px;
+  border: 1px solid;
+}
+.dsp__tag--ok {
+  color: var(--ok);
+  border-color: var(--ok);
+}
+.dsp__tag--quase {
+  color: var(--warn);
+  border-color: var(--warn);
+}
+.dsp__tag--ruim {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.dsp--ruim .dsp__sample {
+  outline: 2px solid var(--danger);
+}
+
+/* ---------- amostras de cor ---------- */
+.dsgroup + .dsgroup {
+  margin-top: var(--s6);
+}
+.dsgroup .lede {
+  max-width: 60ch;
+}
+.dsgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: var(--s3);
+  margin-top: var(--s4);
+}
+.dsw {
+  display: flex;
+  gap: var(--s3);
+  padding: var(--s3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+.dsw__chip {
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+.dsw__meta {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+  align-content: start;
+}
+.dsw__name {
+  color: var(--fg);
+  font-weight: 600;
+  word-break: break-all;
+}
+.dsw__desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.dsw__val {
+  color: var(--fg-soft);
+  word-break: break-all;
+}
+
+/* ---------- amostras de tipo ---------- */
+.dssteps {
+  display: grid;
+  gap: var(--s5);
+  margin-top: var(--s5);
+}
+.dstep {
+  display: grid;
+  gap: var(--s2);
+  padding-bottom: var(--s4);
+  border-bottom: 1px solid var(--border-soft);
+}
+.dstep__sample {
+  color: var(--fg);
+}
+.dstep__meta {
+  display: flex;
+  gap: var(--s3);
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.dstep__meta code {
+  color: var(--accent);
+}
+.dstep__meta span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* cada amostra usa a classe real do produto, para mostrar o degrau real */
+.dssteps .ds--display-1,
+.dssteps .ds--display-2,
+.dssteps .ds--display-3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+.dssteps .ds--display-1 {
+  font-size: var(--type-display-1-size);
+  line-height: var(--type-display-1-leading);
+  letter-spacing: var(--type-display-1-tracking);
+}
+.dssteps .ds--display-2 {
+  font-size: var(--type-display-2-size);
+  line-height: var(--type-display-2-leading);
+  letter-spacing: var(--type-display-2-tracking);
+}
+.dssteps .ds--display-3 {
+  font-size: var(--type-display-3-size);
+  line-height: var(--type-display-3-leading);
+  letter-spacing: var(--type-display-3-tracking);
+}
+.dssteps .ds--lede {
+  font-size: var(--type-lede-size);
+  line-height: var(--type-lede-leading);
+  letter-spacing: var(--type-lede-tracking);
+  color: var(--muted);
+}
+.dssteps .ds--body {
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-leading);
+  letter-spacing: var(--type-body-tracking);
+}
+.dssteps .ds--meta {
+  font-family: var(--font-mono);
+  font-size: var(--type-meta-size);
+  line-height: var(--type-meta-leading);
+  letter-spacing: var(--type-meta-tracking);
+  color: var(--muted);
+}
+.dssteps .ds--eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow-size);
+  line-height: var(--type-eyebrow-leading);
+  letter-spacing: var(--type-eyebrow-tracking);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---------- espaço ---------- */
+.dsspace {
+  display: grid;
+  gap: var(--s2);
+  margin-top: var(--s4);
+  max-width: 460px;
+}
+.dsspace__row {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+.dsspace__bar {
+  height: 14px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+}
+
+/* ---------- estados ---------- */
+.dsstates {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--s4);
+  margin-top: var(--s5);
+}
+.dsstates__group {
+  padding: var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+.dsstates__group--deep {
+  background: var(--accent-deep);
+  border-color: var(--border-on-deep);
+}
+.dsstates__group--deep .eyebrow,
+.dsstates__group--deep .meta {
+  color: var(--on-deep-muted);
+}
+.dsstates__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  margin: var(--s3) 0;
+  align-items: center;
+}
+
+/* ---------- nações ---------- */
+.dsnations {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: var(--s3);
+  margin-top: var(--s4);
+}
+.dsnation {
+  display: grid;
+  gap: var(--s2);
+}
+.dsnation__chip {
+  height: 58px;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--s2);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+}
+.dsnation__chip span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #fff;
+}
+
+/* ---------- o que não se faz ---------- */
+.dsdont {
+  display: grid;
+  gap: var(--s2);
+  margin: var(--s5) 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: 78ch;
+}
+.dsdont li {
+  position: relative;
+  padding-left: var(--s5);
+  color: var(--fg-soft);
+  line-height: var(--type-body-leading);
+}
+.dsdont li::before {
+  content: "×";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  color: var(--danger);
+  font-weight: 700;
+}
+
+@media (max-width: 620px) {
+  .dstable thead {
+    display: none;
+  }
+  .dstable,
+  .dstable tbody,
+  .dsp,
+  .dsp th,
+  .dsp td {
+    display: block;
+    width: 100%;
+  }
+  .dsp th {
+    padding-bottom: 0;
+  }
+}

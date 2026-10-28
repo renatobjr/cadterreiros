@@ -1,0 +1,143 @@
+@charset "utf-8";
+
+/* ============================================================
+   Cadterreiros · tokens
+   ARQUIVO GERADO — não editar à mão.
+   Fonte: scripts/tokens.mjs · regerar: node scripts/build-tokens.mjs
+   ============================================================ */
+
+:root {
+  /* Superfícies */
+  --bg: oklch(97.5% 0.008 75); /* papel de arquivo | group:surface */
+  --surface-sunk: oklch(95.5% 0.009 72); /* cabeçalho de tabela, trilho de gráfico | group:surface */
+  --surface: oklch(100% 0 0); /* cartão | group:surface */
+
+  /* Texto */
+  --fg: oklch(24% 0.025 40); /* corpo de texto | group:text */
+  --fg-soft: oklch(34% 0.02 42); /* citação, rótulo de dado | group:text */
+  --muted: oklch(42% 0.018 45); /* metadado, legenda | group:text */
+  --on-deep: oklch(90% 0.014 70); /* texto sobre superfície escura | group:text */
+  --on-deep-lede: oklch(91% 0.018 70); /* lede sobre superfície escura | group:text */
+  --on-deep-muted: oklch(78% 0.016 60); /* link e metadado no rodapé | group:text */
+  --on-deep-soft: oklch(85% 0.018 65); /* faixa de metadados sobre escuro | group:text */
+  --on-gold: oklch(24% 0.06 70); /* texto sobre fundo dourado | group:text */
+
+  /* Fio */
+  --border: oklch(65% 0.012 70); /* estrutura: cartão, tabela, nav | group:border */
+  --border-soft: oklch(86% 0.01 72); /* divisória de linha, etiqueta | group:border */
+  --border-strong: oklch(62% 0.014 70); /* campo de formulário, cabeçalho | group:border */
+  --border-on-deep: oklch(45% 0.03 30); /* divisória sobre superfície escura | group:border */
+
+  /* Acento */
+  --accent: oklch(46% 0.155 35); /* persimmon — CTA e estado ativo | group:accent */
+  --accent-hover: oklch(38% 0.13 33); /* hover do CTA, mais escuro | group:accent */
+  --accent-deep: oklch(28% 0.075 30); /* superfície escura, segundo segmento | group:accent */
+  --accent-soft: oklch(94% 0.035 42); /* fundo de etiqueta e hover fantasma | group:accent */
+  --gold: oklch(78% 0.13 82); /* número em destaque sobre escuro | group:accent */
+
+  /* Estado */
+  --ok: oklch(46% 0.115 150); /* aprovado | group:status */
+  --warn: oklch(46% 0.135 55); /* pendente | group:status */
+  --danger: oklch(46% 0.185 25); /* rejeitado, erro | group:status */
+  --danger-hover: oklch(26% 0.06 25); /* hover do botão destrutivo | group:status */
+  --danger-soft: oklch(96% 0.03 25); /* fundo de mensagem de erro | group:status */
+
+  /* Apoio */
+  --placeholder: oklch(52% 0.014 50); /* texto de exemplo do campo | group:support */
+  --btn-ghost-border: oklch(55% 0.02 45); /* borda do botão fantasma | group:support */
+  --btn-on-deep-border: oklch(70% 0.03 40); /* borda do botão sobre escuro | group:support */
+  --photo-placeholder: oklch(92% 0.01 70); /* moldura de imagem ausente | group:support */
+  --map-land: oklch(94% 0.012 95); /* terra firme no mapa | group:support */
+  --map-grid: oklch(84% 0.01 80); /* grade de referência | group:support */
+  --map-dot: oklch(58% 0.012 50); /* ponto sem tradição classificada | group:support */
+  --map-sea: oklch(88% 0.045 225); /* faixa litorânea | group:support */
+  --map-coast: oklch(62% 0.07 225); /* linha de costa | group:support */
+  --map-river: oklch(64% 0.075 220); /* rio Paraíba | group:support */
+
+  /* Nações */
+  --n-umbanda: oklch(48% 0.075 145); /* Umbanda | group:nation */
+  --n-nago: oklch(50% 0.085 78); /* Nagô | group:nation */
+  --n-ketu: oklch(48% 0.095 38); /* Ketu | group:nation */
+  --n-outros: oklch(50% 0.05 60); /* Outros | group:nation */
+  --n-angola: oklch(45% 0.075 152); /* Angola | group:nation */
+  --n-jeje: oklch(47% 0.08 242); /* Jeje | group:nation */
+  --n-ekiti-efon: oklch(46% 0.08 310); /* Ekiti Efon | group:nation */
+  --n-quimbanda: oklch(45% 0.09 25); /* Quimbanda | group:nation */
+
+  /* Famílias */
+  --font-display: 'Newsreader', 'Iowan Old Style', Charter, Georgia, serif; /* família tipográfica | group:font */
+  --font-body: 'Nunito Sans', sans-serif; /* família tipográfica | group:font */
+  --font-mono: 'Space Grotesk', ui-monospace, monospace; /* família tipográfica | group:font */
+
+  /* Espaço */
+  --s1: 4px; /* grade de 8px | group:space */
+  --s2: 8px; /* grade de 8px | group:space */
+  --s3: 12px; /* grade de 8px | group:space */
+  --s4: 16px; /* grade de 8px | group:space */
+  --s5: 24px; /* grade de 8px | group:space */
+  --s6: 32px; /* grade de 8px | group:space */
+  --s7: 48px; /* grade de 8px | group:space */
+  --s8: 64px; /* grade de 8px | group:space */
+  --gutter: 24px; /* grade de 8px | group:space */
+  --section: clamp(52px, 6.5vw, 88px); /* grade de 8px | group:space */
+  --section-tight: clamp(36px, 4.5vw, 56px); /* grade de 8px | group:space */
+
+  /* Forma */
+  --r: 4px; /* raio e alvo de toque | group:shape */
+  --pill: 999px; /* raio e alvo de toque | group:shape */
+  --touch: 48px; /* raio e alvo de toque | group:shape */
+
+  /* Layout */
+  --shell: 1240px; /* medida de contêiner | group:layout */
+  --nav-h: 72px; /* medida de contêiner | group:layout */
+  --pad-page: clamp(20px, 4vw, 40px); /* medida de contêiner | group:layout */
+
+  /* Movimento */
+  --motion-fast: 150ms; /* duração e curva | group:motion */
+  --motion-base: 160ms; /* duração e curva | group:motion */
+  --motion-med: 180ms; /* duração e curva | group:motion */
+  --motion-slow: 340ms; /* duração e curva | group:motion */
+  --ease-out: cubic-bezier(0.2, 0.6, 0.2, 1); /* duração e curva | group:motion */
+  --z-nav: 90; /* camada | group:motion */
+  --z-modal: 200; /* camada | group:motion */
+  --z-toast: 210; /* camada | group:motion */
+}
+
+:root {
+  /* Escala tipográfica. O tracking acompanha o tamanho: quanto maior o
+     display, mais fechado. */
+  /* display-1 — título de página | group:type */
+  --type-display-1-size: clamp(2.35rem, 5vw, 4rem);
+  --type-display-1-leading: 1.02;
+  --type-display-1-tracking: -0.028em;
+
+  /* display-2 — título de seção | group:type */
+  --type-display-2-size: clamp(1.75rem, 3.2vw, 2.6rem);
+  --type-display-2-leading: 1.08;
+  --type-display-2-tracking: -0.022em;
+
+  /* display-3 — título menor | group:type */
+  --type-display-3-size: clamp(1.25rem, 2vw, 1.65rem);
+  --type-display-3-leading: 1.18;
+  --type-display-3-tracking: -0.014em;
+
+  /* lede — linha de apoio | group:type */
+  --type-lede-size: clamp(1.03rem, 1.45vw, 1.16rem);
+  --type-lede-leading: 1.58;
+  --type-lede-tracking: 0;
+
+  /* body — corpo | group:type */
+  --type-body-size: 17px;
+  --type-body-leading: 1.65;
+  --type-body-tracking: 0;
+
+  /* meta — metadado, mono | group:type */
+  --type-meta-size: 12px;
+  --type-meta-leading: 1.5;
+  --type-meta-tracking: 0.03em;
+
+  /* eyebrow — rótulo caixa alta, mono | group:type */
+  --type-eyebrow-size: 11.5px;
+  --type-eyebrow-leading: 1.4;
+  --type-eyebrow-tracking: 0.15em;
+}

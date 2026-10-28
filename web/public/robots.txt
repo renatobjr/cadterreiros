@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /entrar
+Disallow: /esqueci-minha-senha
+Disallow: /primeiro-acesso
+Disallow: /otp
+Disallow: /set-password
+Disallow: /design-system
+
+Sitemap: https://cadterreiros.cciao.org/sitemap.xml

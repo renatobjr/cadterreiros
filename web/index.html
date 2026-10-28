@@ -1,22 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" href="/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&family=Moderustic:wght@300..800&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap"
-    rel="stylesheet">
-  <title>Cadterreiros</title>
-</head>
-
-<body>
-  <div id="app"></div>
-  <script type="module" src="/src/main.js"></script>
-</body>
-
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadterreiros — acervo de terreiros de matriz africana</title>
+    <meta
+      name="description"
+      content="Acervo do cadastramento dos terreiros de matriz africana da Região Metropolitana de João Pessoa, realizado pela Casa de Cultura Ilê Asé D'Osoguian."
+    />
+    <meta name="theme-color" content="#4a1d12" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Cadterreiros" />
+    <meta
+      property="og:title"
+      content="Cadterreiros — acervo de terreiros de matriz africana"
+    />
+    <meta
+      property="og:description"
+      content="Conheça as comunidades de terreiro recenseadas na Região Metropolitana de João Pessoa."
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Casa de Cultura Ilê Asé D'Osoguian",
+        "alternateName": "Cadterreiros",
+        "url": "https://cadterreiros.cciao.org",
+        "logo": "https://cadterreiros.cciao.org/favicon.svg"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Cadterreiros",
+        "url": "https://cadterreiros.cciao.org"
+      }
+    </script>
+    <link rel="stylesheet" href="/fonts/fonts.css" />
+    <link rel="stylesheet" href="/fonts/fonts-brand.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

@@ -1,10 +1,39 @@
 import mongoose from "mongoose";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { ApiResponseType } from "../@types/responsesTypes";
 import { EMailTypes } from "../enum/EmailTYpes.enum";
 import { ERole, IUser, User } from "../schemas/User";
 import mailUtils from "../utils/mail.utils";
 import tokenUtils from "../utils/token.utils";
 import bcrypt from "bcryptjs";
+
+/**
+ * O código OTP nunca vai em claro no token: guardamos apenas um HMAC. Sem isso,
+ * o token exposto na URL poderia ser decodificado para revelar o código e
+ * concluir a troca de senha sem acesso ao e-mail.
+ */
+const otpHash = (code: string): string =>
+  createHmac("sha256", process.env.JWT_SECRET as string)
+    .update(code)
+    .digest("hex");
+
+/** Validade da sessão do painel (mesma usada no cookie httpOnly). */
+const SESSION_TTL = "8h";
+
+/** Escopo do token de curta duração emitido só depois do OTP verificado. */
+const PASSWORD_RESET_SCOPE = "password-reset";
+
+/** Mínimo de senha, igual ao validado no formulário. */
+const MIN_PASSWORD_LENGTH = 8;
+
+const otpMatches = (code: string, hash?: string): boolean => {
+  if (!hash) return false;
+  const expected = Buffer.from(otpHash(code), "hex");
+  const received = Buffer.from(hash, "hex");
+  return (
+    expected.length === received.length && timingSafeEqual(expected, received)
+  );
+};
 
 export const authService = {
   login: async (
@@ -29,14 +58,14 @@ export const authService = {
         };
       }
 
-      if (origin === "web" && user.role !== ERole.ADMIN) {
-        return {
-          error: "Você não tem permissão de acesso",
-          status: false,
-        };
-      }
+      /* O painel é da curadoria E dos recenseadores: o RBAC da API limita o
+         que cada papel pode fazer, então o login web não barra por papel. */
 
-      const generateToken = tokenUtils.generate({ id: user._id });
+      // Sessão com validade explícita (antes o JWT nunca expirava).
+      const generateToken = tokenUtils.generate(
+        { id: user._id, role: user.role },
+        { expiresIn: SESSION_TTL }
+      );
       await User.findByIdAndUpdate(user._id, { lastLogin: new Date() });
       return {
         data: {
@@ -53,30 +82,39 @@ export const authService = {
     }
   },
 
+  /**
+   * Gera o token de recuperação/primeiro acesso.
+   *
+   * Guarda contra enumeração de usuários: a resposta é sempre sucesso, com um
+   * token de mesmo formato e validade, exista ou não o e-mail. Para e-mails
+   * desconhecidos o token é descartável (nenhum usuário corresponde ao `id`)
+   * e nenhum e-mail é enviado — quem consome a API não consegue distinguir
+   * um cadastro existente de um inexistente.
+   */
   generateUserToken: async (
     email: string,
     isForget: boolean
   ): Promise<ApiResponseType<string>> => {
     try {
       const user = await User.findOne({ email, isEnabled: true });
-      if (!user) {
-        return {
-          error: "Email inválido",
-          status: false,
-        };
-      }
-
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       const token = tokenUtils.generate(
         {
-          id: user._id,
-          email: user.email,
-          code: code,
+          id: user?._id ?? new mongoose.Types.ObjectId(),
+          email,
+          codeHash: otpHash(code),
         },
         {
           expiresIn: "15m",
         }
       );
+
+      if (!user) {
+        return {
+          data: token,
+          status: true,
+        };
+      }
 
       const html = await mailUtils.template({
         type: isForget ? EMailTypes.CHANGE_PASSWORD : EMailTypes.FIRST_ACCESS,
@@ -86,11 +124,22 @@ export const authService = {
         },
       });
 
-      mailUtils.sendMail({
-        to: user.email,
-        subject: isForget ? "Recuperação de senha" : "Primeiro acesso",
-        html: html,
-      });
+      // Envio em segundo plano: falha de SMTP não pode derrubar a API nem
+      // vazar para o cliente (a resposta é idêntica à de e-mail inexistente).
+      void mailUtils
+        .sendMail({
+          to: user.email,
+          subject: isForget
+            ? "Redefinição de senha · código de verificação"
+            : "Primeiro acesso · código de verificação",
+          html: html,
+        })
+        .catch((error: any) => {
+          console.error(
+            "[✖] Falha ao enviar e-mail de acesso:",
+            error?.message ?? error
+          );
+        });
 
       User.updateOne({ _id: user._id }, { token: token });
 
@@ -120,7 +169,7 @@ export const authService = {
         };
       }
 
-      if (decodedToken.code !== otp) {
+      if (!otpMatches(otp, decodedToken.codeHash)) {
         return {
           error: "Código inválido",
           status: false,
@@ -134,10 +183,17 @@ export const authService = {
         };
       }
 
+      // O token de recuperação (que viaja na URL) não serve para trocar a
+      // senha: emitimos um token novo, de curta duração e escopo restrito.
+      const resetToken = tokenUtils.generate(
+        { id: user._id, scope: PASSWORD_RESET_SCOPE },
+        { expiresIn: "10m" }
+      );
+
       return {
         data: {
           ...user.toJSON(),
-          token: token,
+          token: resetToken,
         },
         status: true,
       };
@@ -184,16 +240,25 @@ export const authService = {
 
   setPassword: async (token: string, password: string, fullname: string) => {
     try {
-      const docodedToken = tokenUtils.verify(token);
+      const decodedToken: any = tokenUtils.verify(token);
 
-      if (!docodedToken) {
+      // Só o token emitido por `verifyOTP` troca a senha — o token de
+      // recuperação exposto na URL não é suficiente (evita troca sem OTP).
+      if (!decodedToken || decodedToken.scope !== PASSWORD_RESET_SCOPE) {
         return {
           error: "Aconteceu um erro ao atualizar a senha",
           status: false,
         };
       }
 
-      const user = await User.findById(docodedToken.id);
+      if (typeof password !== "string" || password.length < MIN_PASSWORD_LENGTH) {
+        return {
+          error: `A nova senha precisa ter pelo menos ${MIN_PASSWORD_LENGTH} caracteres`,
+          status: false,
+        };
+      }
+
+      const user = await User.findById(decodedToken.id);
       if (!user) {
         return {
           error: "Aconteceu um erro ao atualizar a senha",
@@ -219,8 +284,9 @@ export const authService = {
 
       await User.updateOne({ _id: user._id }, updateUserData);
 
+      // Nunca devolve o documento do usuário (contém o hash da senha).
       return {
-        data: user,
+        data: { id: String(user._id) },
         status: true,
       };
     } catch (error: any) {

@@ -42,13 +42,21 @@ export class ReligiousCommunitiesListDTO {
   city!: string;
 
   @Expose()
-  censusStep!: string;
+  religiousSpaceMainPicture?: string;
 
   @Expose()
-  @Transform((value) => value.obj.censusTaker._id)
-  censusTakerId!: string;
+  leaderGender?: string;
 
   @Expose()
-  @Transform((value) => value.obj.censusTaker.fullname)
-  censusTakerFullname!: string;
+  leaderEthnicity?: string;
+
+  @Expose()
+  leaderEducationalLevel?: string;
+
+  @Expose()
+  religiousSpaceStatus?: string;
+
+  @Expose()
+  bio?: string;
+
 }

@@ -19,3 +19,10 @@
 
 # Artifacts
 .artifacts/
+# env (web-react)
+/web-react/.env
+/api/src/db/mongo-sandbox
+index.pdf
+
+# Planning artifacts (local to each workspace)
+.code-spec-driven/

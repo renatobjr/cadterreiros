@@ -3,15 +3,23 @@ import { IReligiousCommunity } from "@/api/schemas/ReligiousCommunity";
 import { HttpStatusCode } from "@/api/enum/HttpStatusCode.enum";
 import { religiousCommunityService } from "@/api/services/religiousCommunity.service";
 import { ReligiousCommunitiesListDTO } from "@/api/dtos/religiousCommunitiesDTOS/religiousCommunitiesList.DTO";
+import { ReligiousCommunitiesAdminListDTO } from "../dtos/religiousCommunitiesDTOS/religiousCommunitiesAdminList.DTO";
 import { plainToInstance } from "class-transformer";
 import { ReligiousCommunitiesGetRamdomDTO } from "../dtos/religiousCommunitiesDTOS/religiousCommunitiesGetRamdom.DTO";
 import { ReligiousCommunitiesGetByIdDTO } from "../dtos/religiousCommunitiesDTOS/religiousCommunitiesGetById.DTO";
 import { ReligiousCommunitiesGetByUserIdDTO } from "../dtos/religiousCommunitiesDTOS/religiousCommunitiesGetByUserId.DTO";
 import { ReligiousCommunitiesGetByAllPropsDTO } from "../dtos/religiousCommunitiesDTOS/religiousCommunitiesGetAllProps.DTO";
+import { ECensusStep } from "@/api/schemas/ReligiousCommunity";
 
 export const religiousCommunityController = {
   list: async (req: Request, res: Response): Promise<void> => {
-    const queryParams: any = req.query;
+    /* A listagem pública sempre filtra por aprovado no servidor: o query
+       string do cliente nunca decide o que é publicado. */
+    const queryParams: any = {
+      ...req.query,
+      censusStep: ECensusStep.APPROVED,
+      limit: 500,
+    };
     const response = await religiousCommunityService.list(queryParams);
 
     res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
@@ -23,8 +31,22 @@ export const religiousCommunityController = {
     });
   },
 
-  getRandom: async (req: Request, res: Response): Promise<void> => {
-    const response = await religiousCommunityService.getRandom();
+  /** Lista da curadoria: inclui campos internos (origem, datas, recenseador). */
+  listAdmin: async (req: Request, res: Response): Promise<void> => {
+    const queryParams: any = req.query;
+    const response = await religiousCommunityService.list(queryParams);
+
+    res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
+      error: response?.error,
+      data: plainToInstance(ReligiousCommunitiesAdminListDTO, response.data, {
+        excludeExtraneousValues: true,
+      }),
+      status: response.status,
+    });
+  },
+
+  getOldest: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getOldest();
 
     res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
       error: response?.error,
@@ -35,10 +57,195 @@ export const religiousCommunityController = {
     });
   },
 
-  getDataFromMaping: async (req: Request, res: Response): Promise<void> => {
-    const response = await religiousCommunityService.getDataFromMaping();
+  getStatsSummary: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsSummary();
 
-    res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
+    res.apiResponse<{
+      totalReligiousCommunities: number;
+      totalCities: number;
+      totalNeighborhoods: number;
+    }>(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByNation: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByNation();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByCity: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByCity();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByDecade: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByDecade();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByTypeAndNation: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response =
+      await religiousCommunityService.getStatsByTypeAndNation();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByType: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByType();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByLeaderGender: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByLeaderGender();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByLeaderEthnicity: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response =
+      await religiousCommunityService.getStatsByLeaderEthnicity();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByLanguage: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByLanguage();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByNeighborhood: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByNeighborhood();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByPhotoCoverage: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByPhotoCoverage();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByCensusStep: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByCensusStep();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByStatus: async (req: Request, res: Response): Promise<void> => {
+    const response = await religiousCommunityService.getStatsByStatus();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsByEducationalLevel: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response =
+      await religiousCommunityService.getStatsByEducationalLevel();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsBioCoverage: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response = await religiousCommunityService.getStatsBioCoverage();
+
+    res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  getStatsVoluntaryRegistrations: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const response =
+      await religiousCommunityService.getStatsVoluntaryRegistrations();
+
+    res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
       data: response.data,
       status: response.status,
@@ -50,7 +257,9 @@ export const religiousCommunityController = {
     res: Response
   ): Promise<void> => {
     const { id } = req.params;
-    const response = await religiousCommunityService.getCommunityById(id);
+    const response = await religiousCommunityService.getCommunityById(id, {
+      approvedOnly: true,
+    });
 
     res.apiResponse<IReligiousCommunity>(HttpStatusCode.OK, {
       error: response?.error,
@@ -127,12 +336,54 @@ export const religiousCommunityController = {
     });
   },
 
+  createPublicReligiousCommunity: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const community = req.body as Partial<IReligiousCommunity>;
+    const response =
+      await religiousCommunityService.createPublicReligiousCommunity(community);
+
+    const created = response.data as
+      | (IReligiousCommunity & {
+          _id?: unknown;
+          toObject?: () => Record<string, unknown>;
+        })
+      | undefined;
+    const data = created
+      ? {
+          id: String(created._id ?? (created as { id?: string }).id),
+          ...(created.toObject ? created.toObject() : {}),
+        }
+      : undefined;
+
+    return res.apiResponse(
+      response.status
+        ? HttpStatusCode.CREATED
+        : HttpStatusCode.INTERNAL_SERVER_ERROR,
+      {
+        error: response?.error,
+        data,
+        status: response.status,
+      }
+    );
+  },
+
   updateReligiousCommunity: async (
     req: Request,
     res: Response
   ): Promise<void> => {
     const { id } = req.params;
     const community = req.body as IReligiousCommunity;
+
+    const canEdit = await religiousCommunityService.canUserEdit(
+      id,
+      req.user.id,
+      req.user.role
+    );
+    if (!canEdit) {
+      return res.apiResponse(HttpStatusCode.FORBIDDEN, "Forbidden");
+    }
 
     const response = await religiousCommunityService.updateReligiousCommunity(
       id,
@@ -147,12 +398,46 @@ export const religiousCommunityController = {
   },
 
   postUploadMainPicture: async (req: Request, res: Response): Promise<void> => {
-    if (!req.files) {
+    const files = req.files as Express.Multer.File[] | undefined;
+    if (!files?.length) {
       return res.apiResponse(HttpStatusCode.BAD_REQUEST, "No files uploaded");
     }
+
+    const canEdit = await religiousCommunityService.canUserEdit(
+      req.params.id,
+      req.user.id,
+      req.user.role
+    );
+    if (!canEdit) {
+      return res.apiResponse(HttpStatusCode.FORBIDDEN, "Forbidden");
+    }
+
     const response = await religiousCommunityService.postUpdateMainPicture(
       req.params.id,
       req.files
+    );
+    return res.apiResponse(HttpStatusCode.OK, {
+      error: response?.error,
+      data: response.data,
+      status: response.status,
+    });
+  },
+
+  /** Upload público de foto: mesma regra do privado, sem exigir sessão. */
+  postPublicUploadMainPicture: async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const files = req.files as Express.Multer.File[] | undefined;
+    if (!files?.length) {
+      return res.apiResponse(HttpStatusCode.BAD_REQUEST, "No files uploaded");
+    }
+
+    // Rota pública: sem sessão, apenas grava a foto do cadastro voluntário.
+    const response = await religiousCommunityService.postUpdateMainPicture(
+      req.params.id,
+      files,
+      { publicFlow: true }
     );
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
@@ -181,7 +466,8 @@ export const religiousCommunityController = {
     const response = await religiousCommunityService.setCensusStep(
       communityId,
       step,
-      rejectedReason
+      rejectedReason,
+      req.user
     );
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
@@ -195,7 +481,8 @@ export const religiousCommunityController = {
     const response = await religiousCommunityService.requestCorrections(
       communityId,
       userId,
-      rejectedReason
+      rejectedReason,
+      req.user
     );
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
@@ -206,7 +493,10 @@ export const religiousCommunityController = {
 
   approveCensus: async (req: Request, res: Response): Promise<void> => {
     const { communityId } = req.body;
-    const response = await religiousCommunityService.approveCensus(communityId);
+    const response = await religiousCommunityService.approveCensus(
+      communityId,
+      req.user
+    );
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
       data: response.data,
@@ -218,7 +508,8 @@ export const religiousCommunityController = {
     const { communityId, rejectedReason } = req.body;
     const response = await religiousCommunityService.rejectCensus(
       communityId,
-      rejectedReason
+      rejectedReason,
+      req.user
     );
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
