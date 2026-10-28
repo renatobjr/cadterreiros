@@ -26,7 +26,7 @@ const UserSchemna = new Schema(
   {
     fullname: { type: String, required: false },
     email: { type: String, required: true },
-    role: { type: Object, required: true, enum: ERole },
+    role: { type: String, required: true, enum: ERole },
     password: { type: String, required: false },
     token: { type: String, required: false },
     isEnabled: { type: Boolean, default: true },

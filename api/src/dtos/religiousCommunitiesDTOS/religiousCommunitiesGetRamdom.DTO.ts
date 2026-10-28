@@ -27,6 +27,9 @@ export class ReligiousCommunitiesGetRamdomDTO {
   religiousSpaceNation!: string;
 
   @Expose()
+  religiousSpaceMainPicture?: string;
+
+  @Expose()
   @Transform((value) => {
     const parts = [
       value.obj.communityAddress.street,

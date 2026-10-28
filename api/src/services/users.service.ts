@@ -14,15 +14,16 @@ export const usersService = {
       };
     } catch (error: any) {
       return {
-        data: error,
-        status: true,
+        error: error,
+        status: false,
       };
     }
   },
 
   listAll: async (): Promise<ApiResponseType<IUser[]>> => {
     try {
-      const users = await User.find({ isFirstLogin: false });
+      // Inclui convidados que ainda não concluíram o primeiro acesso.
+      const users = await User.find({});
 
       return {
         data: users,
@@ -30,8 +31,8 @@ export const usersService = {
       };
     } catch (error: any) {
       return {
-        data: error,
-        status: true,
+        error: error,
+        status: false,
       };
     }
   },
@@ -46,14 +47,17 @@ export const usersService = {
         { $set: { isEnabled: status } },
         { new: true }
       );
+      if (!user) {
+        return { error: "Usuário não encontrado", status: false };
+      }
       return {
         data: user as IUser,
         status: true,
       };
     } catch (error: any) {
       return {
-        data: error,
-        status: true,
+        error: error,
+        status: false,
       };
     }
   },
@@ -68,21 +72,25 @@ export const usersService = {
         { $set: { role: role } },
         { new: true }
       );
+      if (!user) {
+        return { error: "Usuário não encontrado", status: false };
+      }
       return {
         data: user as IUser,
         status: true,
       };
     } catch (error: any) {
       return {
-        data: error,
-        status: true,
+        error: error,
+        status: false,
       };
     }
   },
 
   addUser: async (
     email: string,
-    role: ERole
+    role: ERole,
+    fullname?: string
   ): Promise<ApiResponseType<IUser | string>> => {
     try {
       const userExists = await User.findOne({ email });
@@ -93,19 +101,27 @@ export const usersService = {
         };
       }
 
-      const user = await User.create({ email, role });
+      const user = await User.create({
+        email,
+        role,
+        ...(fullname?.trim() ? { fullname: fullname.trim() } : {}),
+      });
 
       const html = await mailUtils.template({
         type: EMailTypes.ADD_USER,
         data: {
           email: user.email,
-          role: user.role === ERole.ADMIN ? "Administrador" : "Recenseador",
+          fullname: user.fullname || user.email,
+          role:
+            user.role === ERole.ADMIN
+              ? "Administrador (curador)"
+              : "Recenseador",
         },
       });
 
       await mailUtils.sendMail({
         to: user.email,
-        subject: "Cadastro efetuado com sucesso",
+        subject: "Seu acesso ao Cadterreiros",
         html: html,
       });
 
