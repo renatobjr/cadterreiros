@@ -1,11 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "../../components/ui/Select";
 import PageLoader from "../../components/composed/PageLoader";
-import { getCommunity, updateCommunity } from "../../api/admin";
+import {
+  getCommunity,
+  updateCommunity,
+  uploadMainPicture,
+} from "../../api/admin";
 import { useAdminData } from "../../features/admin/adminDataContext";
 import { useToast } from "../../components/ui/toastContext";
+import { communityPhotoUrl } from "../../features/communities/format";
 import type { ReligiousCommunity } from "../../domain/types";
+
+const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
 
 const COMMUNITY_TYPES = [
   { value: "comunidade de terreiro", label: "Comunidade de terreiro" },
@@ -166,6 +179,46 @@ export function AdminCommunityEdit() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState("");
+  const [photoError, setPhotoError] = useState("");
+  const objectUrlRef = useRef<string | null>(null);
+
+  useEffect(
+    () => () => {
+      if (objectUrlRef.current && typeof URL.revokeObjectURL === "function") {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
+    },
+    [],
+  );
+
+  function handlePhotoChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setPhotoError("Envie um arquivo de imagem (JPG, PNG ou WebP).");
+      return;
+    }
+    if (file.size > MAX_PHOTO_BYTES) {
+      setPhotoError("A imagem deve ter no máximo 8 MB.");
+      return;
+    }
+
+    if (objectUrlRef.current && typeof URL.revokeObjectURL === "function") {
+      URL.revokeObjectURL(objectUrlRef.current);
+    }
+    const preview =
+      typeof URL.createObjectURL === "function"
+        ? URL.createObjectURL(file)
+        : "";
+    objectUrlRef.current = preview || null;
+    setPhotoFile(file);
+    setPhotoPreview(preview);
+    setPhotoError("");
+  }
+
   useEffect(() => {
     let active = true;
     getCommunity(id)
@@ -266,6 +319,18 @@ export function AdminCommunityEdit() {
         setError("Não foi possível salvar. Verifique os dados e tente novamente.");
         return;
       }
+
+      // A foto tem endpoint próprio: só envia depois que os dados passaram.
+      if (photoFile) {
+        const uploaded = await uploadMainPicture(original.id, photoFile);
+        if (!uploaded) {
+          setError(
+            "Os dados foram salvos, mas o envio da foto falhou. Tente novamente.",
+          );
+          return;
+        }
+      }
+
       setSaved(true);
       reload();
       show("Cadastro salvo e aguardando na fila para aprovação.");
@@ -290,6 +355,8 @@ export function AdminCommunityEdit() {
       </div>
     );
   }
+
+  const shownPhoto = photoPreview || (original ? communityPhotoUrl(original) : "");
 
   return (
     <>
@@ -530,6 +597,44 @@ export function AdminCommunityEdit() {
                 onChange={(event) => set("bio")(event.target.value)}
               />
             </div>
+          </div>
+        </section>
+
+        <section className="admin-edit-group">
+          <h2 className="display-3">Fotografia</h2>
+          <div className="field cadastro-full">
+            <label htmlFor="edit-photo">Foto principal</label>
+            <input
+              id="edit-photo"
+              className="input cadastro-file"
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoChange}
+              disabled={saving}
+              aria-describedby="edit-photo-hint"
+            />
+            <p className="field__hint" id="edit-photo-hint">
+              JPG, PNG ou WebP até 8 MB. Sem um novo arquivo, a foto atual é
+              mantida.
+            </p>
+            {photoError ? (
+              <p className="field__error" role="alert">
+                {photoError}
+              </p>
+            ) : null}
+            {shownPhoto ? (
+              <div className="cadastro-photo-preview">
+                <img
+                  src={shownPhoto}
+                  alt="Prévia da fotografia do cadastro"
+                />
+                {photoFile ? (
+                  <div className="cadastro-photo-preview__bar">
+                    <span className="meta">{photoFile.name}</span>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </section>
 

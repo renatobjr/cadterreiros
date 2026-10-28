@@ -10,6 +10,9 @@ import ActionMenu, {
   type ActionMenuItem,
 } from "../../features/admin/components/ActionMenu";
 import AdminActionIcon from "../../features/admin/components/AdminActionIcon";
+import AssignOwnerDialog, {
+  type AssignOwnerTarget,
+} from "../../features/admin/components/AssignOwnerDialog";
 import LeafletMap from "../../features/metrics/components/LazyLeafletMap";
 import { decide, getCommunity } from "../../api/admin";
 import { useAuth } from "../../features/auth/context";
@@ -66,6 +69,9 @@ export function AdminCommunity() {
     record: DecisionTarget;
     action: DecisionAction;
   } | null>(null);
+  const [assignTarget, setAssignTarget] = useState<AssignOwnerTarget | null>(
+    null,
+  );
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -587,6 +593,20 @@ export function AdminCommunity() {
                   community.censusTakerFullname !== "não informado"
                     ? community.censusTakerFullname
                     : "Aguardando atribuição"}
+                  {isAdmin ? (
+                    <button
+                      type="button"
+                      className="admin-assign"
+                      onClick={() =>
+                        setAssignTarget({
+                          id: community.id,
+                          name: community.religiousSpaceName,
+                        })
+                      }
+                    >
+                      Atribuir recenseador
+                    </button>
+                  ) : null}
                 </dd>
               </div>
             </dl>
@@ -642,6 +662,15 @@ export function AdminCommunity() {
         action={decision?.action ?? "reject"}
         onClose={() => setDecision(null)}
         onConfirm={confirmDecision}
+      />
+
+      <AssignOwnerDialog
+        community={assignTarget}
+        onClose={() => setAssignTarget(null)}
+        onAssigned={async () => {
+          await load();
+          reload();
+        }}
       />
     </>
   );

@@ -3225,3 +3225,21 @@ a.article-card {
   opacity: 0.6;
   pointer-events: none;
 }
+
+/* Ação de manutenção dentro do resumo da ficha (atribuir recenseador). */
+.admin-assign {
+  display: block;
+  margin-top: var(--s2);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+.admin-assign:hover {
+  color: var(--accent-deep);
+}

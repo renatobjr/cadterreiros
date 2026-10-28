@@ -6,10 +6,12 @@ import { makeCommunity } from "../../fixtures/community";
 
 const getCommunity = vi.fn();
 const updateCommunity = vi.fn();
+const uploadMainPicture = vi.fn();
 
 vi.mock("../../../src/api/admin", () => ({
   getCommunity: (...args: unknown[]) => getCommunity(...args),
   updateCommunity: (...args: unknown[]) => updateCommunity(...args),
+  uploadMainPicture: (...args: unknown[]) => uploadMainPicture(...args),
 }));
 
 vi.mock("../../../src/features/admin/adminDataContext", () => ({
@@ -43,8 +45,10 @@ function renderEdit() {
 beforeEach(() => {
   getCommunity.mockReset();
   updateCommunity.mockReset();
+  uploadMainPicture.mockReset();
   getCommunity.mockResolvedValue(makeCommunity());
   updateCommunity.mockResolvedValue(true);
+  uploadMainPicture.mockResolvedValue(true);
 });
 
 describe("AdminCommunityEdit", () => {
@@ -76,6 +80,44 @@ describe("AdminCommunityEdit", () => {
       ),
     );
     expect(await screen.findByText("ficha do cadastro")).toBeInTheDocument();
+  });
+
+  it("envia a nova foto depois de salvar os dados", async () => {
+    renderEdit();
+    const input = (await screen.findByLabelText(
+      "Foto principal",
+    )) as HTMLInputElement;
+    const file = new File(["foto"], "fachada.png", { type: "image/png" });
+
+    fireEvent.change(input, { target: { files: [file] } });
+    fireEvent.click(screen.getByRole("button", { name: "Salvar alterações" }));
+
+    await waitFor(() =>
+      expect(uploadMainPicture).toHaveBeenCalledWith("1", file),
+    );
+    expect(updateCommunity).toHaveBeenCalledTimes(1);
+    expect(await screen.findByText("ficha do cadastro")).toBeInTheDocument();
+  });
+
+  it("recusa arquivo que não é imagem antes de enviar", async () => {
+    renderEdit();
+    const input = (await screen.findByLabelText(
+      "Foto principal",
+    )) as HTMLInputElement;
+
+    fireEvent.change(input, {
+      target: {
+        files: [new File(["texto"], "nota.txt", { type: "text/plain" })],
+      },
+    });
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Envie um arquivo de imagem",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Salvar alterações" }));
+    await waitFor(() => expect(updateCommunity).toHaveBeenCalled());
+    expect(uploadMainPicture).not.toHaveBeenCalled();
   });
 
   it("mantém a pessoa na edição quando a API recusa", async () => {

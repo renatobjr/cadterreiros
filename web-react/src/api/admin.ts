@@ -47,6 +47,28 @@ export async function updateCommunity(
   return unwrap<unknown>(response) !== null;
 }
 
+/** Atribui (ou troca) o recenseador responsável pelo cadastro. */
+export async function assignOwner(
+  communityId: string,
+  userId: string,
+  keepStatus: boolean,
+): Promise<boolean> {
+  const response = await client.put(`${URL}/assign-owner`, {
+    communityId,
+    userId,
+    keepStatus,
+  });
+  return unwrap<unknown>(response) !== null;
+}
+
+/** Envia a foto principal do cadastro (multipart, campo `file`). */
+export async function uploadMainPicture(id: string, file: File): Promise<boolean> {
+  const body = new FormData();
+  body.append("file", file);
+  const response = await client.post(`${URL}/upload-main-picture/${id}`, body);
+  return unwrap<unknown>(response) !== null;
+}
+
 type Decision = "approve" | "reject" | "corrections" | "censusStep";
 
 export async function decide(

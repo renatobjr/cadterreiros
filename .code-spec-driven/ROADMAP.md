@@ -7,7 +7,7 @@ Estado atual:
 
 - gates: `verify-paths` 🟢 · `verify-contrast` 🟢 · `verify-tokens` 🟢 · `verify-classes` 🟢
 - build: ok, sem aviso de chunk (`manualChunks`: react / leaflet / icons)
-- testes: **265 verdes** em 47 arquivos
+- testes: **272 verdes** em 48 arquivos
 - API: 86/86 verdes
 
 ---
@@ -58,8 +58,8 @@ antes de redirecionar para `/admin`.
 
 ## Fase 6 — Completar o painel (mock)
 
-- Atribuir recenseador (`assign-owner` existe na API, falta UI).
-- Upload/troca de foto na edição da ficha.
+- Atribuir recenseador (`assign-owner` existe na API, falta UI). ✅ diálogo na ficha (só admin, mantém status opcional)
+- Upload/troca de foto na edição da ficha. ✅ campo + envio após salvar
 - Auditoria de decisões (quem aprovou/rejeitou e quando).
 - Ações em lote (aprovar/rejeitar vários registros).
 - Usuários: paginação, busca e proteção para não desativar a própria conta.

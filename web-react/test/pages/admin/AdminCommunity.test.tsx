@@ -6,11 +6,26 @@ import { makeCommunity } from "../../fixtures/community";
 
 const getCommunity = vi.fn();
 const decide = vi.fn();
+const listUsers = vi.fn();
+const assignOwner = vi.fn();
 
 vi.mock("../../../src/api/admin", () => ({
   getCommunity: (...args: unknown[]) => getCommunity(...args),
   decide: (...args: unknown[]) => decide(...args),
+  listUsers: (...args: unknown[]) => listUsers(...args),
+  assignOwner: (...args: unknown[]) => assignOwner(...args),
 }));
+
+const TEAM = [
+  {
+    id: "user-taker",
+    fullname: "Ana Recenseadora",
+    email: "ana@cciao.org",
+    role: "census_taker",
+    isEnabled: true,
+    isFirstLogin: false,
+  },
+];
 
 const auth = { role: "admin", id: "user-admin" };
 
@@ -64,6 +79,10 @@ beforeEach(() => {
   getCommunity.mockReset();
   decide.mockReset();
   decide.mockResolvedValue(true);
+  listUsers.mockReset();
+  listUsers.mockResolvedValue(TEAM);
+  assignOwner.mockReset();
+  assignOwner.mockResolvedValue(true);
 });
 
 describe("AdminCommunity", () => {
@@ -156,6 +175,25 @@ describe("AdminCommunity", () => {
     ).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /^Aprovar/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /^Rejeitar/ })).not.toBeInTheDocument();
+  });
+
+  it("atribui um recenseador pela ficha", async () => {
+    getCommunity.mockResolvedValue(makeCommunity({ censusStep: "pending" }));
+    renderDetail();
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Atribuir recenseador" }),
+    );
+
+    const combobox = (await screen.findByLabelText(
+      "Recenseador",
+    )) as HTMLSelectElement;
+    fireEvent.change(combobox, { target: { value: "user-taker" } });
+    fireEvent.click(screen.getByRole("button", { name: "Atribuir" }));
+
+    await waitFor(() =>
+      expect(assignOwner).toHaveBeenCalledWith("1", "user-taker", false),
+    );
   });
 
   it("mostra a mensagem de registro inexistente", async () => {
