@@ -457,7 +457,8 @@ export const religiousCommunityController = {
     const response = await religiousCommunityService.setCensusStep(
       communityId,
       step,
-      rejectedReason
+      rejectedReason,
+      req.user
     );
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
@@ -471,7 +472,8 @@ export const religiousCommunityController = {
     const response = await religiousCommunityService.requestCorrections(
       communityId,
       userId,
-      rejectedReason
+      rejectedReason,
+      req.user
     );
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
@@ -482,7 +484,10 @@ export const religiousCommunityController = {
 
   approveCensus: async (req: Request, res: Response): Promise<void> => {
     const { communityId } = req.body;
-    const response = await religiousCommunityService.approveCensus(communityId);
+    const response = await religiousCommunityService.approveCensus(
+      communityId,
+      req.user
+    );
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,
       data: response.data,
@@ -494,7 +499,8 @@ export const religiousCommunityController = {
     const { communityId, rejectedReason } = req.body;
     const response = await religiousCommunityService.rejectCensus(
       communityId,
-      rejectedReason
+      rejectedReason,
+      req.user
     );
     return res.apiResponse(HttpStatusCode.OK, {
       error: response?.error,

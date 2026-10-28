@@ -75,6 +75,13 @@ export interface ReligiousCommunity {
   censusTakerId?: string | null;
   censusTakerFullname?: string | null;
   rejectedReason?: string;
+  /** Auditoria das decisões da curadoria (quem, quando e por quê). */
+  decisionLog?: Array<{
+    action: string;
+    byName?: string | null;
+    at?: string | null;
+    reason?: string | null;
+  }>;
   registeredVoluntarily: boolean;
   createdAt: string;
   updatedAt: string;

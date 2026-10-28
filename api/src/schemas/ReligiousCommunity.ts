@@ -59,6 +59,15 @@ export enum ECensusStep {
   REJECTED = "rejected",
 }
 
+/** Registro de auditoria de uma decisão da curadoria. */
+export interface IDecisionEntry {
+  action: string;
+  byId?: string | null;
+  byName?: string | null;
+  at: Date | string;
+  reason?: string | null;
+}
+
 export interface IReligiousCommunity {
   authorization: number;
   communityGoogleApiLocalization: IGeoLocation;
@@ -86,6 +95,7 @@ export interface IReligiousCommunity {
   censusStep: ECensusStep;
   censusTaker?: Types.ObjectId | null;
   rejectedReason?: string;
+  decisionLog?: IDecisionEntry[];
   registeredVoluntarily: boolean;
   createdAt: Date | string;
 }
@@ -143,6 +153,22 @@ const ReligiousCommunitySchema = new Schema(
       default: null,
     },
     rejectedReason: { type: String, required: false },
+    decisionLog: {
+      type: [
+        new Schema(
+          {
+            action: { type: String, required: true },
+            byId: { type: String, required: false },
+            byName: { type: String, required: false },
+            at: { type: Date, default: Date.now },
+            reason: { type: String, required: false },
+          },
+          { _id: false }
+        ),
+      ],
+      required: false,
+      default: [],
+    },
     registeredVoluntarily: {
       type: Boolean,
       required: false,

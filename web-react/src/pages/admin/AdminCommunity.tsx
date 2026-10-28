@@ -135,31 +135,52 @@ export function AdminCommunity() {
       });
     }
 
-    if (community.rejectedReason) {
-      items.push({
-        date: formatDate(community.updatedAt),
-        title:
-          community.censusStep === "rejected"
-            ? "Rejeitado"
-            : "Correções solicitadas",
-        text: community.rejectedReason,
-      });
-    }
+    /* Com auditoria, a linha do tempo vem das decisões registradas (quem,
+       quando e motivo). Registros antigos caem no fallback derivado dos
+       campos de status. */
+    const log = community.decisionLog ?? [];
+    if (log.length) {
+      const label: Record<string, string> = {
+        approved: "Aprovado",
+        rejected: "Rejeitado",
+        corrections: "Correções solicitadas",
+      };
+      for (const entry of log.slice(-4).reverse()) {
+        items.push({
+          date: formatDate(entry.at ?? community.updatedAt),
+          title: label[entry.action] ?? "Status alterado",
+          text: [entry.byName ? `por ${entry.byName}` : "pela curadoria", entry.reason]
+            .filter(Boolean)
+            .join(" · "),
+        });
+      }
+    } else {
+      if (community.rejectedReason) {
+        items.push({
+          date: formatDate(community.updatedAt),
+          title:
+            community.censusStep === "rejected"
+              ? "Rejeitado"
+              : "Correções solicitadas",
+          text: community.rejectedReason,
+        });
+      }
 
-    if (community.censusStep === "approved") {
-      items.push({
-        date: formatDate(community.updatedAt),
-        title: "Aprovado",
-        text: "Cadastro publicado no acervo.",
-      });
-    }
+      if (community.censusStep === "approved") {
+        items.push({
+          date: formatDate(community.updatedAt),
+          title: "Aprovado",
+          text: "Cadastro publicado no acervo.",
+        });
+      }
 
-    if (community.censusStep === "pending") {
-      items.push({
-        date: formatDate(community.updatedAt),
-        title: "Aguardando análise",
-        text: "Última atualização do cadastro.",
-      });
+      if (community.censusStep === "pending") {
+        items.push({
+          date: formatDate(community.updatedAt),
+          title: "Aguardando análise",
+          text: "Última atualização do cadastro.",
+        });
+      }
     }
 
     return items;

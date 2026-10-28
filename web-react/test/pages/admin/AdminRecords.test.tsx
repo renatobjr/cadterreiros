@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import AdminRecords from "../../../src/pages/admin/AdminRecords";
@@ -6,10 +6,11 @@ import { AdminDataProvider } from "../../../src/features/admin/AdminDataProvider
 import type { ReligiousCommunity } from "../../../src/domain/types";
 
 const listAllCommunities = vi.fn();
+const decide = vi.fn();
 
 vi.mock("../../../src/api/admin", () => ({
   listAllCommunities: () => listAllCommunities(),
-  decide: vi.fn().mockResolvedValue(true),
+  decide: (...args: unknown[]) => decide(...args),
 }));
 
 vi.mock("../../../src/features/auth/context", () => ({
@@ -82,6 +83,8 @@ describe("AdminRecords", () => {
   beforeEach(() => {
     listAllCommunities.mockReset();
     listAllCommunities.mockResolvedValue(RECORDS);
+    decide.mockReset();
+    decide.mockResolvedValue(true);
   });
 
   it("mostra os contadores por estágio do censo", async () => {
@@ -130,6 +133,55 @@ describe("AdminRecords", () => {
       expect.arrayContaining(["Aprovar cadastro", "Rejeitar cadastro", "Solicitar correções"]),
     );
     expect(within(row).getByRole("link", { name: "Editar cadastro" })).toBeInTheDocument();
+  });
+
+  it("aprova em lote os pendentes selecionados", async () => {
+    renderPage("/admin/cadastros?status=pending");
+    await screen.findByText("Pendente Um");
+
+    fireEvent.click(screen.getByLabelText("Selecionar Pendente Um"));
+
+    expect(
+      screen.getByRole("region", { name: "Ações em lote" }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Aprovar selecionados" }));
+
+    await waitFor(() =>
+      expect(decide).toHaveBeenCalledWith("approve", { communityId: "1" }),
+    );
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "1 cadastro(s) aprovado(s).",
+    );
+  });
+
+  it("rejeita em lote com um motivo compartilhado", async () => {
+    renderPage("/admin/cadastros?status=pending");
+    await screen.findByText("Pendente Um");
+
+    fireEvent.click(screen.getByLabelText("Selecionar Pendente Um"));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Rejeitar selecionados" }),
+    );
+    fireEvent.change(screen.getByLabelText("Motivo"), {
+      target: { value: "Falta a fotografia da fachada." },
+    });
+    fireEvent.click(screen.getByText("Confirmar"));
+
+    await waitFor(() =>
+      expect(decide).toHaveBeenCalledWith("reject", {
+        communityId: "1",
+        rejectedReason: "Falta a fotografia da fachada.",
+      }),
+    );
+  });
+
+  it("não deixa selecionar registros fora da fila", async () => {
+    renderPage("/admin/cadastros?status=approved");
+    await screen.findByText("Aprovado Dois");
+
+    expect(
+      screen.getByLabelText("Selecionar Aprovado Dois"),
+    ).toBeDisabled();
   });
 
   it("registro aprovado não oferece aprovar nem rejeitar", async () => {

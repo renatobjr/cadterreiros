@@ -60,8 +60,11 @@ antes de redirecionar para `/admin`.
 
 - Atribuir recenseador (`assign-owner` existe na API, falta UI). ✅ diálogo na ficha (só admin, mantém status opcional)
 - Upload/troca de foto na edição da ficha. ✅ campo + envio após salvar
-- Auditoria de decisões (quem aprovou/rejeitou e quando).
-- Ações em lote (aprovar/rejeitar vários registros).
+- Auditoria de decisões (quem aprovou/rejeitou e quando). ✅
+  `decisionLog` (até 50 entradas) gravado em aprovar/rejeitar/correções/etapa;
+  exposto no DTO administrativo e usado na linha do tempo da ficha.
+- Ações em lote (aprovar/rejeitar vários registros). ✅
+  seleção só de pendentes, aprovação em paralelo e rejeição com motivo único.
 - Usuários: paginação, busca e proteção para não desativar a própria conta. ✅
   (a API também bloqueia autodesativação/autorebaixamento; cliente alinhado a
   `{ id, status }`, `{ id, role }` e convite com `fullname`)

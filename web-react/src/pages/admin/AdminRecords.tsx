@@ -90,6 +90,11 @@ export function AdminRecords() {
     action: DecisionAction;
   } | null>(null);
 
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const [bulkReject, setBulkReject] = useState<number | null>(null);
+  const [bulkMessage, setBulkMessage] = useState("");
+
   const nations = useMemo(
     () =>
       [...new Set(records.map((item) => item.religiousSpaceNation).filter(Boolean))]
@@ -179,6 +184,83 @@ export function AdminRecords() {
   }
 
   const hasFilters = Boolean(query || origin || nation || city);
+
+  /* Ações em lote só fazem sentido na fila: aprovados/rejeitados têm regras
+     próprias e continuam sendo tratados na ficha. */
+  const selectable = visible.filter((record) => record.censusStep === "pending");
+  const allSelected =
+    selectable.length > 0 && selectable.every((record) => selected.has(record.id));
+
+  function toggleOne(id: string) {
+    setBulkMessage("");
+    setSelected((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleVisible() {
+    setBulkMessage("");
+    setSelected((current) => {
+      const next = new Set(current);
+      if (allSelected) selectable.forEach((record) => next.delete(record.id));
+      else selectable.forEach((record) => next.add(record.id));
+      return next;
+    });
+  }
+
+  async function approveSelected() {
+    const ids = [...selected];
+    if (!ids.length) return;
+    setBulkBusy(true);
+    setBulkMessage("");
+    try {
+      const results = await Promise.all(
+        ids.map((id) =>
+          decide("approve", { communityId: id }).catch(() => false),
+        ),
+      );
+      const ok = results.filter(Boolean).length;
+      setBulkMessage(
+        ok === ids.length
+          ? `${ok} cadastro(s) aprovado(s).`
+          : `${ok} de ${ids.length} aprovados; os demais falharam.`,
+      );
+      setSelected(new Set());
+      reload();
+    } finally {
+      setBulkBusy(false);
+    }
+  }
+
+  async function rejectSelected(reason: string) {
+    const ids = [...selected];
+    if (!ids.length) return;
+    setBulkBusy(true);
+    setBulkMessage("");
+    try {
+      const results = await Promise.all(
+        ids.map((id) =>
+          decide("reject", {
+            communityId: id,
+            rejectedReason: reason,
+          }).catch(() => false),
+        ),
+      );
+      const ok = results.filter(Boolean).length;
+      setBulkMessage(
+        ok === ids.length
+          ? `${ok} cadastro(s) rejeitado(s).`
+          : `${ok} de ${ids.length} rejeitados; os demais falharam.`,
+      );
+      setSelected(new Set());
+      reload();
+    } finally {
+      setBulkBusy(false);
+    }
+  }
 
   return (
     <>
@@ -305,6 +387,47 @@ export function AdminRecords() {
         </div>
       </div>
 
+      {isAdmin && selected.size > 0 ? (
+        <div className="admin-bulk" role="region" aria-label="Ações em lote">
+          <p className="admin-bulk__count">
+            {selected.size}{" "}
+            {selected.size === 1 ? "cadastro selecionado" : "cadastros selecionados"}
+          </p>
+          <div className="admin-bulk__actions">
+            <button
+              className="btn btn--primary"
+              type="button"
+              disabled={bulkBusy}
+              onClick={() => void approveSelected()}
+            >
+              Aprovar selecionados
+            </button>
+            <button
+              className="btn btn--danger"
+              type="button"
+              disabled={bulkBusy}
+              onClick={() => setBulkReject(selected.size)}
+            >
+              Rejeitar selecionados
+            </button>
+            <button
+              className="btn btn--quiet"
+              type="button"
+              disabled={bulkBusy}
+              onClick={() => setSelected(new Set())}
+            >
+              Limpar seleção
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {bulkMessage ? (
+        <p className="admin-bulk__msg" role="status">
+          {bulkMessage}
+        </p>
+      ) : null}
+
       {loading ? (
         <PageLoader compact label="Carregando cadastros" />
       ) : error ? (
@@ -324,6 +447,17 @@ export function AdminRecords() {
             <table className="data admin-table">
               <thead>
                 <tr>
+                  {isAdmin ? (
+                    <th scope="col" className="admin-check">
+                      <input
+                        type="checkbox"
+                        aria-label="Selecionar pendentes desta página"
+                        checked={allSelected}
+                        onChange={toggleVisible}
+                        disabled={selectable.length === 0 || bulkBusy}
+                      />
+                    </th>
+                  ) : null}
                   <th scope="col">Cadastro</th>
                   <th scope="col">Origem</th>
                   <th scope="col">Status</th>
@@ -342,6 +476,17 @@ export function AdminRecords() {
 
                   return (
                     <tr key={record.id}>
+                      {isAdmin ? (
+                        <td className="admin-check">
+                          <input
+                            type="checkbox"
+                            aria-label={`Selecionar ${record.religiousSpaceName}`}
+                            checked={selected.has(record.id)}
+                            onChange={() => toggleOne(record.id)}
+                            disabled={record.censusStep !== "pending" || bulkBusy}
+                          />
+                        </td>
+                      ) : null}
                       <td>
                         <Link
                           className="admin-name"
@@ -463,6 +608,24 @@ export function AdminRecords() {
           ) : null}
         </>
       )}
+
+      <DecisionDialog
+        record={
+          bulkReject
+            ? {
+                id: "bulk",
+                name: `${bulkReject} ${
+                  bulkReject === 1 ? "cadastro selecionado" : "cadastros selecionados"
+                }`,
+              }
+            : null
+        }
+        action="reject"
+        onClose={() => setBulkReject(null)}
+        onConfirm={async (_record, _action, reason) => {
+          await rejectSelected(reason);
+        }}
+      />
 
       <DecisionDialog
         record={

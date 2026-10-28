@@ -189,6 +189,38 @@ const resolveLocalization = async (
   return geocoded ?? { lat: 0, long: 0 };
 };
 
+/** Quem executou a decisão (vem do `isAuth`). */
+export interface DecisionActor {
+  id?: string | null;
+  fullname?: string | null;
+}
+
+/** Entrada de auditoria — mantém no máximo 50 decisões por cadastro. */
+export function buildDecisionEntry(
+  action: string,
+  actor?: DecisionActor,
+  reason?: string
+) {
+  return {
+    action,
+    byId: actor?.id ?? null,
+    byName: actor?.fullname ?? null,
+    at: new Date(),
+    ...(reason ? { reason } : {}),
+  };
+}
+
+const decisionPush = (
+  action: string,
+  actor?: DecisionActor,
+  reason?: string
+) => ({
+  decisionLog: {
+    $each: [buildDecisionEntry(action, actor, reason)],
+    $slice: -50,
+  },
+});
+
 export const religiousCommunityService = {
   /**
    * Um registro só pode ser editado pelo admin ou pelo recenseador dono dele.
@@ -1292,7 +1324,8 @@ export const religiousCommunityService = {
   setCensusStep: async (
     communityId: string,
     step: ECensusStep,
-    rejectedReason?: string
+    rejectedReason?: string,
+    actor?: DecisionActor
   ): Promise<Record<string, boolean | string>> => {
     try {
       await ReligiousCommunity.findOneAndUpdate(
@@ -1302,6 +1335,7 @@ export const religiousCommunityService = {
             censusStep: step,
             rejectedReason: rejectedReason,
           },
+          $push: decisionPush(step, actor, rejectedReason),
         }
       );
 
@@ -1369,7 +1403,8 @@ export const religiousCommunityService = {
   requestCorrections: async (
     communityId: string,
     userId: string,
-    rejectedReason: string
+    rejectedReason: string,
+    actor?: DecisionActor
   ) => {
     try {
       const community = await ReligiousCommunity.findOneAndUpdate(
@@ -1380,6 +1415,7 @@ export const religiousCommunityService = {
             censusTaker: new Types.ObjectId(userId),
             rejectedReason: rejectedReason,
           },
+          $push: decisionPush("corrections", actor, rejectedReason),
         },
         { new: true }
       );
@@ -1404,7 +1440,7 @@ export const religiousCommunityService = {
     }
   },
 
-  approveCensus: async (communityId: string) => {
+  approveCensus: async (communityId: string, actor?: DecisionActor) => {
     try {
       await ReligiousCommunity.findOneAndUpdate(
         { _id: new Types.ObjectId(communityId) },
@@ -1413,6 +1449,7 @@ export const religiousCommunityService = {
             censusStep: ECensusStep.APPROVED,
             rejectedReason: undefined,
           },
+          $push: decisionPush(ECensusStep.APPROVED, actor),
         }
       );
 
@@ -1428,7 +1465,11 @@ export const religiousCommunityService = {
     }
   },
 
-  rejectCensus: async (communityId: string, rejectedReason: string) => {
+  rejectCensus: async (
+    communityId: string,
+    rejectedReason: string,
+    actor?: DecisionActor
+  ) => {
     try {
       const community = await ReligiousCommunity.findOneAndUpdate(
         { _id: new Types.ObjectId(communityId) },
@@ -1437,6 +1478,7 @@ export const religiousCommunityService = {
             censusStep: ECensusStep.REJECTED,
             rejectedReason: rejectedReason,
           },
+          $push: decisionPush(ECensusStep.REJECTED, actor, rejectedReason),
         },
         { new: true }
       );

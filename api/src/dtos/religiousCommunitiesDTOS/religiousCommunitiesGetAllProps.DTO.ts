@@ -104,6 +104,33 @@ export class ReligiousCommunitiesGetByAllPropsDTO {
   @Transform((value) => value.obj.rejectedReason ?? null)
   rejectedReason!: string | null;
 
+  /** Auditoria das decisões (quem, quando e por quê). */
+  @Expose()
+  @Transform((value) => {
+    const entries = Array.isArray(value.obj.decisionLog)
+      ? value.obj.decisionLog
+      : [];
+    return entries.map(
+      (entry: {
+        action?: string;
+        byName?: string;
+        at?: Date;
+        reason?: string;
+      }) => ({
+        action: entry.action ?? "censusStep",
+        byName: entry.byName ?? null,
+        at: entry.at ?? null,
+        reason: entry.reason ?? null,
+      })
+    );
+  })
+  decisionLog!: Array<{
+    action: string;
+    byName: string | null;
+    at: Date | null;
+    reason: string | null;
+  }>;
+
   @Expose()
   @Transform((value) => value.obj.registeredVoluntarily ?? false)
   registeredVoluntarily!: boolean;

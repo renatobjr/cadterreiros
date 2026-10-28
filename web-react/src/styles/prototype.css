@@ -3275,3 +3275,39 @@ a.article-card {
   text-transform: uppercase;
   vertical-align: 1px;
 }
+
+/* Barra de ações em lote da fila da curadoria. */
+.admin-bulk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+  margin-bottom: var(--s4);
+  padding: var(--s3) var(--s4);
+  border: 1px solid var(--accent);
+  border-radius: var(--r);
+  background: var(--accent-soft);
+}
+.admin-bulk__count {
+  margin: 0;
+  font-weight: 600;
+}
+.admin-bulk__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.admin-bulk__msg {
+  margin: 0 0 var(--s4);
+  color: var(--fg-soft);
+}
+.admin-check {
+  width: 40px;
+  text-align: center;
+}
+.admin-check input {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}

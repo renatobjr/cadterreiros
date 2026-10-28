@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AdminCommunity from "../../../src/pages/admin/AdminCommunity";
@@ -194,6 +194,28 @@ describe("AdminCommunity", () => {
     await waitFor(() =>
       expect(assignOwner).toHaveBeenCalledWith("1", "user-taker", false),
     );
+  });
+
+  it("usa a auditoria para mostrar quem decidiu e quando", async () => {
+    getCommunity.mockResolvedValue(
+      makeCommunity({
+        censusStep: "approved",
+        decisionLog: [
+          {
+            action: "approved",
+            byName: "Renato Jr.",
+            at: "2026-10-20T10:00:00.000Z",
+            reason: null,
+          },
+        ],
+      }),
+    );
+    renderDetail();
+    await screen.findByRole("heading", { level: 1, name: "Terreiro Teste" });
+
+    const history = document.querySelector(".admin-history") as HTMLElement;
+    expect(within(history).getByText("Aprovado")).toBeInTheDocument();
+    expect(within(history).getByText(/por Renato Jr\./)).toBeInTheDocument();
   });
 
   it("mostra a mensagem de registro inexistente", async () => {
