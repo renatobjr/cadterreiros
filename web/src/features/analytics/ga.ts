@@ -106,8 +106,8 @@ export function bootstrapAnalytics(granted: boolean): void {
   analyticsActive = granted;
   if (!granted) return;
 
-  loadGtagScript();
-
+  /* Configura antes de injetar o script: as instruções já ficam na fila do
+     dataLayer quando o gtag.js começar a processar. */
   if (!configRequested) {
     window.gtag?.("config", getGaId(), {
       send_page_view: false,
@@ -116,6 +116,8 @@ export function bootstrapAnalytics(granted: boolean): void {
     });
     configRequested = true;
   }
+
+  loadGtagScript();
 }
 
 export function isAnalyticsActive(): boolean {
@@ -187,6 +189,7 @@ export function trackPageView(pathname: string): void {
   if (!isBrowser() || !analyticsActive || !isTrackablePath(pathname)) return;
   ensureGtag();
   window.gtag?.("event", "page_view", {
+    send_to: getGaId(),
     page_path: pathname,
     page_location: `${window.location.origin}${pathname}`,
     page_title: document.title,
