@@ -16,6 +16,7 @@ import mailUtils from "../utils/mail.utils";
 import { EMailTypes } from "../enum/EmailTYpes.enum";
 
 type searchType = {
+  limit?: number;
   search: string;
   censusStep?: ECensusStep;
 };
@@ -527,10 +528,8 @@ export const religiousCommunityService = {
         }
       }
 
-      const religiousCommunities = await ReligiousCommunity.aggregate([
-        {
-          $match: searchTerm,
-        },
+      const pipeline: PipelineStage[] = [
+        { $match: searchTerm },
         {
           $lookup: {
             from: "users",
@@ -542,8 +541,16 @@ export const religiousCommunityService = {
         {
           $unwind: { path: "$censusTaker", preserveNullAndEmptyArrays: true },
         },
-        { $limit: 500 },
-      ]);
+      ];
+
+      /* O teto é da listagem pública (sem paginação). A fila do painel fica
+         sem limite para nenhum registro "sumir" acima de 500. */
+      if (options.limit) {
+        pipeline.push({ $sort: { religiousSpaceName: 1 } });
+        pipeline.push({ $limit: options.limit });
+      }
+
+      const religiousCommunities = await ReligiousCommunity.aggregate(pipeline);
 
       return {
         data: religiousCommunities,
@@ -1299,7 +1306,12 @@ export const religiousCommunityService = {
     file: any,
     options: { publicFlow?: boolean } = {}
   ): Promise<Record<string, boolean | string>> => {
-    const originalPath = fileUtils.getPublicPath(file[0].filename);
+    const uploaded = file?.[0];
+    if (!uploaded?.filename) {
+      return { error: "Nenhum arquivo enviado", status: false };
+    }
+
+    const originalPath = fileUtils.getPublicPath(uploaded.filename);
     try {
       if (options.publicFlow) {
         const target = await ReligiousCommunity.findById(id).select(
@@ -1324,7 +1336,7 @@ export const religiousCommunityService = {
         return { error: "Formato de imagem não suportado", status: false };
       }
 
-      const filename = `${file[0].filename}.${ext}`;
+      const filename = `${uploaded.filename}.${ext}`;
       fs.renameSync(originalPath, fileUtils.getPublicPath(filename));
 
       await ReligiousCommunity.updateOne(

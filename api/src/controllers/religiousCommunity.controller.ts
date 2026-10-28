@@ -18,6 +18,7 @@ export const religiousCommunityController = {
     const queryParams: any = {
       ...req.query,
       censusStep: ECensusStep.APPROVED,
+      limit: 500,
     };
     const response = await religiousCommunityService.list(queryParams);
 
@@ -397,7 +398,8 @@ export const religiousCommunityController = {
   },
 
   postUploadMainPicture: async (req: Request, res: Response): Promise<void> => {
-    if (!req.files) {
+    const files = req.files as Express.Multer.File[] | undefined;
+    if (!files?.length) {
       return res.apiResponse(HttpStatusCode.BAD_REQUEST, "No files uploaded");
     }
 
