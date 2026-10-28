@@ -26,6 +26,12 @@ const allowedOrigins = corsOrigins();
 
 const api = express();
 
+// Atrás do proxy/load balancer o IP real vem no X-Forwarded-For; sem isso o
+// rate limit contaria todo mundo como um único cliente.
+if (process.env.NODE_ENV === "production") {
+  api.set("trust proxy", 1);
+}
+
 api
   .use(
     cors({
@@ -47,7 +53,7 @@ api
   .use(requireTrustedOrigin())
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
-  .use(morgan("dev"))
+  .use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"))
   .use(
     bodyParser.json({
       limit: "50mb",

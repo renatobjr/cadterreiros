@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import CookieBanner from "../composed/CookieBanner";
 import { useConsent } from "../../features/analytics/context";
 import { trackPageView } from "../../features/analytics/ga";
+import { useDocumentTitle } from "../../utils/seo";
 
 /**
  * Estrutura comum de todas as rotas: navegação principal no topo, conteúdo
@@ -16,6 +17,8 @@ import { trackPageView } from "../../features/analytics/ga";
 export function Layout() {
   const location = useLocation();
   const { analyticsEnabled } = useConsent();
+
+  useDocumentTitle(location.pathname);
 
   /* page_view manual por rota (o GA está configurado com
      `send_page_view: false`). Rotas privadas são filtradas em `trackPageView`. */

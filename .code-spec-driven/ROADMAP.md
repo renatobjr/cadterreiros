@@ -72,10 +72,12 @@ antes de redirecionar para `/admin`.
 
 ## Fase 7 — Segurança e operação
 
-- Rate limit nas rotas privadas; cache/curto-circuito do `validate-token` (hoje 1 query por request).
-- `NODE_ENV=production` + cookie `Secure` + `WEB_ORIGIN` do domínio.
+- Rate limit nas rotas privadas ✅ (120/min por IP em listagem, ficha, contagens e `/users`).
+  Cache do `validate-token`: **não feito de propósito** — revogação imediata > economia de 1 query.
+- `NODE_ENV=production` + cookie `Secure` + `WEB_ORIGIN` do domínio ✅ + `trust proxy` ✅ e log `combined` em produção.
 - Observabilidade: logs estruturados, monitoramento de erro e do envio (Resend), backup do Mongo.
-- Acessibilidade (auditoria WCAG AA) e SEO (meta/OG/sitemap/robots).
+- Acessibilidade (auditoria WCAG AA) e SEO (meta/OG/sitemap/robots). ✅ meta/OG e
+  títulos por rota; faltam sitemap/robots no deploy.
 
 ## Fase 8 — Cutover
 

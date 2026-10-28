@@ -24,6 +24,12 @@ export const createRateLimit = (
       res.apiResponse(HttpStatusCode.TOO_MANY_REQUESTS, "Too many requests"),
   });
 
+/**
+ * Leitura do painel: 120/min por IP. Protege as listagens pesadas (a lista
+ * administrativa chega a ~140 kB) sem atrapalhar a navegação normal.
+ */
+export const privateReadRateLimit = createRateLimit({ limit: 120 });
+
 /** Instância usada pelo `POST /public/create`. */
 export const publicCreateRateLimit = createRateLimit();
 

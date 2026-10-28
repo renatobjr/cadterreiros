@@ -3,6 +3,7 @@ import { religiousCommunityController } from "@/api/controllers/religiousCommuni
 import isAuth from "@/api/middlewares/isAuth";
 import { requireAdmin } from "@/api/middlewares/requireRole";
 import {
+  privateReadRateLimit,
   publicCreateRateLimit,
   publicUploadMainPictureRateLimit,
 } from "@/api/middlewares/rateLimit";
@@ -84,15 +85,22 @@ router.post(
 // Private routes
 router.get(
   `${path}/count-religious-communities-by-user-id`,
+  privateReadRateLimit,
   isAuth,
   religiousCommunityController.getCountReligiousCommunitiesByUserId
 );
 router.get(
   `${path}/religious-communities-by-user-id`,
+  privateReadRateLimit,
   isAuth,
   religiousCommunityController.getReligiousCommunitiesByUserId
 );
-router.get(`${path}/list`, isAuth, religiousCommunityController.listAdmin);
+router.get(
+  `${path}/list`,
+  privateReadRateLimit,
+  isAuth,
+  religiousCommunityController.listAdmin
+);
 router.post(
   `${path}/upload-main-picture/:id`,
   isAuth,
@@ -172,6 +180,7 @@ router.get(
 // Get id
 router.get(
   `${path}/:id`,
+  privateReadRateLimit,
   isAuth,
   religiousCommunityController.getCommunityById
 );
