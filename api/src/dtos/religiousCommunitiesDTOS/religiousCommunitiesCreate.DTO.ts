@@ -1,6 +1,7 @@
 import { Type } from "class-transformer";
 import {
   IsBoolean,
+  IsEmail,
   IsDateString,
   IsIn,
   IsInt,
@@ -84,6 +85,19 @@ export class CommunityAddressDTO {
   zipcode!: string;
 }
 
+class LeaderContactsDTO {
+  @IsEmail()
+  email!: string;
+
+  @IsOptional()
+  @IsString()
+  phone?: string;
+
+  @IsOptional()
+  @IsString()
+  mobile?: string;
+}
+
 /**
  * Payload do cadastro voluntário (`POST /public/create`).
  *
@@ -148,6 +162,12 @@ export class ReligiousCommunityCreateDTO {
 
   @IsBoolean()
   leaderSufferedRacism!: boolean;
+
+  /** E-mail de contato da liderança (usado pela curadoria nas correções). */
+  @IsObject()
+  @ValidateNested()
+  @Type(() => LeaderContactsDTO)
+  leaderContacts!: LeaderContactsDTO;
 
   @IsOptional()
   @IsObject()

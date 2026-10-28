@@ -7,6 +7,21 @@ export interface PaginationProps {
   className?: string;
 }
 
+/** Janela de até cinco páginas em torno da atual (mock: `pageWindow`). */
+function pageWindow(page: number, pages: number): number[] {
+  let start = Math.max(1, page - 2);
+  const end = Math.min(pages, start + 4);
+  start = Math.max(1, end - 4);
+
+  const out: number[] = [];
+  for (let i = start; i <= end; i += 1) out.push(i);
+  return out;
+}
+
+/**
+ * Paginação compartilhada entre a área pública (busca) e o painel.
+ * Mostra "Página X de Y" e uma janela de cinco números.
+ */
 export function Pagination({ page, totalPages, onChange, className }: PaginationProps) {
   const safeTotal = Math.max(1, totalPages);
   const current = Math.min(Math.max(1, page), safeTotal);
@@ -18,22 +33,21 @@ export function Pagination({ page, totalPages, onChange, className }: Pagination
     onChange(next);
   };
 
-  const pageNumbers: number[] = [];
-  for (let i = 1; i <= safeTotal; i++) pageNumbers.push(i);
-
   return (
     <nav className={classes} aria-label="Paginação">
+      <p className="meta">
+        Página {current} de {safeTotal}
+      </p>
       <div className="pager__btns">
         <Button
           className="pager__btn"
           variant="ghost"
           disabled={current <= 1}
           onClick={() => go(current - 1)}
-          aria-label="Página anterior"
         >
           Anterior
         </Button>
-        {pageNumbers.map((n) => (
+        {pageWindow(current, safeTotal).map((n) => (
           <Button
             key={n}
             className="pager__btn"
@@ -49,7 +63,6 @@ export function Pagination({ page, totalPages, onChange, className }: Pagination
           variant="ghost"
           disabled={current >= safeTotal}
           onClick={() => go(current + 1)}
-          aria-label="Próxima página"
         >
           Próxima
         </Button>

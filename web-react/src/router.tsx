@@ -22,6 +22,14 @@ import OTP from "./pages/OTP";
 import SetPassword from "./pages/SetPassword";
 import DesignSystem from "./pages/DesignSystem";
 import NotFound from "./pages/NotFound";
+import RequireAdmin from "./features/admin/components/RequireAdmin";
+import AdminShell from "./features/admin/components/AdminShell";
+import AdminDataProvider from "./features/admin/AdminDataProvider";
+import AdminOverview from "./pages/admin/AdminOverview";
+import AdminRecords from "./pages/admin/AdminRecords";
+import AdminCommunity from "./pages/admin/AdminCommunity";
+import AdminCommunityEdit from "./pages/admin/AdminCommunityEdit";
+import AdminUsers from "./pages/admin/AdminUsers";
 
 /** Redirect do endereço antigo `/:id/:slug` para a rota pública por slug. */
 function LegacyTerreiro() {
@@ -53,6 +61,31 @@ export const routes: RouteObject[] = [
       { path: "/otp/:token/:email", element: <OTP /> },
       { path: "/set-password/:token", element: <SetPassword /> },
       { path: "/design-system", element: <DesignSystem /> },
+
+      // Painel da curadoria: sessão obrigatória (checagem de UX; a API é a
+      // fonte de verdade da autorização).
+      {
+        element: <RequireAdmin />,
+        children: [
+          {
+            element: (
+              <AdminDataProvider>
+                <AdminShell />
+              </AdminDataProvider>
+            ),
+            children: [
+              { path: "/admin", element: <AdminOverview /> },
+              { path: "/admin/cadastros", element: <AdminRecords /> },
+              { path: "/admin/cadastros/:id", element: <AdminCommunity /> },
+              {
+                path: "/admin/cadastros/:id/editar",
+                element: <AdminCommunityEdit />,
+              },
+              { path: "/admin/usuarios", element: <AdminUsers /> },
+            ],
+          },
+        ],
+      },
 
       // Aliases legados: mantêm links antigos vivos após a troca de URL.
       { path: "/busca", element: <Navigate to="/buscar" replace /> },

@@ -99,13 +99,17 @@ export const usersService = {
         type: EMailTypes.ADD_USER,
         data: {
           email: user.email,
-          role: user.role === ERole.ADMIN ? "Administrador" : "Recenseador",
+          fullname: user.fullname || user.email,
+          role:
+            user.role === ERole.ADMIN
+              ? "Administrador (curador)"
+              : "Recenseador",
         },
       });
 
       await mailUtils.sendMail({
         to: user.email,
-        subject: "Cadastro efetuado com sucesso",
+        subject: "Seu acesso ao Cadterreiros",
         html: html,
       });
 

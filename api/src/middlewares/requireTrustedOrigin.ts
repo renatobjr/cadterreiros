@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpStatusCode } from "../enum/HttpStatusCode.enum";
+import { isAllowedOrigin } from "../configs/cors";
 
 /**
  * Defesa extra contra CSRF: rejeita escrita (POST/PUT/PATCH/DELETE) quando o
@@ -9,7 +10,7 @@ import { HttpStatusCode } from "../enum/HttpStatusCode.enum";
  * Requisições sem `Origin` (curl, serviços) seguem — elas não carregam cookie
  * de navegador e dependem do header `Authorization`.
  */
-export const requireTrustedOrigin = (allowedOrigins: string[]) =>
+export const requireTrustedOrigin = () =>
   (req: Request, res: Response, next: NextFunction): void => {
     const method = req.method.toUpperCase();
     if (method === "GET" || method === "HEAD" || method === "OPTIONS") {
@@ -19,7 +20,7 @@ export const requireTrustedOrigin = (allowedOrigins: string[]) =>
     const origin = req.headers.origin;
     if (!origin) return next();
 
-    if (!allowedOrigins.includes(origin)) {
+    if (!isAllowedOrigin(origin)) {
       return res.apiResponse(HttpStatusCode.FORBIDDEN, "Forbidden");
     }
 

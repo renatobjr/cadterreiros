@@ -14,6 +14,8 @@ export interface LeafletMapProps {
   height?: number;
   /** Zoom máximo ao enquadrar os pontos (útil na ficha de um único terreiro). */
   maxZoom?: number;
+  /** `false` mostra o mapa centrado no ponto, sem o marcador (uso interno). */
+  showMarker?: boolean;
 }
 
 const DEFAULT_CENTER: L.LatLngTuple = [-7.1195, -34.8451];
@@ -33,6 +35,7 @@ export function LeafletMap({
   className,
   height = 460,
   maxZoom = DEFAULT_ZOOM,
+  showMarker = true,
 }: LeafletMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -95,6 +98,14 @@ export function LeafletMap({
         Number.isFinite(c.long),
     );
 
+    if (!showMarker) {
+      const first = points[0];
+      if (first) {
+        map.setView([first.lat as number, first.long as number], maxZoom);
+      }
+      return;
+    }
+
     points.forEach((c) => {
       const marker = L.marker([c.lat as number, c.long as number], {
         icon: L.divIcon({
@@ -116,7 +127,7 @@ export function LeafletMap({
     if (bounds.isValid()) {
       map.fitBounds(bounds, { padding: [40, 40], maxZoom });
     }
-  }, [communities, maxZoom]);
+  }, [communities, maxZoom, showMarker]);
 
   return (
     <div

@@ -32,6 +32,7 @@ interface FormValues {
   leaderEthnicity: string;
   leaderEducationalLevel: string;
   leaderSufferedRacism: string;
+  leaderEmail: string;
   bio: string;
   city: string;
   neighborhood: string;
@@ -67,6 +68,7 @@ interface CreateCommunityPayload {
   leaderGender: string;
   leaderEducationalLevel: string;
   leaderSufferedRacism: boolean;
+  leaderContacts: { email: string };
   communityAddress: CommunityAddressPayload;
   authorization: boolean;
   bio: string;
@@ -193,6 +195,7 @@ const EMPTY_FORM: FormValues = {
   leaderEthnicity: "",
   leaderEducationalLevel: "",
   leaderSufferedRacism: "",
+  leaderEmail: "",
   bio: "",
   city: "",
   neighborhood: "",
@@ -219,6 +222,7 @@ const FIELD_LABELS: Record<string, string> = {
   leaderEthnicity: "Etnia / raça-cor",
   leaderEducationalLevel: "Escolaridade",
   leaderSufferedRacism: "Sofreu racismo?",
+  leaderEmail: "E-mail de contato",
   bio: "História da comunidade",
   city: "Cidade",
   neighborhood: "Bairro",
@@ -383,6 +387,13 @@ function validateForm(form: FormValues): Record<string, string> {
     "Informe se a liderança já sofreu racismo.",
   );
 
+  const email = value("leaderEmail");
+  fail(
+    "leaderEmail",
+    !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
+    "Informe um e-mail de contato válido.",
+  );
+
   fail(
     "bio",
     value("bio").length < 10,
@@ -432,6 +443,7 @@ function buildPayload(form: FormValues): CreateCommunityPayload {
     leaderGender: form.leaderGender,
     leaderEducationalLevel: form.leaderEducationalLevel,
     leaderSufferedRacism: form.leaderSufferedRacism === "sim",
+    leaderContacts: { email: form.leaderEmail.trim() },
     communityAddress: {
       fullAddress: `${street}, ${number} - ${neighborhood}, ${city} - ${state}, ${zipcode}`,
       street,
@@ -1246,6 +1258,20 @@ export function CommunityRegister() {
                   updateField("leaderSufferedRacism", value)
                 }
                 error={errors.leaderSufferedRacism}
+                disabled={submitting}
+              />
+              <TextField
+                name="leaderEmail"
+                label="E-mail de contato"
+                required
+                full
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                value={form.leaderEmail}
+                onChange={(value) => updateField("leaderEmail", value)}
+                hint="A curadoria usa este e-mail para falar sobre o cadastro. Não aparece na ficha pública."
+                error={errors.leaderEmail}
                 disabled={submitting}
               />
             </div>

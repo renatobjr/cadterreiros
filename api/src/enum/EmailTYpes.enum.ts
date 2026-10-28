@@ -3,7 +3,7 @@ export enum EMailTypes {
   FIRST_ACCESS = "firstAccess",
   ADD_USER = "addUser",
   ADD_COMMUNITY = "addCommunity",
-  REQUEST_CORRECTIONS = "requestCorrections",
+  CORRECTION_REQUEST = "correctionRequest",
   UPDATE_COMMUNITY = "updateCommunity",
   ASSIGN_OWNER = "assignOwner",
 }

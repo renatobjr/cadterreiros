@@ -16,18 +16,13 @@ import health from "@/api/routes/health.routes";
 import religiousCommunityRoutes from "@/api/routes/religiousCommunity.routes";
 import authPublicRoutes from "@/api/routes/auth.routes";
 import usersRoutes from "@/api/routes/users.route";
+import { corsOrigins, isAllowedOrigin } from "./configs/cors";
 
 /**
  * Origens que podem falar com a API carregando o cookie de sessão.
- * Configurável por `WEB_ORIGIN` (lista separada por vírgula).
+ * Configurável por `WEB_ORIGIN`; em desenvolvimento qualquer porta local vale.
  */
-const allowedOrigins = (
-  process.env.WEB_ORIGIN ??
-  "http://localhost:5174,http://127.0.0.1:5174"
-)
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+const allowedOrigins = corsOrigins();
 
 const api = express();
 
@@ -35,7 +30,7 @@ api
   .use(
     cors({
       // Cookie de sessão exige origem explícita (não pode ser "*").
-      origin: allowedOrigins,
+      origin: (origin, callback) => callback(null, isAllowedOrigin(origin)),
       credentials: true,
       allowedHeaders: [
         "Origin",
@@ -49,7 +44,7 @@ api
     })
   )
   .use(cookieParser())
-  .use(requireTrustedOrigin(allowedOrigins))
+  .use(requireTrustedOrigin())
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
   .use(morgan("dev"))

@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import Login from "../../src/pages/Login";
 import { AuthProvider } from "../../src/features/auth/AuthProvider";
@@ -117,7 +117,7 @@ describe("Login", () => {
     });
   });
 
-  it("entra e mostra o estado autenticado com opção de sair", async () => {
+  it("entra e redireciona para o painel da curadoria", async () => {
     loginMock.mockResolvedValue({
       data: {
         status: true,
@@ -126,12 +126,22 @@ describe("Login", () => {
             id: "1",
             email: "curadoria@cciao.org",
             fullname: "Ana Curadora",
+            role: "admin",
           },
-          token: "jwt-token",
         },
       },
     });
-    renderPage();
+
+    render(
+      <MemoryRouter initialEntries={["/entrar"]}>
+        <AuthProvider>
+          <Routes>
+            <Route path="/entrar" element={<Login />} />
+            <Route path="/admin" element={<div>painel da curadoria</div>} />
+          </Routes>
+        </AuthProvider>
+      </MemoryRouter>,
+    );
 
     fireEvent.change(screen.getByLabelText(/E-mail/), {
       target: { value: "curadoria@cciao.org" },
@@ -141,24 +151,8 @@ describe("Login", () => {
     });
     submit();
 
-    expect(
-      await screen.findByRole("heading", { level: 1, name: "Acesso liberado" }),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Ana Curadora")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Ir para o site" })).toHaveAttribute(
-      "href",
-      "/",
-    );
+    expect(await screen.findByText("painel da curadoria")).toBeInTheDocument();
     // Sessão por cookie: nada de token no localStorage.
-    expect(localStorage.getItem("SESSION_TOKEN")).toBeNull();
-
-    fireEvent.click(screen.getByRole("button", { name: "Sair" }));
-
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { level: 1, name: "Entrar no painel" }),
-      ).toBeInTheDocument(),
-    );
     expect(localStorage.getItem("SESSION_TOKEN")).toBeNull();
   });
 

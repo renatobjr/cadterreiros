@@ -133,7 +133,9 @@ export const authService = {
       void mailUtils
         .sendMail({
           to: user.email,
-          subject: isForget ? "Recuperação de senha" : "Primeiro acesso",
+          subject: isForget
+            ? "Redefinição de senha · código de verificação"
+            : "Primeiro acesso · código de verificação",
           html: html,
         })
         .catch((error: any) => {

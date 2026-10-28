@@ -20,12 +20,12 @@ describe("Pagination", () => {
 
   it("disables previous on first page", () => {
     render(<Pagination page={1} totalPages={3} onChange={vi.fn()} />);
-    expect(screen.getByRole("button", { name: /página anterior/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Anterior" })).toBeDisabled();
   });
 
   it("disables next on last page", () => {
     render(<Pagination page={3} totalPages={3} onChange={vi.fn()} />);
-    expect(screen.getByRole("button", { name: /próxima página/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Próxima" })).toBeDisabled();
   });
 
   it("calls onChange when clicking a page", () => {
@@ -38,10 +38,20 @@ describe("Pagination", () => {
   it("navigates with next/prev buttons", () => {
     const onChange = vi.fn();
     render(<Pagination page={2} totalPages={3} onChange={onChange} />);
-    fireEvent.click(screen.getByRole("button", { name: /próxima página/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Próxima" }));
     expect(onChange).toHaveBeenCalledWith(3);
-    fireEvent.click(screen.getByRole("button", { name: /página anterior/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Anterior" }));
     expect(onChange).toHaveBeenCalledWith(1);
+  });
+
+  it("mostra a janela de cinco páginas e o rótulo", () => {
+    render(<Pagination page={10} totalPages={21} onChange={vi.fn()} />);
+
+    expect(screen.getByText("Página 10 de 21")).toBeInTheDocument();
+    for (const page of [8, 9, 10, 11, 12]) {
+      expect(screen.getByRole("button", { name: String(page) })).toBeInTheDocument();
+    }
+    expect(screen.queryByRole("button", { name: "1" })).not.toBeInTheDocument();
   });
 
   it("does not call onChange when clicking current page", () => {

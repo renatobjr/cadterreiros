@@ -32,6 +32,7 @@ const validPayload = {
   leaderGender: "feminino",
   leaderEducationalLevel: "ensino médio",
   leaderSufferedRacism: false,
+  leaderContacts: { email: "lideranca@teste.local" },
   communityGoogleApiLocalization: { lat: -7.115, long: -34.864 },
   communityAddress: {
     fullAddress: "Rua Teste, 1, Centro, João Pessoa - PB, 58000-000",

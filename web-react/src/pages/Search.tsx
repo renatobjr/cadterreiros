@@ -5,6 +5,7 @@ import SearchFilters, { type SearchFiltersValue } from "../features/communities/
 import CommunityCard from "../features/communities/components/CommunityCard";
 import type { CommunityAddress, ReligiousCommunity } from "../domain/types";
 import Select from "../components/ui/Select";
+import Pagination from "../components/composed/Pagination";
 
 /** Extrai bairro e cidade, tolerando o DTO achatado (apenas `fullAddress`). */
 function communityPlace(community: ReligiousCommunity): {
@@ -65,15 +66,6 @@ function sortCommunities(list: ReligiousCommunity[], sort: SortKey): ReligiousCo
 }
 
 /** Janela de até 5 páginas numeradas centrada na página atual. */
-function pageWindow(page: number, pages: number): number[] {
-  let start = Math.max(1, page - 2);
-  const end = Math.min(pages, start + 4);
-  start = Math.max(1, end - 4);
-  const out: number[] = [];
-  for (let i = start; i <= end; i += 1) out.push(i);
-  return out;
-}
-
 export function Search() {
   const [filters, setFilters] = useState<SearchFiltersValue>({});
   const [loading, setLoading] = useState(true);
@@ -274,40 +266,11 @@ export function Search() {
         </div>
 
         {totalPages > 1 ? (
-          <nav className="pager" aria-label="Paginação">
-            <p className="meta">
-              Página {safePage} de {totalPages}
-            </p>
-            <div className="pager__btns">
-              <button
-                type="button"
-                className="pager__btn"
-                disabled={safePage <= 1}
-                onClick={() => setPage(Math.max(1, safePage - 1))}
-              >
-                Anterior
-              </button>
-              {pageWindow(safePage, totalPages).map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  className="pager__btn"
-                  aria-current={p === safePage ? "page" : undefined}
-                  onClick={() => setPage(p)}
-                >
-                  {p}
-                </button>
-              ))}
-              <button
-                type="button"
-                className="pager__btn"
-                disabled={safePage >= totalPages}
-                onClick={() => setPage(Math.min(totalPages, safePage + 1))}
-              >
-                Próxima
-              </button>
-            </div>
-          </nav>
+          <Pagination
+            page={safePage}
+            totalPages={totalPages}
+            onChange={setPage}
+          />
         ) : null}
       </div>
     </>

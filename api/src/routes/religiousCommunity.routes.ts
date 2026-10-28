@@ -92,7 +92,7 @@ router.get(
   isAuth,
   religiousCommunityController.getReligiousCommunitiesByUserId
 );
-router.get(`${path}/list`, isAuth, religiousCommunityController.list);
+router.get(`${path}/list`, isAuth, religiousCommunityController.listAdmin);
 router.post(
   `${path}/upload-main-picture/:id`,
   isAuth,

@@ -66,6 +66,7 @@ const requiredValues: Record<string, string> = {
   "Etnia / raça-cor": "preta",
   Escolaridade: "Superior Completo",
   "Já sofreu racismo?": "nao",
+  "E-mail de contato": "lideranca@teste.local",
   Cidade: "João Pessoa",
   Bairro: "Centro",
   Endereço: "Rua das Flores",
@@ -196,6 +197,7 @@ describe("Fluxo de cadastro voluntário", () => {
         leaderGender: "feminino",
         leaderEducationalLevel: "Superior Completo",
         leaderSufferedRacism: false,
+        leaderContacts: { email: "lideranca@teste.local" },
         communityAddress: {
           fullAddress:
             "Rua das Flores, 123 - Centro, João Pessoa - PB, 58000-000",

@@ -72,6 +72,8 @@ export interface ReligiousCommunity {
   bio?: string;
   censusStep: ECensusStep;
   censusTaker?: string | null;
+  censusTakerId?: string | null;
+  censusTakerFullname?: string | null;
   rejectedReason?: string;
   registeredVoluntarily: boolean;
   createdAt: string;
@@ -149,4 +151,47 @@ export interface MappingStats {
   byLanguage: LanguageStats[];
   byNeighborhood: NeighborhoodStats[];
   byPhotoCoverage: PhotoCoverageStats;
+}
+/* ---------- estatísticas administrativas ---------- */
+
+export interface CensusStepStats {
+  approved: number;
+  pending: number;
+  rejected: number;
+  total: number;
+}
+
+export interface StatusStats {
+  active: number;
+  inactive: number;
+  total: number;
+}
+
+export interface VoluntaryRegistrationStats {
+  registeredVoluntarily: number;
+  notRegisteredVoluntarily: number;
+  total: number;
+}
+
+export interface BioCoverageStats {
+  withBio: number;
+  withoutBio: number;
+  total: number;
+}
+
+export interface EducationalLevelStats {
+  educationalLevel: string;
+  count: number;
+}
+
+export interface AdminUser {
+  id: string;
+  fullname: string;
+  email: string;
+  role: string;
+  isEnabled: boolean;
+  isFirstLogin: boolean;
+  lastLogin?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

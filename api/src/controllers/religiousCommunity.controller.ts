@@ -3,6 +3,7 @@ import { IReligiousCommunity } from "@/api/schemas/ReligiousCommunity";
 import { HttpStatusCode } from "@/api/enum/HttpStatusCode.enum";
 import { religiousCommunityService } from "@/api/services/religiousCommunity.service";
 import { ReligiousCommunitiesListDTO } from "@/api/dtos/religiousCommunitiesDTOS/religiousCommunitiesList.DTO";
+import { ReligiousCommunitiesAdminListDTO } from "../dtos/religiousCommunitiesDTOS/religiousCommunitiesAdminList.DTO";
 import { plainToInstance } from "class-transformer";
 import { ReligiousCommunitiesGetRamdomDTO } from "../dtos/religiousCommunitiesDTOS/religiousCommunitiesGetRamdom.DTO";
 import { ReligiousCommunitiesGetByIdDTO } from "../dtos/religiousCommunitiesDTOS/religiousCommunitiesGetById.DTO";
@@ -17,6 +18,20 @@ export const religiousCommunityController = {
     res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
       error: response?.error,
       data: plainToInstance(ReligiousCommunitiesListDTO, response.data, {
+        excludeExtraneousValues: true,
+      }),
+      status: response.status,
+    });
+  },
+
+  /** Lista da curadoria: inclui campos internos (origem, datas, recenseador). */
+  listAdmin: async (req: Request, res: Response): Promise<void> => {
+    const queryParams: any = req.query;
+    const response = await religiousCommunityService.list(queryParams);
+
+    res.apiResponse<IReligiousCommunity[]>(HttpStatusCode.OK, {
+      error: response?.error,
+      data: plainToInstance(ReligiousCommunitiesAdminListDTO, response.data, {
         excludeExtraneousValues: true,
       }),
       status: response.status,

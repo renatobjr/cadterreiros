@@ -247,7 +247,7 @@ export const religiousCommunityService = {
       void mailUtils
         .sendMail({
           to: mappedAdmins,
-          subject: "Nova comunidade cadastrada",
+          subject: "Nova comunidade aguardando análise",
           html: html,
         })
         .catch((error: any) => {
@@ -350,7 +350,7 @@ export const religiousCommunityService = {
       void mailUtils
         .sendMail({
           to: mappedAdmins,
-          subject: "Comunidade atualizada",
+          subject: "Cadastro atualizado — aguardando análise",
           html: html,
         })
         .catch((error: any) => {
@@ -1267,7 +1267,7 @@ export const religiousCommunityService = {
       void mailUtils
         .sendMail({
           to: userData?.email,
-          subject: "Responsável pela Atualização",
+          subject: "Você é responsável por uma atualização",
           html: html,
         })
         .catch((error: any) => {
@@ -1317,13 +1317,62 @@ export const religiousCommunityService = {
     }
   },
 
+
+  /**
+   * Avisa sobre correções: usa o e-mail de contato do cadastro voluntário
+   * quando existir e, na falta dele, o e-mail do recenseador responsável.
+   */
+  notifyCorrection: async (
+    community: IReligiousCommunity | null,
+    reason: string,
+    subject: string,
+    context: "corrections" | "rejected" = "corrections"
+  ): Promise<void> => {
+    if (!community) return;
+
+    const contactEmail = community.leaderContacts?.email;
+    const censusTaker = community.censusTaker
+      ? await User.findById(community.censusTaker)
+      : null;
+    const to = contactEmail || censusTaker?.email || "";
+
+    if (!to) return;
+
+    const isRejected = context === "rejected";
+    const html = await mailUtils.template({
+      type: EMailTypes.CORRECTION_REQUEST,
+      data: {
+        censusTakerName:
+          community.religiousSpaceLeaderName?.split(" ")[0] ?? "liderança",
+        communityName: community.religiousSpaceName,
+        fullAddress: community.communityAddress?.fullAddress,
+        correctionNotes: reason,
+        emailTitle: isRejected
+          ? "Cadastro rejeitado pela curadoria"
+          : "Precisamos de ajustes no cadastro",
+        emailIntro: isRejected
+          ? "O cadastro da comunidade abaixo foi rejeitado pela curadoria. O motivo está registrado na ficha."
+          : "Analisamos o cadastro da comunidade abaixo e precisamos de alguns ajustes antes de publicá-lo no acervo.",
+        nextStep: isRejected
+          ? "Se os ajustes forem possíveis, envie o cadastro novamente pelo site ou responda esta mensagem para falar com a curadoria."
+          : "Ajuste os dados indicados e envie novamente pelo site. Assim que chegarem, a curadoria retoma a análise.",
+      },
+    });
+
+    void mailUtils
+      .sendMail({ to, subject, html })
+      .catch((error: any) => {
+        console.error("[✖] Falha ao enviar e-mail:", error?.message ?? error);
+      });
+  },
+
   requestCorrections: async (
     communityId: string,
     userId: string,
     rejectedReason: string
   ) => {
     try {
-      await ReligiousCommunity.findOneAndUpdate(
+      const community = await ReligiousCommunity.findOneAndUpdate(
         { _id: new Types.ObjectId(communityId) },
         {
           $set: {
@@ -1331,7 +1380,16 @@ export const religiousCommunityService = {
             censusTaker: new Types.ObjectId(userId),
             rejectedReason: rejectedReason,
           },
-        }
+        },
+        { new: true }
+      );
+
+      // Avisa quem enviou o cadastro (contato voluntário ou recenseador).
+      await religiousCommunityService.notifyCorrection(
+        community,
+        rejectedReason,
+        "Correções solicitadas no cadastro",
+        "corrections"
       );
 
       return {
@@ -1379,33 +1437,16 @@ export const religiousCommunityService = {
             censusStep: ECensusStep.REJECTED,
             rejectedReason: rejectedReason,
           },
-        }
+        },
+        { new: true }
       );
 
-      const userData = await User.findOne({ _id: community?.censusTaker });
-
-      const html = await mailUtils.template({
-        type: EMailTypes.REQUEST_CORRECTIONS,
-        data: {
-          censusTakerName: userData?.fullname,
-          communityName: community?.religiousSpaceName,
-          fullAddress: community?.communityAddress.fullAddress,
-          correctionNotes: rejectedReason,
-        },
-      });
-
-      void mailUtils
-        .sendMail({
-          to: userData?.email,
-          subject: "Solictaçào de correção",
-          html: html,
-        })
-        .catch((error: any) => {
-          console.error(
-            "[✖] Falha ao enviar e-mail:",
-            error?.message ?? error
-          );
-        });
+      await religiousCommunityService.notifyCorrection(
+        community,
+        rejectedReason,
+        "Cadastro rejeitado pela curadoria",
+        "rejected"
+      );
 
       return {
         data: true,

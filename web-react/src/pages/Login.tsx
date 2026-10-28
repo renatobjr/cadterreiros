@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import AuthShell from "../features/auth/components/AuthShell";
 import { useAuth } from "../features/auth/context";
 import { readEnvelope } from "../api/envelope";
@@ -35,7 +35,9 @@ function validate(email: string, password: string): LoginErrors {
 
 /** Tela de acesso da curadoria, fiel ao mock (`renderAuthLogin`). */
 export function Login() {
-  const { login, isAuth, user, logout } = useAuth();
+  const { login, isAuth } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,6 +69,10 @@ export function Login() {
       // O painel da curadoria ainda não tem rota pública própria; a sessão
       // fica registrada e o aviso confirma o acesso.
       setPassword("");
+      const from = (location.state as { from?: string } | null)?.from;
+      navigate(from && from.startsWith("/admin") ? from : "/admin", {
+        replace: true,
+      });
     } catch {
       setError(
         "Não foi possível entrar agora. Verifique a conexão e tente novamente.",
@@ -76,24 +82,9 @@ export function Login() {
     }
   }
 
+  // Sessão ativa: o painel é o destino natural (mock: `auth` → `admin`).
   if (isAuth) {
-    return (
-      <AuthShell>
-        <p className="eyebrow">Curadoria</p>
-        <h1 className="display-2">Acesso liberado</h1>
-        <p className="lede">
-          Sessão iniciada como{" "}
-          <strong>{user?.fullname ?? user?.email ?? "curadoria"}</strong>.
-        </p>
-
-        <div className="auth-links">
-          <Link to="/">Ir para o site</Link>
-          <button className="btn btn--quiet" type="button" onClick={logout}>
-            Sair
-          </button>
-        </div>
-      </AuthShell>
-    );
+    return <Navigate to="/admin" replace />;
   }
 
   return (

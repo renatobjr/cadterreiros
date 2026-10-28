@@ -301,6 +301,9 @@
 }
 
 /* ---------- aviso flutuante ---------- */
+.toast[hidden] {
+  display: none;
+}
 .toast {
   position: fixed;
   left: 50%;

@@ -91,9 +91,20 @@ export class ReligiousCommunitiesGetByAllPropsDTO {
   censusTaker!: ObjectId;
 
   @Expose()
-  @Transform((value) => value.obj.censusTaker?.fullname ?? "não informado")
-  censusTakerFullname!: string;
+  @Transform((value) => value.obj.censusTaker?.fullname ?? null)
+  censusTakerFullname!: string | null;
 
   @Expose()
   createdAt!: Date | string;
+
+  @Expose()
+  updatedAt!: Date | string;
+
+  @Expose()
+  @Transform((value) => value.obj.rejectedReason ?? null)
+  rejectedReason!: string | null;
+
+  @Expose()
+  @Transform((value) => value.obj.registeredVoluntarily ?? false)
+  registeredVoluntarily!: boolean;
 }

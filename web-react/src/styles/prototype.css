@@ -1971,6 +1971,9 @@ a.article-card {
 }
 .admin-tabs {
   margin-bottom: var(--s4);
+  /* Sem scroll horizontal: as abas cabem e quebram linha se necessário. */
+  overflow-x: visible;
+  flex-wrap: wrap;
 }
 .admin-tab__count {
   display: inline-block;
@@ -2012,13 +2015,27 @@ a.article-card {
   overflow-x: auto;
 }
 .admin-table {
-  min-width: 1080px;
+  min-width: 1180px;
 }
 .admin-users-table {
   min-width: 760px;
 }
 .admin-table td {
   vertical-align: middle;
+}
+/* Ações ficam em linha: a célula cresce em vez de empilhar os botões. */
+.admin-table td:last-child {
+  white-space: nowrap;
+}
+.admin-table .admin-actions {
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+/* Ações compactas na tabela para caber as oito colunas. */
+.admin-table .admin-action {
+  min-height: 32px;
+  padding: 4px 9px;
+  font-size: 11.5px;
 }
 .admin-table td:first-child {
   font-weight: 400;
@@ -2342,6 +2359,15 @@ a.article-card {
 }
 .admin-savebar .meta {
   margin: 0;
+}
+/* Aviso do rodapé de edição: texto maior e com peso, para não passar batido. */
+.admin-savebar__note {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--accent-deep);
 }
 .admin-edit-aside {
   position: sticky;
@@ -3067,4 +3093,66 @@ a.article-card {
     letter-spacing: 0.3em;
     text-indent: 0.3em;
   }
+}
+
+/* ---------- ações em ícone (tabela) com tooltip ---------- */
+.admin-action--icon {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  color: var(--fg-soft);
+}
+.admin-action--icon:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.admin-action--danger:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+/* Tooltip acessível: aparece no hover e no foco do teclado. */
+.admin-action--icon[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  padding: 5px 8px;
+  border-radius: 4px;
+  background: var(--accent-deep);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-fast);
+}
+.admin-action--icon[data-tooltip]:hover::after,
+.admin-action--icon[data-tooltip]:focus-visible::after {
+  opacity: 1;
+}
+
+/* Cabeçalho da ficha: ação principal separada das secundárias. */
+.admin-detail-actions {
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s3);
+}
+.admin-detail-actions__group {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+.admin-detail-actions__group--secondary {
+  padding-left: var(--s3);
+  border-left: 1px solid var(--border);
 }
