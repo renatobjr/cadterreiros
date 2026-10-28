@@ -1,7 +1,7 @@
-# AGENT.md — web-react
+# AGENT.md — web
 
 Instruções para agentes que trabalham neste diretório. Ler inteiro antes de
-tocar em qualquer arquivo. Vale para `web-react/` e para mudanças em `api/`
+tocar em qualquer arquivo. Vale para `web/` e para mudanças em `api/`
 exigidas pelo front novo.
 
 ## 1. O que é isto
@@ -100,7 +100,7 @@ Regras de dependência (valem para imports):
 
 ### 2.4 Identidade e dados (herdado do protótipo, continua valendo)
 
-1. `scripts/tokens.mjs` (futura casa: `web-react/scripts/`) é a **fonte
+1. `scripts/tokens.mjs` (futura casa: `web/scripts/`) é a **fonte
    única**; `tokens.css` é gerado, nunca editado à mão. Cor só em `oklch()`,
    nunca hex no código.
 2. Fio de 1px, **sem sombra**; raio ≤ 4px; grade de 8px; Newsreader p/
@@ -145,7 +145,7 @@ existem no protótipo — construir na identidade nova). Redirects legados:
 4. Build local: Node 22 (`.nvmrc` na raiz), `npm ci`, `npm run build` limpo.
    `dist/` e `.env` nunca commitados.
 5. **Gate final de entrega**: ao concluir o conjunto de implementações, rodar
-   **code review + security review** em `web-react/` e `api/` (auth/RBAC,
+   **code review + security review** em `web/` e `api/` (auth/RBAC,
    sessão por cookie, CSRF, uploads, exposição de dados, segredos,
    dependências). Nenhum achado crítico pode ficar aberto antes do cutover.
    Roteiro em `.code-spec-driven/ROADMAP.md`.
