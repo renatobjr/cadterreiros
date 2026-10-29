@@ -60,6 +60,10 @@ export class ReligiousCommunitiesAdminListDTO {
   censusTakerFullname!: string | null;
 
   @Expose()
+  @Transform((value) => value.obj.leaderContacts ?? null)
+  leaderContacts!: { email?: string; phone?: string } | null;
+
+  @Expose()
   @Transform((value) => value.obj.censusTaker?._id ?? null)
   censusTakerId!: string | null;
 

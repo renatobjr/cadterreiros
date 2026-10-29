@@ -572,21 +572,23 @@ export function AdminRecords() {
                                   <AdminActionIcon kind="reject" />
                                 </button>
                               ) : null}
-                              <button
-                                className="admin-action admin-action--icon"
-                                type="button"
-                                aria-label="Solicitar correções"
-                                data-tooltip="Solicitar correções"
-                                onClick={() =>
-                                  setDecision({
-                                    id: record.id,
-                                    name: record.religiousSpaceName,
-                                    action: "corrections",
-                                  })
-                                }
-                              >
-                                <AdminActionIcon kind="corrections" />
-                              </button>
+                              {record.leaderContacts?.email ? (
+                                <button
+                                  className="admin-action admin-action--icon"
+                                  type="button"
+                                  aria-label="Solicitar correções"
+                                  data-tooltip="Solicitar correções"
+                                  onClick={() =>
+                                    setDecision({
+                                      id: record.id,
+                                      name: record.religiousSpaceName,
+                                      action: "corrections",
+                                    })
+                                  }
+                                >
+                                  <AdminActionIcon kind="corrections" />
+                                </button>
+                              ) : null}
                             </>
                           ) : null}
                           {canEdit ? (

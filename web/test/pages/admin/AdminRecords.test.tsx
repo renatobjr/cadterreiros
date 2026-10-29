@@ -49,6 +49,7 @@ function record(overrides: Partial<ReligiousCommunity>): ReligiousCommunity {
     censusTakerFullname: "Ana",
     createdAt: "2020-01-01",
     updatedAt: "2020-01-02",
+    leaderContacts: { email: "contato@example.org" },
     ...overrides,
   } as ReligiousCommunity;
 }
