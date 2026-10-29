@@ -1465,12 +1465,9 @@ export const religiousCommunityService = {
   ): Promise<void> => {
     if (!community) return;
 
-    const contactEmail = community.leaderContacts?.email;
-    const censusTaker = community.censusTaker
-      ? await User.findById(community.censusTaker)
-      : null;
-    const to = contactEmail || censusTaker?.email || "";
-
+    /* Correções/rejeições vão para o e-mail de contato do cadastro (voluntário
+       ou recenseador), não para o responsável — o censo já terminou. */
+    const to = community.leaderContacts?.email || "";
     if (!to) return;
 
     const isRejected = context === "rejected";

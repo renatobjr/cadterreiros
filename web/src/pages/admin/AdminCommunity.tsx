@@ -122,6 +122,10 @@ export function AdminCommunity() {
       community?.censusTakerFullname &&
         community.censusTakerFullname !== "não informado",
     );
+  /* "Solicitar correções" só faz sentido se houver alguém para avisar. */
+  /* A correção vai para o e-mail de contato do cadastro (voluntário ou
+     recenseador), não para o recenseador responsável — o censo já terminou. */
+  const hasCorrectionContact = Boolean(community?.leaderContacts?.email);
   const canEdit = Boolean(community) && (isAdmin || isOwner);
   const canDecide = Boolean(community) && isAdmin;
 
@@ -252,7 +256,7 @@ export function AdminCommunity() {
   const founded = validYear(community.religiousSpaceYearFoundation);
 
   const menuItems: ActionMenuItem[] = [
-    ...(canDecide
+    ...(canDecide && hasCorrectionContact
       ? [
           {
             id: "corrections",
@@ -368,7 +372,7 @@ export function AdminCommunity() {
               </>
             ) : null}
 
-            {canDecide && community.censusStep === "approved" ? (
+            {canDecide && community.censusStep === "approved" && hasCorrectionContact ? (
               <>
                 <button
                   className="btn btn--ghost"
